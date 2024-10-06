@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>data.building &mdash; HoMM3 Bot 2.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> HoMM3 Bot
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">homm3-bot</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">HoMM3 Bot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">data.building</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for data.building</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Script containing Cost and building class along with classes inheriting after building class&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">data.creature</span> <span class="kn">import</span> <span class="n">Creature</span>
+<span class="kn">from</span> <span class="nn">data.magic</span> <span class="kn">import</span> <span class="n">Spells</span>
+
+
+<div class="viewcode-block" id="Cost"><a class="viewcode-back" href="../../data.html#data.building.Cost">[docs]</a><span class="k">class</span> <span class="nc">Cost</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gold</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">wood</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">ore</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">mercury</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">sulfur</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">crystal</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">gems</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Class representing cost (in resources).</span>
+
+<span class="sd">        :param gold: Amount of gold</span>
+<span class="sd">        :param wood: Amount of wood</span>
+<span class="sd">        :param ore: Amount of ore</span>
+<span class="sd">        :param mercury: Amount of mercury</span>
+<span class="sd">        :param sulfur: Amount of sulfur</span>
+<span class="sd">        :param crystal: Amount of crystal</span>
+<span class="sd">        :param gems: Amount of gems</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gold</span> <span class="o">=</span> <span class="n">gold</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wood</span> <span class="o">=</span> <span class="n">wood</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ore</span> <span class="o">=</span> <span class="n">ore</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mercury</span> <span class="o">=</span> <span class="n">mercury</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sulfur</span> <span class="o">=</span> <span class="n">sulfur</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">crystal</span> <span class="o">=</span> <span class="n">crystal</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gems</span> <span class="o">=</span> <span class="n">gems</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resources</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">gold</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">wood</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ore</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mercury</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sulfur</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">crystal</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gems</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="Building"><a class="viewcode-back" href="../../data.html#data.building.Building">[docs]</a><span class="k">class</span> <span class="nc">Building</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">built</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">cost</span><span class="p">:</span> <span class="n">Cost</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Class representing Building (f.e MageGuild..)</span>
+
+<span class="sd">        :param name: Name of the object</span>
+<span class="sd">        :param x: Building &quot;x&quot; location in the city view</span>
+<span class="sd">        :param y: Building &quot;y&quot; location in the city view</span>
+<span class="sd">        :param x2: Building &quot;x&quot; location in city hall</span>
+<span class="sd">        :param y2: Building &quot;y&quot; location in city hall</span>
+<span class="sd">        :param built: boolean. built -&gt; True, not built -&gt; False</span>
+<span class="sd">        :param cost: Construction cost of the building</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">built</span> <span class="o">=</span> <span class="n">built</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cost</span> <span class="o">=</span> <span class="n">cost</span></div>
+
+
+<div class="viewcode-block" id="MageGuild"><a class="viewcode-back" href="../../data.html#data.building.MageGuild">[docs]</a><span class="k">class</span> <span class="nc">MageGuild</span><span class="p">(</span><span class="n">Building</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lvl</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">spells</span><span class="p">:</span> <span class="n">Spells</span><span class="p">,</span> <span class="o">*</span><span class="n">cost</span><span class="p">:</span> <span class="n">Cost</span><span class="p">,</span> <span class="n">built</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Class Inheriting after building class. Representing Mage Guild building.</span>
+
+<span class="sd">        :param lvl: Mage guild level</span>
+<span class="sd">        :param name: Name of the building</span>
+<span class="sd">        :param spells: Spells present in mage guild</span>
+<span class="sd">        :param cost: Construction cost of the building</span>
+<span class="sd">        :param built: boolean. built -&gt; True, not built -&gt; False</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">built</span><span class="p">,</span> <span class="o">*</span><span class="n">cost</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="n">lvl</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spells</span> <span class="o">=</span> <span class="n">spells</span></div>
+
+
+<div class="viewcode-block" id="Fort"><a class="viewcode-back" href="../../data.html#data.building.Fort">[docs]</a><span class="k">class</span> <span class="nc">Fort</span><span class="p">(</span><span class="n">Building</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lvl</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Fort&quot;</span><span class="p">,</span> <span class="n">built</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="o">*</span><span class="n">cost</span><span class="p">:</span> <span class="n">Cost</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Class Inheriting after building class. Representing Fort building.</span>
+
+<span class="sd">        :param lvl: Fort level</span>
+<span class="sd">        :param name: Name of the building</span>
+<span class="sd">        :param built: boolean. built -&gt; True, not built -&gt; False</span>
+<span class="sd">        :param cost: Construction cost of the building</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">built</span><span class="p">,</span> <span class="o">*</span><span class="n">cost</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="n">lvl</span></div>
+
+
+<div class="viewcode-block" id="CityHall"><a class="viewcode-back" href="../../data.html#data.building.CityHall">[docs]</a><span class="k">class</span> <span class="nc">CityHall</span><span class="p">(</span><span class="n">Building</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lvl</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">built</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">cost</span><span class="p">:</span> <span class="n">Cost</span><span class="p">,</span> <span class="n">income</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">500</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Class inheriting after building class. Representing City Hall building.</span>
+
+<span class="sd">        :param lvl: Mage guild level</span>
+<span class="sd">        :param name: Name of the building</span>
+<span class="sd">        :param cost: Construction cost of the building</span>
+<span class="sd">        :param built: boolean. built -&gt; True, not built -&gt; False</span>
+<span class="sd">        :param income: Amount of gold received from the City Hall object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">built</span><span class="p">,</span> <span class="o">*</span><span class="n">cost</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="n">lvl</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">income</span> <span class="o">=</span> <span class="n">income</span></div>
+
+
+<div class="viewcode-block" id="Tavern"><a class="viewcode-back" href="../../data.html#data.building.Tavern">[docs]</a><span class="k">class</span> <span class="nc">Tavern</span><span class="p">(</span><span class="n">Building</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">built</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">cost</span><span class="p">:</span> <span class="n">Cost</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Class inheriting after building class. Representing Tavern building.</span>
+
+<span class="sd">        :param name: Name of the building</span>
+<span class="sd">        :param built: boolean. built -&gt; True, not built -&gt; False</span>
+<span class="sd">        :param cost: Construction cost of the building</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">built</span><span class="p">,</span> <span class="o">*</span><span class="n">cost</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Marketplace"><a class="viewcode-back" href="../../data.html#data.building.Marketplace">[docs]</a><span class="k">class</span> <span class="nc">Marketplace</span><span class="p">(</span><span class="n">Building</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">built</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">cost</span><span class="p">:</span> <span class="n">Cost</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Class inheriting after building class. Representing Marketplace building.</span>
+
+<span class="sd">        :param name: Name of the building</span>
+<span class="sd">        :param built: boolean. built -&gt; True, not built -&gt; False</span>
+<span class="sd">        :param cost: Construction cost of the building</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">built</span><span class="p">,</span> <span class="o">*</span><span class="n">cost</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ResourceSilo"><a class="viewcode-back" href="../../data.html#data.building.ResourceSilo">[docs]</a><span class="k">class</span> <span class="nc">ResourceSilo</span><span class="p">(</span><span class="n">Building</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">built</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                 <span class="o">*</span><span class="n">cost</span><span class="p">:</span> <span class="n">Cost</span><span class="p">,</span> <span class="n">income</span><span class="p">:</span> <span class="n">Cost</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Class inheriting after building class. Representing Resource Silo building.</span>
+
+<span class="sd">        :param name: Name of the building</span>
+<span class="sd">        :param built: boolean. built -&gt; True, not built -&gt; False</span>
+<span class="sd">        :param cost: Construction cost of the building</span>
+<span class="sd">        :param income: Amount of gold received from the Resource Silo object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">built</span><span class="p">,</span> <span class="o">*</span><span class="n">cost</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">income</span> <span class="o">=</span> <span class="n">income</span></div>
+
+
+<div class="viewcode-block" id="Habitat"><a class="viewcode-back" href="../../data.html#data.building.Habitat">[docs]</a><span class="k">class</span> <span class="nc">Habitat</span><span class="p">(</span><span class="n">Building</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cost</span><span class="p">:</span> <span class="p">(</span><span class="n">Cost</span><span class="p">,</span> <span class="n">Cost</span><span class="p">),</span> <span class="n">unit</span><span class="p">:</span> <span class="n">Creature</span><span class="p">,</span> <span class="n">unit_up</span><span class="p">:</span> <span class="n">Creature</span><span class="p">,</span> <span class="n">growth</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                 <span class="n">unit_cost</span><span class="p">:</span> <span class="n">Cost</span><span class="p">,</span> <span class="n">unit_cost_up</span><span class="p">:</span> <span class="n">Cost</span><span class="p">,</span> <span class="n">to_buy</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">lvl</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+                 <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">built</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Class inheriting after building class. Representing Habitat building.</span>
+
+<span class="sd">        :param cost: Construction cost of the building</span>
+<span class="sd">        :param unit: Which unit does the habitat produce</span>
+<span class="sd">        :param unit_up: Which upgraded unit does the habitat produce</span>
+<span class="sd">        :param growth: Unit growth per week</span>
+<span class="sd">        :param unit_cost: Cost of the unit</span>
+<span class="sd">        :param unit_cost_up: Cost of the upgraded unit</span>
+<span class="sd">        :param to_buy: How many units is available to buy</span>
+<span class="sd">        :param lvl: Habitat level</span>
+<span class="sd">        :param name: Name of the building</span>
+<span class="sd">        :param cost: Construction cost of the building</span>
+<span class="sd">        :param built: boolean. built -&gt; True, not built -&gt; False</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">built</span><span class="p">,</span> <span class="n">cost</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="n">lvl</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unit_type</span> <span class="o">=</span> <span class="n">unit</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unit_type_up</span> <span class="o">=</span> <span class="n">unit_up</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">growth</span> <span class="o">=</span> <span class="n">growth</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unit_cost</span> <span class="o">=</span> <span class="n">unit_cost</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unit_cost_up</span> <span class="o">=</span> <span class="n">unit_cost_up</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unit_ready</span> <span class="o">=</span> <span class="n">growth</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Fryderyk Róg, Kacper Plesiak, Michał Gruba, Tymoteusz Skrzyński, Mateusz Comblik, Bartosz Szczepanek, Alan Konopko, Mateusz Mikszewicz, Daniel Bil, Piotr Łyczko.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

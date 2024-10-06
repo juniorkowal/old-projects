@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>data.city &mdash; HoMM3 Bot 2.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> HoMM3 Bot
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">homm3-bot</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">HoMM3 Bot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">data.city</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for data.city</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Script containing city class representing casles in the game&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+
+<span class="kn">import</span> <span class="nn">cv2</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">colorama</span> <span class="kn">import</span> <span class="n">Fore</span>
+<span class="kn">from</span> <span class="nn">mss</span> <span class="kn">import</span> <span class="n">mss</span>
+
+<span class="kn">import</span> <span class="nn">GUI_handling.AdventureGUI</span>
+<span class="kn">import</span> <span class="nn">image_processing.detecting_window</span>
+<span class="kn">import</span> <span class="nn">image_processing.ok_detection</span>
+<span class="kn">from</span> <span class="nn">GUI_handling</span> <span class="kn">import</span> <span class="n">TownGUI</span> <span class="k">as</span> <span class="n">GUI</span>
+<span class="kn">from</span> <span class="nn">data.building</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">data.hero</span> <span class="kn">import</span> <span class="n">Hero</span>
+<span class="kn">from</span> <span class="nn">image_processing</span> <span class="kn">import</span> <span class="n">ocr</span>
+
+
+<div class="viewcode-block" id="City"><a class="viewcode-back" href="../../data.html#data.city.City">[docs]</a><span class="k">class</span> <span class="nc">City</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mage_guild</span><span class="p">:</span> <span class="n">MageGuild</span><span class="p">,</span> <span class="n">fort</span><span class="p">:</span> <span class="n">Fort</span><span class="p">,</span> <span class="n">city_hall</span><span class="p">:</span> <span class="n">CityHall</span><span class="p">,</span> <span class="n">tavern</span><span class="p">:</span> <span class="n">Tavern</span><span class="p">,</span>
+                 <span class="n">marketplace</span><span class="p">:</span> <span class="n">Marketplace</span><span class="p">,</span> <span class="n">resource_silo</span><span class="p">:</span> <span class="n">ResourceSilo</span><span class="p">,</span> <span class="n">blacksmith</span><span class="p">:</span> <span class="n">Building</span><span class="p">,</span> <span class="n">graal</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                 <span class="n">upper_hero</span><span class="p">:</span> <span class="n">Hero</span> <span class="o">=</span> <span class="n">Hero</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">lower_hero</span><span class="p">:</span> <span class="n">Hero</span> <span class="o">=</span> <span class="n">Hero</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                 <span class="n">owned_by</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;neutral&#39;</span><span class="p">,</span>
+                 <span class="n">t1</span><span class="o">=</span><span class="n">Habitat</span><span class="p">((</span><span class="n">Cost</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">Cost</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span><span class="n">Creature</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,()),</span><span class="n">Creature</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,()),</span><span class="mi">0</span><span class="p">,</span><span class="n">Cost</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span><span class="n">Cost</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;t1&quot;</span><span class="p">),</span>
+                 <span class="n">t2</span><span class="o">=</span><span class="n">Habitat</span><span class="p">((</span><span class="n">Cost</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">Cost</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span><span class="n">Creature</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,()),</span><span class="n">Creature</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,()),</span><span class="mi">0</span><span class="p">,</span><span class="n">Cost</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span><span class="n">Cost</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;t2&quot;</span><span class="p">),</span>
+                 <span class="n">t3</span><span class="o">=</span><span class="n">Habitat</span><span class="p">((</span><span class="n">Cost</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">Cost</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span><span class="n">Creature</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,()),</span><span class="n">Creature</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,()),</span><span class="mi">0</span><span class="p">,</span><span class="n">Cost</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span><span class="n">Cost</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;t3&quot;</span><span class="p">),</span>
+                 <span class="n">t4</span><span class="o">=</span><span class="n">Habitat</span><span class="p">((</span><span class="n">Cost</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">Cost</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span><span class="n">Creature</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,()),</span><span class="n">Creature</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,()),</span><span class="mi">0</span><span class="p">,</span><span class="n">Cost</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span><span class="n">Cost</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;t4&quot;</span><span class="p">),</span>
+                 <span class="n">t5</span><span class="o">=</span><span class="n">Habitat</span><span class="p">((</span><span class="n">Cost</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">Cost</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span><span class="n">Creature</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,()),</span><span class="n">Creature</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,()),</span><span class="mi">0</span><span class="p">,</span><span class="n">Cost</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span><span class="n">Cost</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;t5&quot;</span><span class="p">),</span>
+                 <span class="n">t6</span><span class="o">=</span><span class="n">Habitat</span><span class="p">((</span><span class="n">Cost</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">Cost</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span><span class="n">Creature</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,()),</span><span class="n">Creature</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,()),</span><span class="mi">0</span><span class="p">,</span><span class="n">Cost</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span><span class="n">Cost</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;t6&quot;</span><span class="p">),</span>
+                 <span class="n">t7</span><span class="o">=</span><span class="n">Habitat</span><span class="p">((</span><span class="n">Cost</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">Cost</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span><span class="n">Creature</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,()),</span><span class="n">Creature</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,()),</span><span class="mi">0</span><span class="p">,</span><span class="n">Cost</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span><span class="n">Cost</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;t7&quot;</span><span class="p">),):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Init function for a City Class.</span>
+
+<span class="sd">        :param mage_guild: Mage guild object</span>
+<span class="sd">        :param fort: Fort object</span>
+<span class="sd">        :param city_hall: City hall object</span>
+<span class="sd">        :param tavern: Tavern object</span>
+<span class="sd">        :param marketplace: Marketplace object</span>
+<span class="sd">        :param resource_silo: Resource silo object</span>
+<span class="sd">        :param blacksmith: Blacksmith object</span>
+<span class="sd">        :param graal: Boolean True - graal, False - no graal</span>
+<span class="sd">        :param upper_hero: Hero object that is present in the higher row of the city slot bar</span>
+<span class="sd">        :param lower_hero: Hero object that is present in the lower row of the city slot bar</span>
+<span class="sd">        :param owned_by: Which player owns the building</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">creature_dwellings</span> <span class="o">=</span> <span class="p">[</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">t1</span><span class="p">),</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">t2</span><span class="p">),</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">t3</span><span class="p">),</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">t4</span><span class="p">),</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">t5</span><span class="p">),</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">t6</span><span class="p">),</span>
+                                   <span class="n">deepcopy</span><span class="p">(</span><span class="n">t7</span><span class="p">)]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">city</span> <span class="o">=</span> <span class="s2">&quot;City&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fort</span> <span class="o">=</span> <span class="n">fort</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">city_hall</span> <span class="o">=</span> <span class="n">city_hall</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mage_guild</span> <span class="o">=</span> <span class="n">mage_guild</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tavern</span> <span class="o">=</span> <span class="n">tavern</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">marketplace</span> <span class="o">=</span> <span class="n">marketplace</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">blacksmith</span> <span class="o">=</span> <span class="n">blacksmith</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name_of_city</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resource_silo</span> <span class="o">=</span> <span class="n">resource_silo</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">need_read</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">graal</span> <span class="o">=</span> <span class="n">graal</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">city_hero</span> <span class="o">=</span> <span class="n">upper_hero</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">arriving_hero</span> <span class="o">=</span> <span class="n">lower_hero</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">owned_by</span> <span class="o">=</span> <span class="n">owned_by</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">textbox_width</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mi">150</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">textbox_height</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="City.end_day"><a class="viewcode-back" href="../../data.html#data.city.City.end_day">[docs]</a>    <span class="k">def</span> <span class="nf">end_day</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">player</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Buffer function</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">city_hall</span><span class="o">.</span><span class="n">lvl</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">player</span><span class="o">.</span><span class="n">gold</span> <span class="o">+=</span> <span class="mi">500</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">city_hall</span><span class="o">.</span><span class="n">lvl</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">player</span><span class="o">.</span><span class="n">gold</span> <span class="o">+=</span> <span class="mi">1000</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">city_hall</span><span class="o">.</span><span class="n">lvl</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="n">player</span><span class="o">.</span><span class="n">gold</span> <span class="o">+=</span> <span class="mi">2000</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">city_hall</span><span class="o">.</span><span class="n">lvl</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="n">player</span><span class="o">.</span><span class="n">gold</span> <span class="o">+=</span> <span class="mi">4000</span></div>
+
+<div class="viewcode-block" id="City.take_screenshot"><a class="viewcode-back" href="../../data.html#data.city.City.take_screenshot">[docs]</a>    <span class="k">def</span> <span class="nf">take_screenshot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Takes a screenshot.</span>
+
+<span class="sd">        :return: screenshot image</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">mss</span><span class="p">()</span> <span class="k">as</span> <span class="n">sct</span><span class="p">:</span>
+            <span class="n">monitor</span> <span class="o">=</span> <span class="n">sct</span><span class="o">.</span><span class="n">monitors</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sct</span><span class="o">.</span><span class="n">grab</span><span class="p">(</span><span class="n">monitor</span><span class="p">))</span>
+            <span class="n">img</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGRA2BGR</span><span class="p">)</span>
+            <span class="c1">#cv2.imshow(&#39;win&#39;, img)</span>
+            <span class="c1">#cv2.waitKey(0)</span>
+            <span class="k">return</span> <span class="n">img</span></div>
+
+<div class="viewcode-block" id="City.read_text"><a class="viewcode-back" href="../../data.html#data.city.City.read_text">[docs]</a>    <span class="k">def</span> <span class="nf">read_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Reads text from an image.</span>
+
+<span class="sd">        :param img: input image</span>
+<span class="sd">        :return: read text</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">text</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">ocr</span><span class="o">.</span><span class="n">read_generic_text</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">text</span></div>
+
+<div class="viewcode-block" id="City.check_color"><a class="viewcode-back" href="../../data.html#data.city.City.check_color">[docs]</a>    <span class="k">def</span> <span class="nf">check_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checks background color of an image where the text is.</span>
+
+<span class="sd">        :param img: input image</span>
+<span class="sd">        :return: one of four strings: &#39;green&#39;, &#39;yellow&#39;, &#39;red&#39;, &#39;gray&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">img</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">123</span> <span class="ow">and</span>
+            <span class="n">img</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">181</span> <span class="ow">and</span>
+           <span class="n">img</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="mi">115</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s1">&#39;green&#39;</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">img</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">99</span> <span class="ow">and</span>
+              <span class="n">img</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">189</span> <span class="ow">and</span>
+              <span class="n">img</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="mi">231</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s1">&#39;yellow&#39;</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">img</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">123</span> <span class="ow">and</span>
+              <span class="n">img</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">123</span> <span class="ow">and</span>
+              <span class="n">img</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="mi">255</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s1">&#39;red&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;gray&#39;</span></div>
+
+<div class="viewcode-block" id="City.give_text_and_color"><a class="viewcode-back" href="../../data.html#data.city.City.give_text_and_color">[docs]</a>    <span class="k">def</span> <span class="nf">give_text_and_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns text and color of the text&#39;s background.</span>
+
+<span class="sd">        :param img: input image</span>
+<span class="sd">        :return: name, color</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+        <span class="n">color</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_color</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">name</span><span class="p">,</span> <span class="n">color</span></div>
+
+<div class="viewcode-block" id="City.crop_city_hall"><a class="viewcode-back" href="../../data.html#data.city.City.crop_city_hall">[docs]</a>    <span class="k">def</span> <span class="nf">crop_city_hall</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Cropps city hall</span>
+
+<span class="sd">        :param img: input image</span>
+<span class="sd">        :return: image with text and color</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">img_copy</span> <span class="o">=</span> <span class="n">img</span><span class="p">[</span><span class="mi">349</span><span class="p">:</span><span class="mi">349</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">textbox_height</span><span class="p">,</span> <span class="mi">594</span><span class="p">:</span><span class="mi">594</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">textbox_width</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">give_text_and_color</span><span class="p">(</span><span class="n">img_copy</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="City.crop_citadel"><a class="viewcode-back" href="../../data.html#data.city.City.crop_citadel">[docs]</a>    <span class="k">def</span> <span class="nf">crop_citadel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Cropps citadel</span>
+
+<span class="sd">        :param img: input image</span>
+<span class="sd">        :return: image with text and color</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">img_copy</span> <span class="o">=</span> <span class="n">img</span><span class="p">[</span><span class="mi">349</span><span class="p">:</span><span class="mi">349</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">textbox_height</span><span class="p">,</span> <span class="mi">788</span><span class="p">:</span><span class="mi">788</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">textbox_width</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">give_text_and_color</span><span class="p">(</span><span class="n">img_copy</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="City.crop_tavern"><a class="viewcode-back" href="../../data.html#data.city.City.crop_tavern">[docs]</a>    <span class="k">def</span> <span class="nf">crop_tavern</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Cropps tavern</span>
+
+<span class="sd">        :param img: input image</span>
+<span class="sd">        :return: image with text and color</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">img_copy</span> <span class="o">=</span> <span class="n">img</span><span class="p">[</span><span class="mi">349</span><span class="p">:</span><span class="mi">349</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">textbox_height</span><span class="p">,</span> <span class="mi">982</span><span class="p">:</span><span class="mi">982</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">textbox_width</span><span class="p">]</span>
+        <span class="k">return</span> <span class="s1">&#39;Tavern&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_color</span><span class="p">(</span><span class="n">img_copy</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="City.crop_blacksmith"><a class="viewcode-back" href="../../data.html#data.city.City.crop_blacksmith">[docs]</a>    <span class="k">def</span> <span class="nf">crop_blacksmith</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Cropps blacksmith</span>
+
+<span class="sd">        :param img: input image</span>
+<span class="sd">        :return: image with text and color</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">img_copy</span> <span class="o">=</span> <span class="n">img</span><span class="p">[</span><span class="mi">349</span><span class="p">:</span><span class="mi">349</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">textbox_height</span><span class="p">,</span> <span class="mi">1176</span><span class="p">:</span><span class="mi">1176</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">textbox_width</span><span class="p">]</span>
+        <span class="k">return</span> <span class="s1">&#39;Blacksmith&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_color</span><span class="p">(</span><span class="n">img_copy</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="City.crop_t1"><a class="viewcode-back" href="../../data.html#data.city.City.crop_t1">[docs]</a>    <span class="k">def</span> <span class="nf">crop_t1</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Cropps tier one unit building</span>
+
+<span class="sd">        :param img: input image</span>
+<span class="sd">        :return: image with text and color</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">img_copy</span> <span class="o">=</span> <span class="n">img</span><span class="p">[</span><span class="mi">661</span><span class="p">:</span><span class="mi">661</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">textbox_height</span><span class="p">,</span> <span class="mi">594</span><span class="p">:</span><span class="mi">594</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">textbox_width</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">give_text_and_color</span><span class="p">(</span><span class="n">img_copy</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="City.crop_t2"><a class="viewcode-back" href="../../data.html#data.city.City.crop_t2">[docs]</a>    <span class="k">def</span> <span class="nf">crop_t2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Cropps tier two unit building</span>
+
+<span class="sd">        :param img: input image</span>
+<span class="sd">        :return: image with text and color</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">img_copy</span> <span class="o">=</span> <span class="n">img</span><span class="p">[</span><span class="mi">661</span><span class="p">:</span><span class="mi">661</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">textbox_height</span><span class="p">,</span> <span class="mi">788</span><span class="p">:</span><span class="mi">788</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">textbox_width</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">give_text_and_color</span><span class="p">(</span><span class="n">img_copy</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="City.crop_t3"><a class="viewcode-back" href="../../data.html#data.city.City.crop_t3">[docs]</a>    <span class="k">def</span> <span class="nf">crop_t3</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Cropps tier three unit building</span>
+
+<span class="sd">        :param img: input image</span>
+<span class="sd">        :return: image with text and color</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">img_copy</span> <span class="o">=</span> <span class="n">img</span><span class="p">[</span><span class="mi">661</span><span class="p">:</span><span class="mi">661</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">textbox_height</span><span class="p">,</span> <span class="mi">982</span><span class="p">:</span><span class="mi">982</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">textbox_width</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">give_text_and_color</span><span class="p">(</span><span class="n">img_copy</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="City.crop_t4"><a class="viewcode-back" href="../../data.html#data.city.City.crop_t4">[docs]</a>    <span class="k">def</span> <span class="nf">crop_t4</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Cropps tier four unit building</span>
+
+<span class="sd">        :param img: input image</span>
+<span class="sd">        :return: image with text and color</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">img_copy</span> <span class="o">=</span> <span class="n">img</span><span class="p">[</span><span class="mi">661</span><span class="p">:</span><span class="mi">661</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">textbox_height</span><span class="p">,</span> <span class="mi">1176</span><span class="p">:</span><span class="mi">1176</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">textbox_width</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">give_text_and_color</span><span class="p">(</span><span class="n">img_copy</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="City.crop_t5"><a class="viewcode-back" href="../../data.html#data.city.City.crop_t5">[docs]</a>    <span class="k">def</span> <span class="nf">crop_t5</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Cropps tier five unit building</span>
+
+<span class="sd">        :param img: input image</span>
+<span class="sd">        :return: image with text and color</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">img_copy</span> <span class="o">=</span> <span class="n">img</span><span class="p">[</span><span class="mi">765</span><span class="p">:</span><span class="mi">765</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">textbox_height</span><span class="p">,</span> <span class="mi">691</span><span class="p">:</span><span class="mi">691</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">textbox_width</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">give_text_and_color</span><span class="p">(</span><span class="n">img_copy</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="City.crop_t6"><a class="viewcode-back" href="../../data.html#data.city.City.crop_t6">[docs]</a>    <span class="k">def</span> <span class="nf">crop_t6</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Cropps tier six unit building</span>
+
+<span class="sd">        :param img: input image</span>
+<span class="sd">        :return: image with text and color</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">img_copy</span> <span class="o">=</span> <span class="n">img</span><span class="p">[</span><span class="mi">765</span><span class="p">:</span><span class="mi">765</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">textbox_height</span><span class="p">,</span> <span class="mi">885</span><span class="p">:</span><span class="mi">885</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">textbox_width</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">give_text_and_color</span><span class="p">(</span><span class="n">img_copy</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="City.crop_t7"><a class="viewcode-back" href="../../data.html#data.city.City.crop_t7">[docs]</a>    <span class="k">def</span> <span class="nf">crop_t7</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Cropps tier seven unit building</span>
+
+<span class="sd">        :param img: input image</span>
+<span class="sd">        :return: image with text and color</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">img_copy</span> <span class="o">=</span> <span class="n">img</span><span class="p">[</span><span class="mi">765</span><span class="p">:</span><span class="mi">765</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">textbox_height</span><span class="p">,</span> <span class="mi">1079</span><span class="p">:</span><span class="mi">1079</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">textbox_width</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">give_text_and_color</span><span class="p">(</span><span class="n">img_copy</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="City.action"><a class="viewcode-back" href="../../data.html#data.city.City.action">[docs]</a>    <span class="k">def</span> <span class="nf">action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">player</span><span class="p">,</span> <span class="n">hero</span><span class="p">:</span> <span class="n">Hero</span><span class="p">,</span> <span class="n">okay</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Responsible for buying units</span>
+
+<span class="sd">        :param okay: Okay parameter  -&gt; which okay window popped up</span>
+<span class="sd">        :param player: player object</span>
+<span class="sd">        :param hero: Hero object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">hero</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">player</span><span class="o">.</span><span class="n">cities</span><span class="p">:</span>
+            <span class="n">image_processing</span><span class="o">.</span><span class="n">detecting_window</span><span class="o">.</span><span class="n">execute_detecting</span><span class="p">(</span><span class="n">hero</span><span class="p">)</span>
+            <span class="n">player</span><span class="o">.</span><span class="n">cities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">need_read</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="n">detected</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">while</span> <span class="n">detected</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">detected</span> <span class="o">=</span> <span class="n">image_processing</span><span class="o">.</span><span class="n">ok_detection</span><span class="o">.</span><span class="n">check_ok</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">detected</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">GUI_handling</span><span class="o">.</span><span class="n">AdventureGUI</span><span class="o">.</span><span class="n">accept_offer</span><span class="p">()</span>
+
+        <span class="n">creatures</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="n">amounts</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="n">upgraded</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;###################### [START BUY/UPGRADE] ##################################&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">Fore</span><span class="o">.</span><span class="n">LIGHTMAGENTA_EX</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;[UPGRADING UNITS]&quot;</span><span class="p">,</span> <span class="n">Fore</span><span class="o">.</span><span class="n">RESET</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">habitat</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">):</span>  <span class="c1"># upgrade all possible units</span>
+            <span class="k">if</span> <span class="n">habitat</span><span class="o">.</span><span class="n">lvl</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">slot</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">hero</span><span class="o">.</span><span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">slot</span><span class="o">.</span><span class="n">unit</span> <span class="o">==</span> <span class="n">habitat</span><span class="o">.</span><span class="n">unit_type</span> <span class="ow">and</span> <span class="n">player</span><span class="o">.</span><span class="n">gold</span> <span class="o">&gt;</span> <span class="n">slot</span><span class="o">.</span><span class="n">amount</span> <span class="o">*</span> <span class="p">(</span>
+                            <span class="n">habitat</span><span class="o">.</span><span class="n">unit_cost_up</span><span class="o">.</span><span class="n">gold</span> <span class="o">-</span> <span class="n">habitat</span><span class="o">.</span><span class="n">unit_cost</span><span class="o">.</span><span class="n">gold</span><span class="p">):</span>
+                        <span class="n">GUI</span><span class="o">.</span><span class="n">upgrade_unit</span><span class="p">(</span><span class="mi">9</span> <span class="o">+</span> <span class="n">i</span><span class="p">)</span>
+                        <span class="n">upgraded</span> <span class="o">=</span> <span class="kc">True</span>
+                        <span class="n">player</span><span class="o">.</span><span class="n">gold</span> <span class="o">-=</span> <span class="n">slot</span><span class="o">.</span><span class="n">amount</span> <span class="o">*</span> <span class="p">(</span>
+                                <span class="n">habitat</span><span class="o">.</span><span class="n">unit_cost_up</span><span class="o">.</span><span class="n">gold</span> <span class="o">-</span> <span class="n">habitat</span><span class="o">.</span><span class="n">unit_cost</span><span class="o">.</span><span class="n">gold</span><span class="p">)</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="n">Fore</span><span class="o">.</span><span class="n">YELLOW</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">slot</span><span class="o">.</span><span class="n">unit</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">slot</span><span class="o">.</span><span class="n">amount</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">Fore</span><span class="o">.</span><span class="n">RESET</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="n">Fore</span><span class="o">.</span><span class="n">LIGHTMAGENTA_EX</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;[BUYING UNITS]&quot;</span><span class="p">,</span> <span class="n">Fore</span><span class="o">.</span><span class="n">RESET</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">Fore</span><span class="o">.</span><span class="n">LIGHTYELLOW_EX</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;[GOLD BEFORE BUY]: </span><span class="si">{</span><span class="n">player</span><span class="o">.</span><span class="n">gold</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">Fore</span><span class="o">.</span><span class="n">RESET</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">habitat</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
+                <span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">)):</span>  <span class="c1"># buy all possible  units from highest tier to lowest</span>
+            <span class="k">if</span> <span class="n">habitat</span><span class="o">.</span><span class="n">lvl</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+
+                <span class="n">cost</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">amount</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">while</span> <span class="n">player</span><span class="o">.</span><span class="n">gold</span> <span class="o">&gt;</span> <span class="n">cost</span> <span class="ow">and</span> <span class="n">amount</span> <span class="o">&lt;</span> <span class="n">habitat</span><span class="o">.</span><span class="n">unit_ready</span><span class="p">:</span>  <span class="c1"># only gold because most units cost only gold</span>
+                    <span class="n">amount</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="n">cost</span> <span class="o">+=</span> <span class="n">habitat</span><span class="o">.</span><span class="n">unit_cost</span><span class="o">.</span><span class="n">gold</span>
+
+                <span class="n">player</span><span class="o">.</span><span class="n">gold</span> <span class="o">-=</span> <span class="n">cost</span>
+                <span class="n">amounts</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">amount</span>
+                <span class="n">creatures</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">habitat</span><span class="o">.</span><span class="n">unit_type</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">Fore</span><span class="o">.</span><span class="n">GREEN</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;UNIT: </span><span class="si">{</span><span class="n">habitat</span><span class="o">.</span><span class="n">unit_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">Fore</span><span class="o">.</span><span class="n">RESET</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">Fore</span><span class="o">.</span><span class="n">LIGHTYELLOW_EX</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;GOLD: </span><span class="si">{</span><span class="n">cost</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">Fore</span><span class="o">.</span><span class="n">RESET</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">Fore</span><span class="o">.</span><span class="n">LIGHTCYAN_EX</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;AMOUNT: </span><span class="si">{</span><span class="n">amount</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">Fore</span><span class="o">.</span><span class="n">RESET</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">habitat</span><span class="o">.</span><span class="n">lvl</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">cost</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">amount</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">while</span> <span class="n">player</span><span class="o">.</span><span class="n">gold</span> <span class="o">&gt;</span> <span class="n">cost</span> <span class="ow">and</span> <span class="n">amount</span> <span class="o">&lt;</span> <span class="n">habitat</span><span class="o">.</span><span class="n">unit_ready</span><span class="p">:</span>  <span class="c1"># only gold because most units cost only gold</span>
+                    <span class="n">amount</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="n">cost</span> <span class="o">+=</span> <span class="n">habitat</span><span class="o">.</span><span class="n">unit_cost_up</span><span class="o">.</span><span class="n">gold</span>
+                <span class="n">player</span><span class="o">.</span><span class="n">gold</span> <span class="o">-=</span> <span class="n">cost</span>
+                <span class="n">amounts</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">amount</span>
+                <span class="n">creatures</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">habitat</span><span class="o">.</span><span class="n">unit_type_up</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">Fore</span><span class="o">.</span><span class="n">GREEN</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;UNIT: </span><span class="si">{</span><span class="n">habitat</span><span class="o">.</span><span class="n">unit_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">Fore</span><span class="o">.</span><span class="n">RESET</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">Fore</span><span class="o">.</span><span class="n">LIGHTYELLOW_EX</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;GOLD: </span><span class="si">{</span><span class="n">cost</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">Fore</span><span class="o">.</span><span class="n">RESET</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">Fore</span><span class="o">.</span><span class="n">LIGHTCYAN_EX</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;AMOUNT: </span><span class="si">{</span><span class="n">amount</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">Fore</span><span class="o">.</span><span class="n">RESET</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">upgraded</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">16</span><span class="p">):</span>
+                <span class="n">GUI</span><span class="o">.</span><span class="n">merge_stacks_unit</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+
+        <span class="n">slot</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">7</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">amounts</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">slot</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+                <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">city_hero</span><span class="o">.</span><span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">unit</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">creatures</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
+                        <span class="n">slot</span> <span class="o">=</span> <span class="n">j</span>
+                        <span class="k">break</span>
+                <span class="k">if</span> <span class="n">slot</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">city_hero</span><span class="o">.</span><span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">unit</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                            <span class="n">x</span><span class="o">.</span><span class="n">amount</span> <span class="o">=</span> <span class="mi">0</span>
+                            <span class="n">slot</span> <span class="o">=</span> <span class="n">j</span>
+                            <span class="k">break</span>
+                <span class="k">if</span> <span class="n">slot</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">city_hero</span><span class="o">.</span><span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">slot</span><span class="p">]</span><span class="o">.</span><span class="n">unit</span> <span class="o">=</span> <span class="n">creatures</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">city_hero</span><span class="o">.</span><span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">slot</span><span class="p">]</span><span class="o">.</span><span class="n">amount</span> <span class="o">=</span> <span class="n">amounts</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">city_hero</span><span class="o">.</span><span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">slot</span><span class="p">]</span><span class="o">.</span><span class="n">amount</span>
+
+        <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">city_hero</span><span class="o">.</span><span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">:</span>
+            <span class="n">slot</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">hero</span><span class="o">.</span><span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">unit</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">y</span><span class="o">.</span><span class="n">unit</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
+                    <span class="n">slot</span> <span class="o">=</span> <span class="n">i</span>
+            <span class="k">if</span> <span class="n">slot</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">hero</span><span class="o">.</span><span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">unit</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">slot</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                            <span class="n">x</span><span class="o">.</span><span class="n">amount</span> <span class="o">=</span> <span class="mi">0</span>
+                            <span class="n">slot</span> <span class="o">=</span> <span class="n">i</span>
+            <span class="k">if</span> <span class="n">slot</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                <span class="n">hero</span><span class="o">.</span><span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">slot</span><span class="p">]</span><span class="o">.</span><span class="n">amount</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">amount</span> <span class="o">+</span> <span class="n">hero</span><span class="o">.</span><span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">slot</span><span class="p">]</span><span class="o">.</span><span class="n">amount</span>
+                <span class="n">hero</span><span class="o">.</span><span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">slot</span><span class="p">]</span><span class="o">.</span><span class="n">unit</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">unit</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="n">GUI</span><span class="o">.</span><span class="n">recruit_unit</span><span class="p">(</span><span class="s2">&quot;all&quot;</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="n">GUI</span><span class="o">.</span><span class="n">move_all_units_to_other_side</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="kn">from</span> <span class="nn">GUI_handling.AdventureGUI</span> <span class="kn">import</span> <span class="n">leave_screen</span>
+        <span class="n">leave_screen</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">habitat</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">)):</span>
+            <span class="n">habitat</span><span class="o">.</span><span class="n">unit_ready</span> <span class="o">-=</span> <span class="n">amounts</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[PLAYER GOLD AFTER]:</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">LIGHTYELLOW_EX</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">player</span><span class="o">.</span><span class="n">gold</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">Fore</span><span class="o">.</span><span class="n">RESET</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;######################## [END BUY/UPGRADE] ################################&quot;</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">other</span><span class="p">),</span> <span class="n">City</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name_of_city</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">name_of_city</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
+
+
+
+
+
+
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Fryderyk Róg, Kacper Plesiak, Michał Gruba, Tymoteusz Skrzyński, Mateusz Comblik, Bartosz Szczepanek, Alan Konopko, Mateusz Mikszewicz, Daniel Bil, Piotr Łyczko.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

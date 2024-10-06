@@ -1,0 +1,29 @@
+path\_finding\_alghoritms package
+=================================
+
+Submodules
+----------
+
+path\_finding\_alghoritms.calculate\_movments\_points\_at\_start\_day module
+----------------------------------------------------------------------------
+
+.. automodule:: path_finding_alghoritms.calculate_movments_points_at_start_day
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+path\_finding\_alghoritms.greedy\_algorithm module
+--------------------------------------------------
+
+.. automodule:: path_finding_alghoritms.greedy_algorithm
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: path_finding_alghoritms
+   :members:
+   :undoc-members:
+   :show-inheritance:

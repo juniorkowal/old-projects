@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>image_processing.blue_hero &mdash; HoMM3 Bot 2.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> HoMM3 Bot
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">homm3-bot</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">HoMM3 Bot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">image_processing.blue_hero</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for image_processing.blue_hero</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">GUI_handling.AdventureGUI</span> <span class="kn">import</span> <span class="n">center_on_hero</span><span class="p">,</span> <span class="n">move_to_tile_adventure</span><span class="p">,</span> <span class="n">next_hero</span><span class="p">,</span> <span class="n">move_camera_right</span><span class="p">,</span> \
+    <span class="n">move_camera_left</span><span class="p">,</span> <span class="n">move_camera_up</span><span class="p">,</span> <span class="n">move_camera_down</span><span class="p">,</span> <span class="n">move_mouse_to_tile_adventure</span>
+<span class="kn">from</span> <span class="nn">data.hero</span> <span class="kn">import</span> <span class="n">hero_dict</span><span class="p">,</span> <span class="n">Hero</span><span class="p">,</span> <span class="n">Slot</span><span class="p">,</span> <span class="n">Slots</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">sleep</span>
+<span class="kn">from</span> <span class="nn">mss</span> <span class="kn">import</span> <span class="n">mss</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">cv2</span>
+<span class="kn">import</span> <span class="nn">image_processing.ocr</span> <span class="k">as</span> <span class="nn">ocr</span>
+<span class="kn">from</span> <span class="nn">difflib</span> <span class="kn">import</span> <span class="n">get_close_matches</span>
+<span class="kn">from</span> <span class="nn">data.player_data</span> <span class="kn">import</span> <span class="n">Player</span>
+<span class="kn">from</span> <span class="nn">data.classes_const</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">mouse</span>
+
+<span class="c1"># Little bit of global variables never hurt nobody</span>
+<span class="n">castles_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Castle&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Knight&#39;</span><span class="p">,</span> <span class="s1">&#39;Cleric&#39;</span><span class="p">),</span> <span class="s1">&#39;Rampart&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Ranger&#39;</span><span class="p">,</span> <span class="s1">&#39;Druid&#39;</span><span class="p">),</span> <span class="s1">&#39;Tower&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Alchemist&#39;</span><span class="p">,</span> <span class="s1">&#39;Wizard&#39;</span><span class="p">),</span>
+                    <span class="s1">&#39;Inferno&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Demoniac&#39;</span><span class="p">,</span> <span class="s1">&#39;Heretic&#39;</span><span class="p">),</span> <span class="s1">&#39;Necropolis&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Death Knight&#39;</span><span class="p">,</span> <span class="s1">&#39;Necromancer&#39;</span><span class="p">),</span>
+                    <span class="s1">&#39;Dungeon&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Overlord&#39;</span><span class="p">,</span> <span class="s1">&#39;Warlock&#39;</span><span class="p">),</span> <span class="s1">&#39;Stronghold&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Barbarian&#39;</span><span class="p">,</span> <span class="s1">&#39;Battle Mage&#39;</span><span class="p">),</span>
+                    <span class="s1">&#39;Fortress&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Beastmaster&#39;</span><span class="p">,</span> <span class="s1">&#39;Witch&#39;</span><span class="p">),</span> <span class="s1">&#39;Conflux&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Planeswalker&#39;</span><span class="p">,</span> <span class="s1">&#39;Elementalist&#39;</span><span class="p">),</span>
+                    <span class="s1">&#39;Cove&#39;</span><span class="p">:(</span><span class="s1">&#39;Captain&#39;</span><span class="p">,</span> <span class="s1">&#39;Navigator&#39;</span><span class="p">)}</span>
+
+<span class="n">enemies_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Castle&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">Pikeman</span><span class="p">,</span> <span class="n">Halberdier</span><span class="p">,</span> <span class="n">Archer</span><span class="p">,</span> <span class="n">Marksman</span><span class="p">,</span> <span class="n">Griffin</span><span class="p">,</span> <span class="n">Royal_Griffin</span><span class="p">,</span> <span class="n">Swordsman</span><span class="p">,</span> <span class="n">Crusader</span><span class="p">,</span>
+                           <span class="n">Monk</span><span class="p">,</span> <span class="n">Zealot</span><span class="p">,</span> <span class="n">Cavalier</span><span class="p">,</span> <span class="n">Champion</span><span class="p">,</span> <span class="n">Angel</span><span class="p">,</span> <span class="n">Archangel</span><span class="p">),</span>
+                <span class="s1">&#39;Rampart&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">Centaur</span><span class="p">,</span> <span class="n">Centaur_Captain</span><span class="p">,</span> <span class="n">Dwarf</span><span class="p">,</span> <span class="n">Battle_Dwarf</span><span class="p">,</span> <span class="n">Wood_Elf</span><span class="p">,</span> <span class="n">Grand_Elf</span><span class="p">,</span>
+                            <span class="n">Pegasus</span><span class="p">,</span> <span class="n">Silver_Pegasus</span><span class="p">,</span> <span class="n">Dendroid_Guard</span><span class="p">,</span> <span class="n">Dendroid_Soldier</span><span class="p">,</span>
+                            <span class="n">Unicorn</span><span class="p">,</span> <span class="n">War_Unicorn</span><span class="p">,</span> <span class="n">Green_Dragon</span><span class="p">,</span> <span class="n">Gold_Dragon</span><span class="p">),</span>
+                <span class="s1">&#39;Tower&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">Gremlin</span><span class="p">,</span> <span class="n">Master_Gremlin</span><span class="p">,</span> <span class="n">Stone_Gargoyle</span><span class="p">,</span> <span class="n">Obsidian_Gargoyle</span><span class="p">,</span> <span class="n">Stone_Golem</span><span class="p">,</span> <span class="n">Iron_Golem</span><span class="p">,</span>
+                          <span class="n">Mage</span><span class="p">,</span> <span class="n">Arch_Mage</span><span class="p">,</span> <span class="n">Genie</span><span class="p">,</span> <span class="n">Master_Genie</span><span class="p">,</span> <span class="n">Naga</span><span class="p">,</span> <span class="n">Naga_Queen</span><span class="p">,</span> <span class="n">Giant</span><span class="p">,</span> <span class="n">Titan</span><span class="p">),</span>
+                <span class="s1">&#39;Inferno&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">Imp</span><span class="p">,</span> <span class="n">Familiar</span><span class="p">,</span> <span class="n">Gog</span><span class="p">,</span> <span class="n">Magog</span><span class="p">,</span> <span class="n">Hell_Hound</span><span class="p">,</span> <span class="n">Cerberus</span><span class="p">,</span> <span class="n">Demon</span><span class="p">,</span> <span class="n">Horned_Demon</span><span class="p">,</span>
+                            <span class="n">Pit_Fiend</span><span class="p">,</span> <span class="n">Pit_Lord</span><span class="p">,</span> <span class="n">Efreeti</span><span class="p">,</span> <span class="n">Efreet_Sultan</span><span class="p">,</span> <span class="n">Devil</span><span class="p">,</span> <span class="n">Arch_Devil</span><span class="p">),</span>
+                <span class="s1">&#39;Necropolis&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">Skeleton</span><span class="p">,</span> <span class="n">Skeleton_Warrior</span><span class="p">,</span> <span class="n">Walking_Dead</span><span class="p">,</span> <span class="n">Zombie</span><span class="p">,</span> <span class="n">Wight</span><span class="p">,</span> <span class="n">Wraith</span><span class="p">,</span>
+                               <span class="n">Vampire</span><span class="p">,</span> <span class="n">Vampire_Lord</span><span class="p">,</span> <span class="n">Lich</span><span class="p">,</span> <span class="n">Power_Lich</span><span class="p">,</span> <span class="n">Black_Knight</span><span class="p">,</span> <span class="n">Dread_Knight</span><span class="p">,</span>
+                               <span class="n">Bone_Dragon</span><span class="p">,</span> <span class="n">Ghost_Dragon</span><span class="p">),</span>
+                <span class="s1">&#39;Dungeon&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">Troglodyte</span><span class="p">,</span> <span class="n">Infernal_Troglodyte</span><span class="p">,</span> <span class="n">Harpy</span><span class="p">,</span> <span class="n">Harpy_Hag</span><span class="p">,</span> <span class="n">Beholder</span><span class="p">,</span> <span class="n">Evil_Eye</span><span class="p">,</span> <span class="n">Medusa</span><span class="p">,</span>
+                            <span class="n">Medusa_Queen</span><span class="p">,</span> <span class="n">Minotaur</span><span class="p">,</span> <span class="n">Minotaur_King</span><span class="p">,</span> <span class="n">Manticore</span><span class="p">,</span> <span class="n">Scorpicore</span><span class="p">,</span> <span class="n">Red_Dragon</span><span class="p">,</span> <span class="n">Black_Dragon</span><span class="p">),</span>
+                <span class="s1">&#39;Stronghold&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">Goblin</span><span class="p">,</span> <span class="n">Hobgoblin</span><span class="p">,</span> <span class="n">Wolf_Rider</span><span class="p">,</span> <span class="n">Wolf_Raider</span><span class="p">,</span> <span class="n">Orc</span><span class="p">,</span> <span class="n">Orc_Chieftain</span><span class="p">,</span> <span class="n">Ogre</span><span class="p">,</span> <span class="n">Ogre_Mage</span><span class="p">,</span>
+                               <span class="n">Roc</span><span class="p">,</span> <span class="n">Thunderbird</span><span class="p">,</span> <span class="n">Cyclops</span><span class="p">,</span> <span class="n">Cyclops_King</span><span class="p">,</span> <span class="n">Behemoth</span><span class="p">,</span> <span class="n">Ancient_Behemoth</span><span class="p">),</span>
+                <span class="s1">&#39;Fortress&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">Gnoll</span><span class="p">,</span> <span class="n">Gnoll_Marauder</span><span class="p">,</span> <span class="n">Lizardman</span><span class="p">,</span> <span class="n">Lizard_Warrior</span><span class="p">,</span> <span class="n">Serpent_Fly</span><span class="p">,</span> <span class="n">Dragon_Fly</span><span class="p">,</span>
+                             <span class="n">Basilisk</span><span class="p">,</span> <span class="n">Greater_Basilisk</span><span class="p">,</span> <span class="n">Gorgon</span><span class="p">,</span> <span class="n">Mighty_Gorgon</span><span class="p">,</span> <span class="n">Wyvern</span><span class="p">,</span> <span class="n">Wyvern_Monarch</span><span class="p">,</span>
+                             <span class="n">Hydra</span><span class="p">,</span> <span class="n">Chaos_Hydra</span><span class="p">),</span>
+                <span class="s1">&#39;Conflux&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">Pixie</span><span class="p">,</span> <span class="n">Sprite</span><span class="p">,</span> <span class="n">Air_Elemental</span><span class="p">,</span> <span class="n">Storm_Elemental</span><span class="p">,</span> <span class="n">Water_Elemental</span><span class="p">,</span> <span class="n">Ice_Elemental</span><span class="p">,</span>
+                            <span class="n">Fire_Elemental</span><span class="p">,</span> <span class="n">Energy_Elemental</span><span class="p">,</span> <span class="n">Earth_Elemental</span><span class="p">,</span> <span class="n">Magma_Elemental</span><span class="p">,</span>
+                            <span class="n">Psychic_Elemental</span><span class="p">,</span> <span class="n">Magic_Elemental</span><span class="p">,</span> <span class="n">Firebird</span><span class="p">,</span> <span class="n">Phoenix</span><span class="p">),</span>
+                <span class="c1"># Sea dog is gone (insert crab rave meme)</span>
+                <span class="s1">&#39;Cove&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">Nymph</span><span class="p">,</span> <span class="n">Oceanid</span><span class="p">,</span> <span class="n">Crew_Mate</span><span class="p">,</span> <span class="n">Seaman</span><span class="p">,</span> <span class="n">Pirate</span><span class="p">,</span> <span class="n">Corsair</span><span class="p">,</span> <span class="n">Stormbird</span><span class="p">,</span> <span class="n">Ayssid</span><span class="p">,</span> <span class="n">Sea_Witch</span><span class="p">,</span>
+                         <span class="n">Sorceress</span><span class="p">,</span> <span class="n">Nix</span><span class="p">,</span> <span class="n">Nix_Warrior</span><span class="p">,</span> <span class="n">Sea_Serpent</span><span class="p">,</span> <span class="n">Haspid</span><span class="p">),</span>
+                <span class="c1"># Added for completion’s sake</span>
+                <span class="s1">&#39;Neutral&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">Peasant</span><span class="p">,</span> <span class="n">Halfling</span><span class="p">,</span> <span class="n">Rogue</span><span class="p">,</span> <span class="n">Boar</span><span class="p">,</span> <span class="n">Leprechaun</span><span class="p">,</span> <span class="n">Nomad</span><span class="p">,</span> <span class="n">Mummy</span><span class="p">,</span> <span class="n">Sharpshooter</span><span class="p">,</span> <span class="n">Satyr</span><span class="p">,</span>
+                            <span class="n">Steel_Golem</span><span class="p">,</span> <span class="n">Troll</span><span class="p">,</span> <span class="n">Gold_Golem</span><span class="p">,</span> <span class="n">Fangarm</span><span class="p">,</span> <span class="n">Diamond_Golem</span><span class="p">,</span> <span class="n">Enchanter</span><span class="p">,</span> <span class="n">Faerie_Dragon</span><span class="p">,</span>
+                            <span class="n">Rust_Dragon</span><span class="p">,</span> <span class="n">Crystal_Dragon</span><span class="p">,</span> <span class="n">Azure_Dragon</span><span class="p">)}</span>
+
+
+<div class="viewcode-block" id="moveCameraToTarget"><a class="viewcode-back" href="../../image_processing.html#image_processing.blue_hero.moveCameraToTarget">[docs]</a><span class="k">def</span> <span class="nf">moveCameraToTarget</span><span class="p">(</span><span class="n">target</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">player</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Move camera to target</span>
+
+<span class="sd">    :param target: Target coordinates</span>
+<span class="sd">    :param player: Our player</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sleep</span><span class="p">(</span><span class="mf">0.2</span><span class="p">)</span>
+    <span class="n">tx</span><span class="p">,</span> <span class="n">ty</span> <span class="o">=</span> <span class="n">target</span>
+    <span class="n">cx</span><span class="p">,</span> <span class="n">cy</span> <span class="o">=</span> <span class="n">player</span><span class="o">.</span><span class="n">camera</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[BLUE CAMERA MOVE]&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    FROM: </span><span class="si">{</span><span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    DESTINATION: </span><span class="si">{</span><span class="n">tx</span><span class="p">,</span> <span class="n">ty</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">while</span> <span class="nb">abs</span><span class="p">(</span><span class="n">cx</span> <span class="o">-</span> <span class="n">tx</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">3</span> <span class="ow">or</span> <span class="nb">abs</span><span class="p">(</span><span class="n">cy</span> <span class="o">-</span> <span class="n">ty</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">cx</span> <span class="o">-</span> <span class="n">tx</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="n">move_camera_left</span><span class="p">()</span>
+            <span class="n">cx</span> <span class="o">-=</span> <span class="mi">3</span>
+        <span class="k">elif</span> <span class="n">cx</span> <span class="o">-</span> <span class="n">tx</span> <span class="o">&lt;=</span> <span class="o">-</span><span class="mi">3</span><span class="p">:</span>
+            <span class="n">move_camera_right</span><span class="p">()</span>
+            <span class="n">cx</span> <span class="o">+=</span> <span class="mi">3</span>
+        <span class="k">elif</span> <span class="n">cy</span> <span class="o">-</span> <span class="n">ty</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="n">move_camera_up</span><span class="p">()</span>
+            <span class="n">cy</span> <span class="o">-=</span> <span class="mi">3</span>
+        <span class="k">elif</span> <span class="n">cy</span> <span class="o">-</span> <span class="n">ty</span> <span class="o">&lt;=</span> <span class="o">-</span><span class="mi">3</span><span class="p">:</span>
+            <span class="n">move_camera_down</span><span class="p">()</span>
+            <span class="n">cy</span> <span class="o">+=</span> <span class="mi">3</span>
+        <span class="n">sleep</span><span class="p">(</span><span class="mf">0.05</span><span class="p">)</span>
+    <span class="n">player</span><span class="o">.</span><span class="n">camera</span> <span class="o">=</span> <span class="p">(</span><span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ocr_name"><a class="viewcode-back" href="../../image_processing.html#image_processing.blue_hero.ocr_name">[docs]</a><span class="k">def</span> <span class="nf">ocr_name</span><span class="p">(</span><span class="n">screen</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function that helps read the name of the hero</span>
+
+<span class="sd">    :param screen:</span>
+<span class="sd">    :return: Found name</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">scale</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">width</span> <span class="o">=</span> <span class="n">screen</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">height</span> <span class="o">=</span> <span class="n">screen</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">screen</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="p">(</span><span class="n">width</span> <span class="o">*</span> <span class="n">scale</span><span class="p">,</span> <span class="n">height</span> <span class="o">*</span> <span class="n">scale</span><span class="p">))</span>
+    <span class="n">b</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">screen</span><span class="p">)</span>
+    <span class="n">search</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">b</span> <span class="o">&gt;</span> <span class="mi">85</span><span class="p">)</span> <span class="o">&amp;</span>
+                      <span class="p">(</span><span class="n">g</span> <span class="o">&gt;</span> <span class="mi">160</span><span class="p">)</span> <span class="o">&amp;</span>
+                      <span class="p">(</span><span class="n">r</span> <span class="o">&gt;</span> <span class="mi">170</span><span class="p">))</span>
+
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="n">height</span> <span class="o">*</span> <span class="n">scale</span><span class="p">,</span> <span class="n">width</span> <span class="o">*</span> <span class="n">scale</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+    <span class="n">mask</span><span class="p">[</span><span class="n">search</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">]</span>
+    <span class="n">screen</span> <span class="o">=</span> <span class="mi">255</span> <span class="o">-</span> <span class="n">mask</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">ocr</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">)</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">char</span> <span class="ow">in</span> <span class="s2">&quot;&#39;,.`;:</span><span class="se">\&quot;</span><span class="s2">-_‘&quot;</span><span class="p">:</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">char</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">text</span></div>
+
+
+<div class="viewcode-block" id="check_if_blue_hero_exists"><a class="viewcode-back" href="../../image_processing.html#image_processing.blue_hero.check_if_blue_hero_exists">[docs]</a><span class="k">def</span> <span class="nf">check_if_blue_hero_exists</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">enemy_coordinates</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check all found blue heroes and find whether they exist or not </span>
+
+<span class="sd">    :param player: Current player</span>
+<span class="sd">    :param enemy_coordinates: Checked enemy coordinates</span>
+<span class="sd">    :return: tuple (True/False, Hero_name) (Hero exists, his name is None when no hero found)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">moveCameraToTarget</span><span class="p">(</span><span class="n">enemy_coordinates</span><span class="p">,</span> <span class="n">player</span><span class="p">)</span>
+    <span class="n">sleep</span><span class="p">(</span><span class="mf">0.4</span><span class="p">)</span>
+    <span class="n">camX</span><span class="p">,</span> <span class="n">camY</span> <span class="o">=</span> <span class="n">player</span><span class="o">.</span><span class="n">camera</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">enemy_coordinates</span>
+    <span class="n">move_mouse_to_tile_adventure</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">camX</span><span class="p">,</span> <span class="n">y</span> <span class="o">-</span> <span class="n">camY</span><span class="p">)</span>
+    <span class="n">sleep</span><span class="p">(</span><span class="mf">0.2</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">mss</span><span class="p">()</span> <span class="k">as</span> <span class="n">sct</span><span class="p">:</span>
+        <span class="n">monitor</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;top&#39;</span><span class="p">:</span> <span class="mi">1035</span><span class="p">,</span> <span class="s1">&#39;left&#39;</span><span class="p">:</span> <span class="mi">680</span><span class="p">,</span> <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mi">320</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mi">18</span><span class="p">}</span>
+        <span class="n">screen</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sct</span><span class="o">.</span><span class="n">grab</span><span class="p">(</span><span class="n">monitor</span><span class="p">))</span>
+        <span class="n">screen</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_RGBA2RGB</span><span class="p">)</span>
+
+    <span class="n">text</span> <span class="o">=</span> <span class="n">ocr_name</span><span class="p">(</span><span class="n">screen</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">text</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">None</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">get_close_matches</span><span class="p">(</span><span class="n">text</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">hero_dict</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="n">text</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">text</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="n">text</span></div>
+
+
+<div class="viewcode-block" id="get_creature_numbers"><a class="viewcode-back" href="../../image_processing.html#image_processing.blue_hero.get_creature_numbers">[docs]</a><span class="k">def</span> <span class="nf">get_creature_numbers</span><span class="p">(</span><span class="n">shiftX</span><span class="p">,</span> <span class="n">shiftY</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get numbers of enemy units</span>
+
+<span class="sd">    :return: List of numbers of enemy units</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="n">mss</span><span class="p">()</span> <span class="k">as</span> <span class="n">sct</span><span class="p">:</span>
+        <span class="n">amount_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">screens</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">7</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="n">monitor</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;top&#39;</span><span class="p">:</span> <span class="mi">536</span> <span class="o">+</span> <span class="mi">32</span> <span class="o">*</span> <span class="n">shiftY</span><span class="p">,</span> <span class="s1">&#39;left&#39;</span><span class="p">:</span> <span class="mi">779</span> <span class="o">+</span> <span class="n">i</span><span class="o">*</span><span class="mi">36</span> <span class="o">+</span> <span class="mi">32</span> <span class="o">*</span> <span class="n">shiftX</span><span class="p">,</span> <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mi">34</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mi">12</span><span class="p">}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">monitor</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;top&#39;</span><span class="p">:</span> <span class="mi">584</span> <span class="o">+</span> <span class="mi">32</span> <span class="o">*</span> <span class="n">shiftY</span><span class="p">,</span> <span class="s1">&#39;left&#39;</span><span class="p">:</span> <span class="mi">761</span> <span class="o">+</span> <span class="p">(</span><span class="n">i</span><span class="o">-</span><span class="mi">3</span><span class="p">)</span><span class="o">*</span><span class="mi">36</span> <span class="o">+</span> <span class="mi">32</span> <span class="o">*</span> <span class="n">shiftX</span><span class="p">,</span> <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mi">34</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mi">12</span><span class="p">}</span>
+            <span class="n">screen</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sct</span><span class="o">.</span><span class="n">grab</span><span class="p">(</span><span class="n">monitor</span><span class="p">))</span>
+            <span class="n">screens</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">screen</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">screen</span> <span class="ow">in</span> <span class="n">screens</span><span class="p">:</span>
+            <span class="n">screen</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGRA2BGR</span><span class="p">)</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">ocr</span><span class="o">.</span><span class="n">read_text_faster</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">)</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">text</span><span class="p">:</span>
+                <span class="n">amount_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># The text more than often comes out as for example 1014 instead of 10-19</span>
+                <span class="c1"># the fist number is usually right, so I do it like that</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">number</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">number</span> <span class="o">==</span> <span class="mi">99</span><span class="p">:</span>  <span class="c1"># Came up from testing</span>
+                        <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;50-99&#39;</span>
+                    <span class="k">elif</span> <span class="n">number</span> <span class="o">==</span> <span class="mi">649</span><span class="p">:</span>
+                        <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;5-9&#39;</span>
+                    <span class="k">elif</span> <span class="n">number</span> <span class="o">==</span> <span class="mi">9</span><span class="p">:</span>
+                        <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;5-9&#39;</span>
+                    <span class="k">elif</span> <span class="n">number</span> <span class="o">&lt;</span> <span class="mi">20</span><span class="p">:</span>
+                        <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;1-4&#39;</span>
+                    <span class="k">elif</span> <span class="n">number</span> <span class="o">&lt;</span> <span class="mi">100</span><span class="p">:</span>
+                        <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;5-9&#39;</span>
+                    <span class="k">elif</span> <span class="n">number</span> <span class="o">&lt;</span> <span class="mi">1500</span><span class="p">:</span>
+                        <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;10-19&#39;</span>
+                    <span class="k">elif</span> <span class="n">number</span> <span class="o">&lt;</span> <span class="mi">5000</span><span class="p">:</span>
+                        <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;20-49&#39;</span>
+                    <span class="k">elif</span> <span class="n">number</span> <span class="o">&lt;</span> <span class="mi">10000</span><span class="p">:</span>
+                        <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;50-99&#39;</span>
+                    <span class="k">elif</span> <span class="n">number</span> <span class="o">&lt;</span> <span class="mi">150000</span><span class="p">:</span>
+                        <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;100-249&#39;</span>
+                    <span class="k">elif</span> <span class="n">number</span> <span class="o">&lt;</span> <span class="mi">300000</span><span class="p">:</span>
+                        <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;250-499&#39;</span>
+                    <span class="k">elif</span> <span class="n">number</span> <span class="o">&lt;</span> <span class="mi">600000</span><span class="p">:</span>
+                        <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;500-999&#39;</span>
+                    <span class="k">elif</span> <span class="n">number</span> <span class="o">&lt;</span> <span class="mi">1000000</span><span class="p">:</span>
+                        <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;1000-&#39;</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;5-9&#39;</span>
+                <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                    <span class="k">pass</span>
+                <span class="n">amount_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">amount_list</span></div>
+
+
+<div class="viewcode-block" id="fill_enemy_hero"><a class="viewcode-back" href="../../image_processing.html#image_processing.blue_hero.fill_enemy_hero">[docs]</a><span class="k">def</span> <span class="nf">fill_enemy_hero</span><span class="p">(</span><span class="n">player</span><span class="p">:</span> <span class="n">Player</span><span class="p">,</span> <span class="n">enemy_coordinates</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fills enemy hero should be used only as it also checks if it exists first</span>
+
+<span class="sd">    :param player: Our hero</span>
+<span class="sd">    :param enemy_coordinates: Enemy coordinates</span>
+<span class="sd">    :return: Nothing</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">exists</span><span class="p">,</span> <span class="n">hero_name</span> <span class="o">=</span> <span class="n">check_if_blue_hero_exists</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">enemy_coordinates</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">exists</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="n">hero</span> <span class="o">=</span> <span class="n">Hero</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;enemy&#39;</span><span class="p">,</span> <span class="n">hero_name</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">hero</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">enemy_coordinates</span>
+    <span class="n">mouse</span><span class="o">.</span><span class="n">press</span><span class="p">(</span><span class="n">button</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">)</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">enemy_coordinates</span>
+    <span class="n">camX</span><span class="p">,</span> <span class="n">camY</span> <span class="o">=</span> <span class="n">player</span><span class="o">.</span><span class="n">camera</span>
+    <span class="n">hero_units</span> <span class="o">=</span> <span class="n">get_creature_numbers</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">camX</span><span class="p">,</span> <span class="n">y</span> <span class="o">-</span> <span class="n">camY</span><span class="p">)</span>
+    <span class="n">mouse</span><span class="o">.</span><span class="n">release</span><span class="p">(</span><span class="n">button</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">)</span>
+
+    <span class="n">curr_week</span> <span class="o">=</span> <span class="n">player</span><span class="o">.</span><span class="n">week</span>
+    <span class="n">curr_month</span> <span class="o">=</span> <span class="n">player</span><span class="o">.</span><span class="n">month</span>
+
+    <span class="n">slots</span> <span class="o">=</span> <span class="n">Slots</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">unit</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">hero_units</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">curr_week</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">unit</span> <span class="o">==</span> <span class="s1">&#39;-&#39;</span><span class="p">:</span>
+                <span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Slot</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="s1">&#39;1-4&#39;</span><span class="p">:</span>
+                <span class="n">number</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+                <span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Slot</span><span class="p">(</span><span class="n">Monk</span><span class="p">,</span> <span class="n">number</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="s1">&#39;5-9&#39;</span><span class="p">:</span>
+                <span class="n">number</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">9</span><span class="p">)</span>
+                <span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Slot</span><span class="p">(</span><span class="n">Crusader</span><span class="p">,</span> <span class="n">number</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="s1">&#39;10-19&#39;</span><span class="p">:</span>
+                <span class="n">number</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">19</span><span class="p">)</span>
+                <span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Slot</span><span class="p">(</span><span class="n">Griffin</span><span class="p">,</span> <span class="n">number</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="s1">&#39;20-49&#39;</span><span class="p">:</span>
+                <span class="n">number</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">49</span><span class="p">)</span>
+                <span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Slot</span><span class="p">(</span><span class="n">Archer</span><span class="p">,</span> <span class="n">number</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="s1">&#39;50-99&#39;</span><span class="p">:</span>
+                <span class="n">number</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">99</span><span class="p">)</span>
+                <span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Slot</span><span class="p">(</span><span class="n">Pikeman</span><span class="p">,</span> <span class="n">number</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="s1">&#39;100-249&#39;</span><span class="p">:</span>
+                <span class="n">number</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">249</span><span class="p">)</span>
+                <span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Slot</span><span class="p">(</span><span class="n">Pikeman</span><span class="p">,</span> <span class="n">number</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="s1">&#39;250-499&#39;</span><span class="p">:</span>
+                <span class="n">number</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">250</span><span class="p">,</span> <span class="mi">499</span><span class="p">)</span>
+                <span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Slot</span><span class="p">(</span><span class="n">Pikeman</span><span class="p">,</span> <span class="n">number</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="s1">&#39;500-999&#39;</span><span class="p">:</span>
+                <span class="n">number</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="mi">999</span><span class="p">)</span>
+                <span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Slot</span><span class="p">(</span><span class="n">Pikeman</span><span class="p">,</span> <span class="n">number</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="s1">&#39;1000-&#39;</span><span class="p">:</span>
+                <span class="n">number</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">3000</span><span class="p">)</span>
+                <span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Slot</span><span class="p">(</span><span class="n">Pikeman</span><span class="p">,</span> <span class="n">number</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>  <span class="c1"># Just to be safe in case text didn&#39;t work any random amount</span>
+                <span class="n">number</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">19</span><span class="p">)</span>
+                <span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Slot</span><span class="p">(</span><span class="n">Griffin</span><span class="p">,</span> <span class="n">number</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">curr_week</span> <span class="o">&lt;</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">unit</span> <span class="o">==</span> <span class="s1">&#39;-&#39;</span><span class="p">:</span>
+                <span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Slot</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="s1">&#39;1-4&#39;</span><span class="p">:</span>
+                <span class="n">number</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+                <span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Slot</span><span class="p">(</span><span class="n">Cavalier</span><span class="p">,</span> <span class="n">number</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="s1">&#39;5-9&#39;</span><span class="p">:</span>
+                <span class="n">number</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">9</span><span class="p">)</span>
+                <span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Slot</span><span class="p">(</span><span class="n">Crusader</span><span class="p">,</span> <span class="n">number</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="s1">&#39;10-19&#39;</span><span class="p">:</span>
+                <span class="n">number</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">19</span><span class="p">)</span>
+                <span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Slot</span><span class="p">(</span><span class="n">Crusader</span><span class="p">,</span> <span class="n">number</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="s1">&#39;20-49&#39;</span><span class="p">:</span>
+                <span class="n">number</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">49</span><span class="p">)</span>
+                <span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Slot</span><span class="p">(</span><span class="n">Archer</span><span class="p">,</span> <span class="n">number</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="s1">&#39;50-99&#39;</span><span class="p">:</span>
+                <span class="n">number</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">99</span><span class="p">)</span>
+                <span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Slot</span><span class="p">(</span><span class="n">Pikeman</span><span class="p">,</span> <span class="n">number</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="s1">&#39;100-249&#39;</span><span class="p">:</span>
+                <span class="n">number</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">249</span><span class="p">)</span>
+                <span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Slot</span><span class="p">(</span><span class="n">Pikeman</span><span class="p">,</span> <span class="n">number</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="s1">&#39;250-499&#39;</span><span class="p">:</span>
+                <span class="n">number</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">250</span><span class="p">,</span> <span class="mi">499</span><span class="p">)</span>
+                <span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Slot</span><span class="p">(</span><span class="n">Pikeman</span><span class="p">,</span> <span class="n">number</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="s1">&#39;500-999&#39;</span><span class="p">:</span>
+                <span class="n">number</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="mi">999</span><span class="p">)</span>
+                <span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Slot</span><span class="p">(</span><span class="n">Pikeman</span><span class="p">,</span> <span class="n">number</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="s1">&#39;1000-&#39;</span><span class="p">:</span>
+                <span class="n">number</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">3000</span><span class="p">)</span>
+                <span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Slot</span><span class="p">(</span><span class="n">Pikeman</span><span class="p">,</span> <span class="n">number</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>  <span class="c1"># Just to be safe in case text didn&#39;t work any random amount</span>
+                <span class="n">number</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">19</span><span class="p">)</span>
+                <span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Slot</span><span class="p">(</span><span class="n">Griffin</span><span class="p">,</span> <span class="n">number</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">curr_week</span> <span class="o">&lt;</span> <span class="mi">6</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">unit</span> <span class="o">==</span> <span class="s1">&#39;-&#39;</span><span class="p">:</span>
+                <span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Slot</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="s1">&#39;1-4&#39;</span><span class="p">:</span>
+                <span class="n">number</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+                <span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Slot</span><span class="p">(</span><span class="n">Archangel</span><span class="p">,</span> <span class="n">number</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="s1">&#39;5-9&#39;</span><span class="p">:</span>
+                <span class="n">number</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">9</span><span class="p">)</span>
+                <span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Slot</span><span class="p">(</span><span class="n">Champion</span><span class="p">,</span> <span class="n">number</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="s1">&#39;10-19&#39;</span><span class="p">:</span>
+                <span class="n">number</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">19</span><span class="p">)</span>
+                <span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Slot</span><span class="p">(</span><span class="n">Monk</span><span class="p">,</span> <span class="n">number</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="s1">&#39;20-49&#39;</span><span class="p">:</span>
+                <span class="n">number</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">49</span><span class="p">)</span>
+                <span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Slot</span><span class="p">(</span><span class="n">Crusader</span><span class="p">,</span> <span class="n">number</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="s1">&#39;50-99&#39;</span><span class="p">:</span>
+                <span class="n">number</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">99</span><span class="p">)</span>
+                <span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Slot</span><span class="p">(</span><span class="n">Archer</span><span class="p">,</span> <span class="n">number</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="s1">&#39;100-249&#39;</span><span class="p">:</span>
+                <span class="n">number</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">249</span><span class="p">)</span>
+                <span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Slot</span><span class="p">(</span><span class="n">Pikeman</span><span class="p">,</span> <span class="n">number</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="s1">&#39;250-499&#39;</span><span class="p">:</span>
+                <span class="n">number</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">250</span><span class="p">,</span> <span class="mi">499</span><span class="p">)</span>
+                <span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Slot</span><span class="p">(</span><span class="n">Pikeman</span><span class="p">,</span> <span class="n">number</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="s1">&#39;500-999&#39;</span><span class="p">:</span>
+                <span class="n">number</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="mi">999</span><span class="p">)</span>
+                <span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Slot</span><span class="p">(</span><span class="n">Pikeman</span><span class="p">,</span> <span class="n">number</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="s1">&#39;1000-&#39;</span><span class="p">:</span>
+                <span class="n">number</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">3000</span><span class="p">)</span>
+                <span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Slot</span><span class="p">(</span><span class="n">Pikeman</span><span class="p">,</span> <span class="n">number</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>  <span class="c1"># Just to be safe in case text didn&#39;t work any random amount</span>
+                <span class="n">number</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">19</span><span class="p">)</span>
+                <span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Slot</span><span class="p">(</span><span class="n">Griffin</span><span class="p">,</span> <span class="n">number</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">unit</span> <span class="o">==</span> <span class="s1">&#39;-&#39;</span><span class="p">:</span>
+                <span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Slot</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="s1">&#39;1-4&#39;</span><span class="p">:</span>
+                <span class="n">number</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+                <span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Slot</span><span class="p">(</span><span class="n">Archangel</span><span class="p">,</span> <span class="n">number</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="s1">&#39;5-9&#39;</span><span class="p">:</span>
+                <span class="n">number</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">9</span><span class="p">)</span>
+                <span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Slot</span><span class="p">(</span><span class="n">Archangel</span><span class="p">,</span> <span class="n">number</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="s1">&#39;10-19&#39;</span><span class="p">:</span>
+                <span class="n">number</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">19</span><span class="p">)</span>
+                <span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Slot</span><span class="p">(</span><span class="n">Cavalier</span><span class="p">,</span> <span class="n">number</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="s1">&#39;20-49&#39;</span><span class="p">:</span>
+                <span class="n">number</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">49</span><span class="p">)</span>
+                <span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Slot</span><span class="p">(</span><span class="n">Swordsman</span><span class="p">,</span> <span class="n">number</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="s1">&#39;50-99&#39;</span><span class="p">:</span>
+                <span class="n">number</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">99</span><span class="p">)</span>
+                <span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Slot</span><span class="p">(</span><span class="n">Griffin</span><span class="p">,</span> <span class="n">number</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="s1">&#39;100-249&#39;</span><span class="p">:</span>
+                <span class="n">number</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">249</span><span class="p">)</span>
+                <span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Slot</span><span class="p">(</span><span class="n">Archer</span><span class="p">,</span> <span class="n">number</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="s1">&#39;250-499&#39;</span><span class="p">:</span>
+                <span class="n">number</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">250</span><span class="p">,</span> <span class="mi">499</span><span class="p">)</span>
+                <span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Slot</span><span class="p">(</span><span class="n">Pikeman</span><span class="p">,</span> <span class="n">number</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="s1">&#39;500-999&#39;</span><span class="p">:</span>
+                <span class="n">number</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="mi">999</span><span class="p">)</span>
+                <span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Slot</span><span class="p">(</span><span class="n">Pikeman</span><span class="p">,</span> <span class="n">number</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="s1">&#39;1000-&#39;</span><span class="p">:</span>
+                <span class="n">number</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">3000</span><span class="p">)</span>
+                <span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Slot</span><span class="p">(</span><span class="n">Pikeman</span><span class="p">,</span> <span class="n">number</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>  <span class="c1"># Just to be safe in case text didn&#39;t work any random amount</span>
+                <span class="n">number</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">19</span><span class="p">)</span>
+                <span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Slot</span><span class="p">(</span><span class="n">Griffin</span><span class="p">,</span> <span class="n">number</span><span class="p">)</span>
+
+    <span class="n">hero</span><span class="o">.</span><span class="n">slots</span> <span class="o">=</span> <span class="n">slots</span>
+    <span class="k">if</span> <span class="n">hero</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">player</span><span class="o">.</span><span class="n">enemies</span><span class="p">:</span>
+        <span class="n">player</span><span class="o">.</span><span class="n">enemies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">hero</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[DETECTED ENEMY HERO]&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">unit</span> <span class="ow">in</span> <span class="n">hero</span><span class="o">.</span><span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;     UNIT: </span><span class="si">{</span><span class="n">unit</span><span class="o">.</span><span class="n">unit</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">unit</span><span class="o">.</span><span class="n">amount</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Fryderyk Róg, Kacper Plesiak, Michał Gruba, Tymoteusz Skrzyński, Mateusz Comblik, Bartosz Szczepanek, Alan Konopko, Mateusz Mikszewicz, Daniel Bil, Piotr Łyczko.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

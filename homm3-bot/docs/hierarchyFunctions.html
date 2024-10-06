@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>hierarchyFunctions package &mdash; HoMM3 Bot 2.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="image_processing package" href="image_processing.html" />
+    <link rel="prev" title="file_reader package" href="file_reader.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> HoMM3 Bot
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">homm3-bot</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Adventure_AI.html">Adventure_AI package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GUI_handling.html">GUI_handling package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="battleAI.html">battleAI package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data.html">data package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_reader.html">file_reader package</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">hierarchyFunctions package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-hierarchyFunctions.artifact_value">hierarchyFunctions.artifact_value module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#hierarchyFunctions.artifact_value.artifact_value"><code class="docutils literal notranslate"><span class="pre">artifact_value()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hierarchyFunctions.artifact_value.check_for_archery"><code class="docutils literal notranslate"><span class="pre">check_for_archery()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hierarchyFunctions.artifact_value.gold_tier_value"><code class="docutils literal notranslate"><span class="pre">gold_tier_value()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hierarchyFunctions.artifact_value.heavy_hitters"><code class="docutils literal notranslate"><span class="pre">heavy_hitters()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hierarchyFunctions.artifact_value.necromancy_check"><code class="docutils literal notranslate"><span class="pre">necromancy_check()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hierarchyFunctions.artifact_value.ranged_units_bonus"><code class="docutils literal notranslate"><span class="pre">ranged_units_bonus()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-hierarchyFunctions.creature_banks_value">hierarchyFunctions.creature_banks_value module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#hierarchyFunctions.creature_banks_value.creature_bank_value"><code class="docutils literal notranslate"><span class="pre">creature_bank_value()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-hierarchyFunctions.enter_city_value">hierarchyFunctions.enter_city_value module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#hierarchyFunctions.enter_city_value.enter_city_evaluation"><code class="docutils literal notranslate"><span class="pre">enter_city_evaluation()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hierarchyFunctions.enter_city_value.full_unit_cost"><code class="docutils literal notranslate"><span class="pre">full_unit_cost()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hierarchyFunctions.enter_city_value.units_up"><code class="docutils literal notranslate"><span class="pre">units_up()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-hierarchyFunctions.explorationBoost">hierarchyFunctions.explorationBoost module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#hierarchyFunctions.explorationBoost.evaluateExplorationBoost"><code class="docutils literal notranslate"><span class="pre">evaluateExplorationBoost()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-hierarchyFunctions.group_value">hierarchyFunctions.group_value module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#hierarchyFunctions.group_value.group_value"><code class="docutils literal notranslate"><span class="pre">group_value()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-hierarchyFunctions.habitats_value_evaluation">hierarchyFunctions.habitats_value_evaluation module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#hierarchyFunctions.habitats_value_evaluation.habitat_on_map_units_value"><code class="docutils literal notranslate"><span class="pre">habitat_on_map_units_value()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hierarchyFunctions.habitats_value_evaluation.habitat_on_map_value"><code class="docutils literal notranslate"><span class="pre">habitat_on_map_value()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-hierarchyFunctions.mines_and_resources_value">hierarchyFunctions.mines_and_resources_value module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#hierarchyFunctions.mines_and_resources_value.cut_resource_value"><code class="docutils literal notranslate"><span class="pre">cut_resource_value()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hierarchyFunctions.mines_and_resources_value.cut_value"><code class="docutils literal notranslate"><span class="pre">cut_value()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hierarchyFunctions.mines_and_resources_value.increase_mines_ratio"><code class="docutils literal notranslate"><span class="pre">increase_mines_ratio()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hierarchyFunctions.mines_and_resources_value.increase_resource_value"><code class="docutils literal notranslate"><span class="pre">increase_resource_value()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hierarchyFunctions.mines_and_resources_value.mineCase"><code class="docutils literal notranslate"><span class="pre">mineCase()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hierarchyFunctions.mines_and_resources_value.resourceStackCase"><code class="docutils literal notranslate"><span class="pre">resourceStackCase()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-hierarchyFunctions.miscFunc">hierarchyFunctions.miscFunc module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#hierarchyFunctions.miscFunc.disappear_on_click"><code class="docutils literal notranslate"><span class="pre">disappear_on_click()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hierarchyFunctions.miscFunc.increase_skills"><code class="docutils literal notranslate"><span class="pre">increase_skills()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hierarchyFunctions.miscFunc.luck_morale"><code class="docutils literal notranslate"><span class="pre">luck_morale()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hierarchyFunctions.miscFunc.mp"><code class="docutils literal notranslate"><span class="pre">mp()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hierarchyFunctions.miscFunc.resource_on_click"><code class="docutils literal notranslate"><span class="pre">resource_on_click()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hierarchyFunctions.miscFunc.the_rest"><code class="docutils literal notranslate"><span class="pre">the_rest()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-hierarchyFunctions.neutral_enemies_value">hierarchyFunctions.neutral_enemies_value module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#hierarchyFunctions.neutral_enemies_value.neutral_enemies_value"><code class="docutils literal notranslate"><span class="pre">neutral_enemies_value()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-hierarchyFunctions.power_evaluation">hierarchyFunctions.power_evaluation module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#hierarchyFunctions.power_evaluation.compare_power"><code class="docutils literal notranslate"><span class="pre">compare_power()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hierarchyFunctions.power_evaluation.creature_power"><code class="docutils literal notranslate"><span class="pre">creature_power()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hierarchyFunctions.power_evaluation.creatures_power"><code class="docutils literal notranslate"><span class="pre">creatures_power()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hierarchyFunctions.power_evaluation.hero_power"><code class="docutils literal notranslate"><span class="pre">hero_power()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hierarchyFunctions.power_evaluation.power_evaluation"><code class="docutils literal notranslate"><span class="pre">power_evaluation()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-hierarchyFunctions">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="image_processing.html">image_processing package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="main.html">main module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="map.html">map package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="path_finding_alghoritms.html">path_finding_alghoritms package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="save.html">save module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="town_upgrading.html">town_upgrading package</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">HoMM3 Bot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">homm3-bot</a></li>
+      <li class="breadcrumb-item active">hierarchyFunctions package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/hierarchyFunctions.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="hierarchyfunctions-package">
+<h1>hierarchyFunctions package<a class="headerlink" href="#hierarchyfunctions-package" title="Permalink to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-hierarchyFunctions.artifact_value">
+<span id="hierarchyfunctions-artifact-value-module"></span><h2>hierarchyFunctions.artifact_value module<a class="headerlink" href="#module-hierarchyFunctions.artifact_value" title="Permalink to this heading"></a></h2>
+<p>Module responsible for calculating the value of artifacts on the adventure map</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="hierarchyFunctions.artifact_value.artifact_value">
+<span class="sig-prename descclassname"><span class="pre">hierarchyFunctions.artifact_value.</span></span><span class="sig-name descname"><span class="pre">artifact_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.Artifacts.Artifact" title="data.Artifacts.Artifact"><span class="pre">Artifact</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">hero</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.hero.Hero" title="data.hero.Hero"><span class="pre">Hero</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hierarchyFunctions/artifact_value.html#artifact_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hierarchyFunctions.artifact_value.artifact_value" title="Permalink to this definition"></a></dt>
+<dd><p>Assigns value to artifacts. Values can land in between 0-5k</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>field</strong> – found Artifact</p></li>
+<li><p><strong>hero</strong> – our Hero</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>value</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hierarchyFunctions.artifact_value.check_for_archery">
+<span class="sig-prename descclassname"><span class="pre">hierarchyFunctions.artifact_value.</span></span><span class="sig-name descname"><span class="pre">check_for_archery</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hero</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hierarchyFunctions/artifact_value.html#check_for_archery"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hierarchyFunctions.artifact_value.check_for_archery" title="Permalink to this definition"></a></dt>
+<dd><p>Checks if our hero has the archery skill</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>hero</strong> – our hero</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True/False</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hierarchyFunctions.artifact_value.gold_tier_value">
+<span class="sig-prename descclassname"><span class="pre">hierarchyFunctions.artifact_value.</span></span><span class="sig-name descname"><span class="pre">gold_tier_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mult</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hierarchyFunctions/artifact_value.html#gold_tier_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hierarchyFunctions.artifact_value.gold_tier_value" title="Permalink to this definition"></a></dt>
+<dd><p>Adds value based on based value of the artifact, its value in gold and its tier</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>item</strong> – Artifact found</p></li>
+<li><p><strong>mult</strong> – value multiplier</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>value</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hierarchyFunctions.artifact_value.heavy_hitters">
+<span class="sig-prename descclassname"><span class="pre">hierarchyFunctions.artifact_value.</span></span><span class="sig-name descname"><span class="pre">heavy_hitters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hero</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mult</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hierarchyFunctions/artifact_value.html#heavy_hitters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hierarchyFunctions.artifact_value.heavy_hitters" title="Permalink to this definition"></a></dt>
+<dd><p>Adds additional value to strength artifacts if the hero focuses on strength</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>item</strong> – artifact found</p></li>
+<li><p><strong>hero</strong> – our hero</p></li>
+<li><p><strong>mult</strong> – value multiplier</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>value</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hierarchyFunctions.artifact_value.necromancy_check">
+<span class="sig-prename descclassname"><span class="pre">hierarchyFunctions.artifact_value.</span></span><span class="sig-name descname"><span class="pre">necromancy_check</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hero</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mult</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hierarchyFunctions/artifact_value.html#necromancy_check"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hierarchyFunctions.artifact_value.necromancy_check" title="Permalink to this definition"></a></dt>
+<dd><p>Adds value to necromancy artifacts if our hero has necromancy</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>item</strong> – Artifact found</p></li>
+<li><p><strong>hero</strong> – Our hero</p></li>
+<li><p><strong>mult</strong> – Value multiplier</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>value</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hierarchyFunctions.artifact_value.ranged_units_bonus">
+<span class="sig-prename descclassname"><span class="pre">hierarchyFunctions.artifact_value.</span></span><span class="sig-name descname"><span class="pre">ranged_units_bonus</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hero</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mult</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hierarchyFunctions/artifact_value.html#ranged_units_bonus"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hierarchyFunctions.artifact_value.ranged_units_bonus" title="Permalink to this definition"></a></dt>
+<dd><p>Sets additional value for artifacts that give bonuses to ranged fight</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>item</strong> – Artifact found</p></li>
+<li><p><strong>hero</strong> – Our hero</p></li>
+<li><p><strong>mult</strong> – Value multiplier</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Additional value</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-hierarchyFunctions.creature_banks_value">
+<span id="hierarchyfunctions-creature-banks-value-module"></span><h2>hierarchyFunctions.creature_banks_value module<a class="headerlink" href="#module-hierarchyFunctions.creature_banks_value" title="Permalink to this heading"></a></h2>
+<p>Module containing an algorithm that states the value of a creature bank</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="hierarchyFunctions.creature_banks_value.creature_bank_value">
+<span class="sig-prename descclassname"><span class="pre">hierarchyFunctions.creature_banks_value.</span></span><span class="sig-name descname"><span class="pre">creature_bank_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.creature_banks.Creature_Bank" title="data.creature_banks.Creature_Bank"><span class="pre">Creature_Bank</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">ourHero</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.hero.Hero" title="data.hero.Hero"><span class="pre">Hero</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hierarchyFunctions/creature_banks_value.html#creature_bank_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hierarchyFunctions.creature_banks_value.creature_bank_value" title="Permalink to this definition"></a></dt>
+<dd><p>Function for calculating value for creature banks</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>field</strong> – (Creature_Bank object) target creature bank</p></li>
+<li><p><strong>ourHero</strong> – (Hero object) hero with specific army</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(int) value of the given creature bank</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-hierarchyFunctions.enter_city_value">
+<span id="hierarchyfunctions-enter-city-value-module"></span><h2>hierarchyFunctions.enter_city_value module<a class="headerlink" href="#module-hierarchyFunctions.enter_city_value" title="Permalink to this heading"></a></h2>
+<p>Module containing an algorithm that states the value of entering the city</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="hierarchyFunctions.enter_city_value.enter_city_evaluation">
+<span class="sig-prename descclassname"><span class="pre">hierarchyFunctions.enter_city_value.</span></span><span class="sig-name descname"><span class="pre">enter_city_evaluation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">player</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hero</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hierarchyFunctions/enter_city_value.html#enter_city_evaluation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hierarchyFunctions.enter_city_value.enter_city_evaluation" title="Permalink to this definition"></a></dt>
+<dd><p>Adds value to the city</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>arg</strong> – City to evaluate</p></li>
+<li><p><strong>player</strong> – Player instance</p></li>
+<li><p><strong>hero</strong> – Current hero</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Value</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hierarchyFunctions.enter_city_value.full_unit_cost">
+<span class="sig-prename descclassname"><span class="pre">hierarchyFunctions.enter_city_value.</span></span><span class="sig-name descname"><span class="pre">full_unit_cost</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">town</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hierarchyFunctions/enter_city_value.html#full_unit_cost"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hierarchyFunctions.enter_city_value.full_unit_cost" title="Permalink to this definition"></a></dt>
+<dd><p>Gives value to the city if there are units to buy</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>town</strong> – Town object</p>
+</dd>
+<dt class="field-even">Return cost</dt>
+<dd class="field-even"><p>Cost of buying all units</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hierarchyFunctions.enter_city_value.units_up">
+<span class="sig-prename descclassname"><span class="pre">hierarchyFunctions.enter_city_value.</span></span><span class="sig-name descname"><span class="pre">units_up</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">day</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hierarchyFunctions/enter_city_value.html#units_up"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hierarchyFunctions.enter_city_value.units_up" title="Permalink to this definition"></a></dt>
+<dd><p>Checks if there is a new week</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>day</strong> – Parameter stating the day.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Boolean. True -&gt; are up. False -&gt; Not up.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-hierarchyFunctions.explorationBoost">
+<span id="hierarchyfunctions-explorationboost-module"></span><h2>hierarchyFunctions.explorationBoost module<a class="headerlink" href="#module-hierarchyFunctions.explorationBoost" title="Permalink to this heading"></a></h2>
+<p>Module containing an algorithm that evaluates value of hero’s exploration</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="hierarchyFunctions.explorationBoost.evaluateExplorationBoost">
+<span class="sig-prename descclassname"><span class="pre">hierarchyFunctions.explorationBoost.</span></span><span class="sig-name descname"><span class="pre">evaluateExplorationBoost</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">goal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adventureMap</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hierarchyFunctions/explorationBoost.html#evaluateExplorationBoost"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hierarchyFunctions.explorationBoost.evaluateExplorationBoost" title="Permalink to this definition"></a></dt>
+<dd><p>Gives values to spaces next to fog of war</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>goal</strong> – </p></li>
+<li><p><strong>adventureMap</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return value</dt>
+<dd class="field-even"><p></p></dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-hierarchyFunctions.group_value">
+<span id="hierarchyfunctions-group-value-module"></span><h2>hierarchyFunctions.group_value module<a class="headerlink" href="#module-hierarchyFunctions.group_value" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="hierarchyFunctions.group_value.group_value">
+<span class="sig-prename descclassname"><span class="pre">hierarchyFunctions.group_value.</span></span><span class="sig-name descname"><span class="pre">group_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coords</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">our_map</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hierarchyFunctions/group_value.html#group_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hierarchyFunctions.group_value.group_value" title="Permalink to this definition"></a></dt>
+<dd><p>Adds additional value to objects next to each other. If the value was &lt; 0 from the beginning then no value is added
+As its a function that checks the surrounding objects value, that value has to be set already
+Adding the value immediately to a function would artificially increase the value of the next object that is next to
+it so the entire map should be, ideally, checked 3 times</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>hero</strong> – Our hero</p></li>
+<li><p><strong>coords</strong> – Coordinates of the tile checked</p></li>
+<li><p><strong>our_map</strong> – Our entire found map</p></li>
+<li><p><strong>radius</strong> – how many squares around the tile are to be checked</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Value to be added to the checked tile</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-hierarchyFunctions.habitats_value_evaluation">
+<span id="hierarchyfunctions-habitats-value-evaluation-module"></span><h2>hierarchyFunctions.habitats_value_evaluation module<a class="headerlink" href="#module-hierarchyFunctions.habitats_value_evaluation" title="Permalink to this heading"></a></h2>
+<p>Script containing value of habitats on map and value of given units</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="hierarchyFunctions.habitats_value_evaluation.habitat_on_map_units_value">
+<span class="sig-prename descclassname"><span class="pre">hierarchyFunctions.habitats_value_evaluation.</span></span><span class="sig-name descname"><span class="pre">habitat_on_map_units_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">habitat_building</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.habitats_on_map.Habitat_On_Map" title="data.habitats_on_map.Habitat_On_Map"><span class="pre">Habitat_On_Map</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hierarchyFunctions/habitats_value_evaluation.html#habitat_on_map_units_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hierarchyFunctions.habitats_value_evaluation.habitat_on_map_units_value" title="Permalink to this definition"></a></dt>
+<dd><p>Internal function</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>habitat_building</strong> – Habitat building object</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Value</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hierarchyFunctions.habitats_value_evaluation.habitat_on_map_value">
+<span class="sig-prename descclassname"><span class="pre">hierarchyFunctions.habitats_value_evaluation.</span></span><span class="sig-name descname"><span class="pre">habitat_on_map_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">habitat_building</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.habitats_on_map.Habitat_On_Map" title="data.habitats_on_map.Habitat_On_Map"><span class="pre">Habitat_On_Map</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">hero</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.hero.Hero" title="data.hero.Hero"><span class="pre">Hero</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">player</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hierarchyFunctions/habitats_value_evaluation.html#habitat_on_map_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hierarchyFunctions.habitats_value_evaluation.habitat_on_map_value" title="Permalink to this definition"></a></dt>
+<dd><p>Adds value to habitats on the adventure map</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>habitat_building</strong> – Habitat building object</p></li>
+<li><p><strong>hero</strong> – Hero object</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Value</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-hierarchyFunctions.mines_and_resources_value">
+<span id="hierarchyfunctions-mines-and-resources-value-module"></span><h2>hierarchyFunctions.mines_and_resources_value module<a class="headerlink" href="#module-hierarchyFunctions.mines_and_resources_value" title="Permalink to this heading"></a></h2>
+<p>Script containing algorithms that state value for mine and mine-like objects in the game</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="hierarchyFunctions.mines_and_resources_value.cut_resource_value">
+<span class="sig-prename descclassname"><span class="pre">hierarchyFunctions.mines_and_resources_value.</span></span><span class="sig-name descname"><span class="pre">cut_resource_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">player</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hierarchyFunctions/mines_and_resources_value.html#cut_resource_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hierarchyFunctions.mines_and_resources_value.cut_resource_value" title="Permalink to this definition"></a></dt>
+<dd><p>Cut resource value based on owned resources</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tile</strong> – Parameter associated with checking the name of said tile in order to recognize what object is on that tile</p></li>
+<li><p><strong>value</strong> – Value parameter</p></li>
+<li><p><strong>player</strong> – Class Player</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Value</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hierarchyFunctions.mines_and_resources_value.cut_value">
+<span class="sig-prename descclassname"><span class="pre">hierarchyFunctions.mines_and_resources_value.</span></span><span class="sig-name descname"><span class="pre">cut_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">player</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hierarchyFunctions/mines_and_resources_value.html#cut_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hierarchyFunctions.mines_and_resources_value.cut_value" title="Permalink to this definition"></a></dt>
+<dd><p>Cut value based on resources we already own</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> – Value parameter</p></li>
+<li><p><strong>index</strong> – Index of the resource</p></li>
+<li><p><strong>player</strong> – Player object</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Value</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hierarchyFunctions.mines_and_resources_value.increase_mines_ratio">
+<span class="sig-prename descclassname"><span class="pre">hierarchyFunctions.mines_and_resources_value.</span></span><span class="sig-name descname"><span class="pre">increase_mines_ratio</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">player_cities</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hierarchyFunctions/mines_and_resources_value.html#increase_mines_ratio"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hierarchyFunctions.mines_and_resources_value.increase_mines_ratio" title="Permalink to this definition"></a></dt>
+<dd><p>Increase value given based on mines</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>player_cities</strong> – List of player’s cities</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Ratios for all towns (10 parameters)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hierarchyFunctions.mines_and_resources_value.increase_resource_value">
+<span class="sig-prename descclassname"><span class="pre">hierarchyFunctions.mines_and_resources_value.</span></span><span class="sig-name descname"><span class="pre">increase_resource_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">player_cities</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hierarchyFunctions/mines_and_resources_value.html#increase_resource_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hierarchyFunctions.mines_and_resources_value.increase_resource_value" title="Permalink to this definition"></a></dt>
+<dd><p>Increase resource value based on owned towns</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tile</strong> – Parameter associated with checking the name of said tile in order to recognize what object is on that tile</p></li>
+<li><p><strong>value</strong> – Value parameter</p></li>
+<li><p><strong>player_cities</strong> – List of player cities</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Value</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hierarchyFunctions.mines_and_resources_value.mineCase">
+<span class="sig-prename descclassname"><span class="pre">hierarchyFunctions.mines_and_resources_value.</span></span><span class="sig-name descname"><span class="pre">mineCase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">player</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hierarchyFunctions/mines_and_resources_value.html#mineCase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hierarchyFunctions.mines_and_resources_value.mineCase" title="Permalink to this definition"></a></dt>
+<dd><p>Add value to mines</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>tile</strong> – parameter associated with checking the name of said tile in order to recognize what object is on that</p>
+</dd>
+</dl>
+<p>tile
+:param player: Player object
+:return: Value</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hierarchyFunctions.mines_and_resources_value.resourceStackCase">
+<span class="sig-prename descclassname"><span class="pre">hierarchyFunctions.mines_and_resources_value.</span></span><span class="sig-name descname"><span class="pre">resourceStackCase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">player</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hero</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hierarchyFunctions/mines_and_resources_value.html#resourceStackCase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hierarchyFunctions.mines_and_resources_value.resourceStackCase" title="Permalink to this definition"></a></dt>
+<dd><p>Give value to resources freely lying on the adventure map</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tile</strong> – Parameter associated with checking the name of said tile in order to recognize what object is on that tile</p></li>
+<li><p><strong>player</strong> – Player object</p></li>
+<li><p><strong>hero</strong> – Hero object</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Value</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-hierarchyFunctions.miscFunc">
+<span id="hierarchyfunctions-miscfunc-module"></span><h2>hierarchyFunctions.miscFunc module<a class="headerlink" href="#module-hierarchyFunctions.miscFunc" title="Permalink to this heading"></a></h2>
+<p>Script containing algorithms stating values for other factors in the game e.g. campfire</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="hierarchyFunctions.miscFunc.disappear_on_click">
+<span class="sig-prename descclassname"><span class="pre">hierarchyFunctions.miscFunc.</span></span><span class="sig-name descname"><span class="pre">disappear_on_click</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hero</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.hero.Hero" title="data.hero.Hero"><span class="pre">Hero</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">player</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.player_data.Player" title="data.player_data.Player"><span class="pre">Player</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hierarchyFunctions/miscFunc.html#disappear_on_click"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hierarchyFunctions.miscFunc.disappear_on_click" title="Permalink to this definition"></a></dt>
+<dd><p>Add value to objects that disappear on click</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tile</strong> – Given tile</p></li>
+<li><p><strong>hero</strong> – Current hero</p></li>
+<li><p><strong>player</strong> – Player instance</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>value to be added to overall value</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hierarchyFunctions.miscFunc.increase_skills">
+<span class="sig-prename descclassname"><span class="pre">hierarchyFunctions.miscFunc.</span></span><span class="sig-name descname"><span class="pre">increase_skills</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hero</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.hero.Hero" title="data.hero.Hero"><span class="pre">Hero</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hierarchyFunctions/miscFunc.html#increase_skills"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hierarchyFunctions.miscFunc.increase_skills" title="Permalink to this definition"></a></dt>
+<dd><p>Give value to buildings that increase skills</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tile</strong> – Given tile</p></li>
+<li><p><strong>hero</strong> – Current hero</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>value to be added to overall value</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hierarchyFunctions.miscFunc.luck_morale">
+<span class="sig-prename descclassname"><span class="pre">hierarchyFunctions.miscFunc.</span></span><span class="sig-name descname"><span class="pre">luck_morale</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hero</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hierarchyFunctions/miscFunc.html#luck_morale"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hierarchyFunctions.miscFunc.luck_morale" title="Permalink to this definition"></a></dt>
+<dd><p>Add value to objects that give luck and morale</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tile</strong> – Given tile</p></li>
+<li><p><strong>hero</strong> – Current hero</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>value to be added to overall value</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hierarchyFunctions.miscFunc.mp">
+<span class="sig-prename descclassname"><span class="pre">hierarchyFunctions.miscFunc.</span></span><span class="sig-name descname"><span class="pre">mp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hero</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.hero.Hero" title="data.hero.Hero"><span class="pre">Hero</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hierarchyFunctions/miscFunc.html#mp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hierarchyFunctions.miscFunc.mp" title="Permalink to this definition"></a></dt>
+<dd><p>Add value to objects that give movement points</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tile</strong> – Given tile</p></li>
+<li><p><strong>hero</strong> – Current hero</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>value to be added to overall value</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hierarchyFunctions.miscFunc.resource_on_click">
+<span class="sig-prename descclassname"><span class="pre">hierarchyFunctions.miscFunc.</span></span><span class="sig-name descname"><span class="pre">resource_on_click</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hero</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.hero.Hero" title="data.hero.Hero"><span class="pre">Hero</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hierarchyFunctions/miscFunc.html#resource_on_click"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hierarchyFunctions.miscFunc.resource_on_click" title="Permalink to this definition"></a></dt>
+<dd><p>Give value to building that give resources on click</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tile</strong> – </p></li>
+<li><p><strong>hero</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hierarchyFunctions.miscFunc.the_rest">
+<span class="sig-prename descclassname"><span class="pre">hierarchyFunctions.miscFunc.</span></span><span class="sig-name descname"><span class="pre">the_rest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hero</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.hero.Hero" title="data.hero.Hero"><span class="pre">Hero</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hierarchyFunctions/miscFunc.html#the_rest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hierarchyFunctions.miscFunc.the_rest" title="Permalink to this definition"></a></dt>
+<dd><p>Add value to all the objects that don’t fit in other descriptions</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tile</strong> – Given tile</p></li>
+<li><p><strong>hero</strong> – Current hero</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>value to be added to overall value</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-hierarchyFunctions.neutral_enemies_value">
+<span id="hierarchyfunctions-neutral-enemies-value-module"></span><h2>hierarchyFunctions.neutral_enemies_value module<a class="headerlink" href="#module-hierarchyFunctions.neutral_enemies_value" title="Permalink to this heading"></a></h2>
+<p>Script containing algorithms stating value for neutral enemies</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="hierarchyFunctions.neutral_enemies_value.neutral_enemies_value">
+<span class="sig-prename descclassname"><span class="pre">hierarchyFunctions.neutral_enemies_value.</span></span><span class="sig-name descname"><span class="pre">neutral_enemies_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hero</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.hero.Hero" title="data.hero.Hero"><span class="pre">Hero</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">enemies</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hierarchyFunctions/neutral_enemies_value.html#neutral_enemies_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hierarchyFunctions.neutral_enemies_value.neutral_enemies_value" title="Permalink to this definition"></a></dt>
+<dd><p>Adds value to enemies standing free</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>hero</strong> – Current hero</p></li>
+<li><p><strong>enemies</strong> – Enemy troops</p></li>
+<li><p><strong>coords</strong> – Coordinates of enemy troops</p></li>
+<li><p><strong>mapObj</strong> – Adventure map</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>value to be added to overall value</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-hierarchyFunctions.power_evaluation">
+<span id="hierarchyfunctions-power-evaluation-module"></span><h2>hierarchyFunctions.power_evaluation module<a class="headerlink" href="#module-hierarchyFunctions.power_evaluation" title="Permalink to this heading"></a></h2>
+<p>Script containing power evaluation algorithm</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="hierarchyFunctions.power_evaluation.compare_power">
+<span class="sig-prename descclassname"><span class="pre">hierarchyFunctions.power_evaluation.</span></span><span class="sig-name descname"><span class="pre">compare_power</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hierarchyFunctions/power_evaluation.html#compare_power"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hierarchyFunctions.power_evaluation.compare_power" title="Permalink to this definition"></a></dt>
+<dd><p>Compares power between x1 (int) and x2(int)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x1</strong> – Strength parameter for first instance</p></li>
+<li><p><strong>x2</strong> – Strength parameter for second instance</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(float) ratio of strength. returns 1 -&gt; win 100%. Returns -10 -&gt; win 1%</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hierarchyFunctions.power_evaluation.creature_power">
+<span class="sig-prename descclassname"><span class="pre">hierarchyFunctions.power_evaluation.</span></span><span class="sig-name descname"><span class="pre">creature_power</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slot</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.hero.Slot" title="data.hero.Slot"><span class="pre">Slot</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hierarchyFunctions/power_evaluation.html#creature_power"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hierarchyFunctions.power_evaluation.creature_power" title="Permalink to this definition"></a></dt>
+<dd><p>Function stating creature’s power</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>slot</strong> – Slot object</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>int - power</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hierarchyFunctions.power_evaluation.creatures_power">
+<span class="sig-prename descclassname"><span class="pre">hierarchyFunctions.power_evaluation.</span></span><span class="sig-name descname"><span class="pre">creatures_power</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slots</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.hero.Slots" title="data.hero.Slots"><span class="pre">Slots</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hierarchyFunctions/power_evaluation.html#creatures_power"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hierarchyFunctions.power_evaluation.creatures_power" title="Permalink to this definition"></a></dt>
+<dd><p>function evaluates int: strength of Class Slots</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>slots</strong> – Slots object</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>int - power</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hierarchyFunctions.power_evaluation.hero_power">
+<span class="sig-prename descclassname"><span class="pre">hierarchyFunctions.power_evaluation.</span></span><span class="sig-name descname"><span class="pre">hero_power</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hero</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.hero.Hero" title="data.hero.Hero"><span class="pre">Hero</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hierarchyFunctions/power_evaluation.html#hero_power"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hierarchyFunctions.power_evaluation.hero_power" title="Permalink to this definition"></a></dt>
+<dd><p>function evaluates power(int) of hero</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>hero</strong> – Class Hero</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hierarchyFunctions.power_evaluation.power_evaluation">
+<span class="sig-prename descclassname"><span class="pre">hierarchyFunctions.power_evaluation.</span></span><span class="sig-name descname"><span class="pre">power_evaluation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.hero.Hero" title="data.hero.Hero"><span class="pre">Hero</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">x2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hierarchyFunctions/power_evaluation.html#power_evaluation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hierarchyFunctions.power_evaluation.power_evaluation" title="Permalink to this definition"></a></dt>
+<dd><p>Function that evaluates power based on input parameters. Depending on parameter x2-Hero/Slot/Slots, different
+function will be used in power evaluation hero_power/creature_power/creatures_power</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x1</strong> – Hero object</p></li>
+<li><p><strong>x2</strong> – Hero/Slot/Slots object</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Compared power in form of ratio.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-hierarchyFunctions">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-hierarchyFunctions" title="Permalink to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="file_reader.html" class="btn btn-neutral float-left" title="file_reader package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="image_processing.html" class="btn btn-neutral float-right" title="image_processing package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Fryderyk Róg, Kacper Plesiak, Michał Gruba, Tymoteusz Skrzyński, Mateusz Comblik, Bartosz Szczepanek, Alan Konopko, Mateusz Mikszewicz, Daniel Bil, Piotr Łyczko.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

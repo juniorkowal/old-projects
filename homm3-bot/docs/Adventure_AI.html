@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Adventure_AI package &mdash; HoMM3 Bot 2.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="GUI_handling package" href="GUI_handling.html" />
+    <link rel="prev" title="homm3-bot" href="modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> HoMM3 Bot
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">homm3-bot</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Adventure_AI package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-Adventure_AI.AdventureAI">Adventure_AI.AdventureAI module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Adventure_AI.AdventureAI.AdventureAI"><code class="docutils literal notranslate"><span class="pre">AdventureAI</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Adventure_AI.AdventureAI.Item"><code class="docutils literal notranslate"><span class="pre">Item</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Adventure_AI.AdventureAI.MapData"><code class="docutils literal notranslate"><span class="pre">MapData</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Adventure_AI.AdventureAI.calculateFinalValue"><code class="docutils literal notranslate"><span class="pre">calculateFinalValue()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Adventure_AI.AdventureAI.costOfThePath"><code class="docutils literal notranslate"><span class="pre">costOfThePath()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Adventure_AI.AdventureAI.findPath"><code class="docutils literal notranslate"><span class="pre">findPath()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Adventure_AI.AdventureAI.getNextBestTarget"><code class="docutils literal notranslate"><span class="pre">getNextBestTarget()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Adventure_AI.AdventureAI.getSquareFromMatrix"><code class="docutils literal notranslate"><span class="pre">getSquareFromMatrix()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Adventure_AI.AdventureAI.takeSquareAroundXYinRange"><code class="docutils literal notranslate"><span class="pre">takeSquareAroundXYinRange()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Adventure_AI.AdventureAI.tileInControlZone"><code class="docutils literal notranslate"><span class="pre">tileInControlZone()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-Adventure_AI.AdventureAI_Map_Init">Adventure_AI.AdventureAI_Map_Init module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Adventure_AI.AdventureAI_Map_Init.initMap"><code class="docutils literal notranslate"><span class="pre">initMap()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Adventure_AI.AdventureAI_Map_Init.read_map"><code class="docutils literal notranslate"><span class="pre">read_map()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Adventure_AI.AdventureAI_Map_Init.read_map_from_php_file"><code class="docutils literal notranslate"><span class="pre">read_map_from_php_file()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-Adventure_AI.MapDict">Adventure_AI.MapDict module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-Adventure_AI">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="GUI_handling.html">GUI_handling package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="battleAI.html">battleAI package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data.html">data package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_reader.html">file_reader package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hierarchyFunctions.html">hierarchyFunctions package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="image_processing.html">image_processing package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="main.html">main module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="map.html">map package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="path_finding_alghoritms.html">path_finding_alghoritms package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="save.html">save module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="town_upgrading.html">town_upgrading package</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">HoMM3 Bot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">homm3-bot</a></li>
+      <li class="breadcrumb-item active">Adventure_AI package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/Adventure_AI.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="adventure-ai-package">
+<h1>Adventure_AI package<a class="headerlink" href="#adventure-ai-package" title="Permalink to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-Adventure_AI.AdventureAI">
+<span id="adventure-ai-adventureai-module"></span><h2>Adventure_AI.AdventureAI module<a class="headerlink" href="#module-Adventure_AI.AdventureAI" title="Permalink to this heading"></a></h2>
+<p>This module is responsible for decision making of our agent on the adventure map.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="Adventure_AI.AdventureAI.AdventureAI">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Adventure_AI.AdventureAI.</span></span><span class="sig-name descname"><span class="pre">AdventureAI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">playerClass</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.player_data.Player" title="data.player_data.Player"><span class="pre">Player</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_filepath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Adventure_AI/AdventureAI.html#AdventureAI"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Adventure_AI.AdventureAI.AdventureAI" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="Adventure_AI.AdventureAI.AdventureAI.actualizeCurrHeroPos">
+<span class="sig-name descname"><span class="pre">actualizeCurrHeroPos</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Adventure_AI/AdventureAI.html#AdventureAI.actualizeCurrHeroPos"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Adventure_AI.AdventureAI.AdventureAI.actualizeCurrHeroPos" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Adventure_AI.AdventureAI.AdventureAI.actualizeCurrHeroPosXDXDXDXDXDXD">
+<span class="sig-name descname"><span class="pre">actualizeCurrHeroPosXDXDXDXDXDXD</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Adventure_AI/AdventureAI.html#AdventureAI.actualizeCurrHeroPosXDXDXDXDXDXD"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Adventure_AI.AdventureAI.AdventureAI.actualizeCurrHeroPosXDXDXDXDXDXD" title="Permalink to this definition"></a></dt>
+<dd><p>This function find heroes positions at the map and actualize their positions</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(x, y), position of the hero</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Adventure_AI.AdventureAI.AdventureAI.actualizeMaskMap">
+<span class="sig-name descname"><span class="pre">actualizeMaskMap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Adventure_AI/AdventureAI.html#AdventureAI.actualizeMaskMap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Adventure_AI.AdventureAI.AdventureAI.actualizeMaskMap" title="Permalink to this definition"></a></dt>
+<dd><p>If we pick up the resource we need to actualize mask map (for pathfinding), this function do it</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>target</strong> – coordinates of the tile</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Adventure_AI.AdventureAI.AdventureAI.actualizeValueAndCostsToGoals">
+<span class="sig-name descname"><span class="pre">actualizeValueAndCostsToGoals</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Adventure_AI/AdventureAI.html#AdventureAI.actualizeValueAndCostsToGoals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Adventure_AI.AdventureAI.AdventureAI.actualizeValueAndCostsToGoals" title="Permalink to this definition"></a></dt>
+<dd><p>Function which actualize value of goals and costs to these goals. Called always before calling nextMove()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Adventure_AI.AdventureAI.AdventureAI.addCastlesToGoals">
+<span class="sig-name descname"><span class="pre">addCastlesToGoals</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Adventure_AI/AdventureAI.html#AdventureAI.addCastlesToGoals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Adventure_AI.AdventureAI.AdventureAI.addCastlesToGoals" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Adventure_AI.AdventureAI.AdventureAI.addEnemiesToGoals">
+<span class="sig-name descname"><span class="pre">addEnemiesToGoals</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Adventure_AI/AdventureAI.html#AdventureAI.addEnemiesToGoals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Adventure_AI.AdventureAI.AdventureAI.addEnemiesToGoals" title="Permalink to this definition"></a></dt>
+<dd><p>Function which adds enemy heroes position to the list with goals.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Adventure_AI.AdventureAI.AdventureAI.addLostMineToGoals">
+<span class="sig-name descname"><span class="pre">addLostMineToGoals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mine</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.objects_on_map.Mine" title="data.objects_on_map.Mine"><span class="pre">Mine</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Adventure_AI/AdventureAI.html#AdventureAI.addLostMineToGoals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Adventure_AI.AdventureAI.AdventureAI.addLostMineToGoals" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Adventure_AI.AdventureAI.AdventureAI.addMainHeroToGoals">
+<span class="sig-name descname"><span class="pre">addMainHeroToGoals</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Adventure_AI/AdventureAI.html#AdventureAI.addMainHeroToGoals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Adventure_AI.AdventureAI.AdventureAI.addMainHeroToGoals" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Adventure_AI.AdventureAI.AdventureAI.assignValueToTile">
+<span class="sig-name descname"><span class="pre">assignValueToTile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Adventure_AI/AdventureAI.html#AdventureAI.assignValueToTile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Adventure_AI.AdventureAI.AdventureAI.assignValueToTile" title="Permalink to this definition"></a></dt>
+<dd><p>Function which returns value of specific tile at the map. Value is used for choosing best target to visit</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>node</strong> – coordinates of tile</p>
+</dd>
+<dt class="field-even">Return value</dt>
+<dd class="field-even"><p>value assigned to this tile</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Adventure_AI.AdventureAI.AdventureAI.assign_temp_value_group">
+<span class="sig-name descname"><span class="pre">assign_temp_value_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Adventure_AI/AdventureAI.html#AdventureAI.assign_temp_value_group"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Adventure_AI.AdventureAI.AdventureAI.assign_temp_value_group" title="Permalink to this definition"></a></dt>
+<dd><p>Assigns temporal value to tiles, it needs to be temporal because if it was straight up added it would
+artificially increase the value of the tiles surrounding it</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>node</strong> – coordinates of the tile being checked</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>temporal value</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Adventure_AI.AdventureAI.AdventureAI.cameraOnCurrentHero">
+<span class="sig-name descname"><span class="pre">cameraOnCurrentHero</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Adventure_AI/AdventureAI.html#AdventureAI.cameraOnCurrentHero"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Adventure_AI.AdventureAI.AdventureAI.cameraOnCurrentHero" title="Permalink to this definition"></a></dt>
+<dd><p>Function which centers camera to the current hero</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Adventure_AI.AdventureAI.AdventureAI.checkEmptyDestinationSuccess">
+<span class="sig-name descname"><span class="pre">checkEmptyDestinationSuccess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Adventure_AI/AdventureAI.html#AdventureAI.checkEmptyDestinationSuccess"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Adventure_AI.AdventureAI.AdventureAI.checkEmptyDestinationSuccess" title="Permalink to this definition"></a></dt>
+<dd><p>Empty space (exploration goals) case for tmesting if hero have got to the given target or not</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>target</strong> – coordinates of the tile</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Adventure_AI.AdventureAI.AdventureAI.checkHeroSuccess">
+<span class="sig-name descname"><span class="pre">checkHeroSuccess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Adventure_AI/AdventureAI.html#AdventureAI.checkHeroSuccess"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Adventure_AI.AdventureAI.AdventureAI.checkHeroSuccess" title="Permalink to this definition"></a></dt>
+<dd><p>Not resource case for testing if hero have got to the given target or not</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>target</strong> – coordinates of the tile</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Adventure_AI.AdventureAI.AdventureAI.checkNotResourceDestinationSuccess">
+<span class="sig-name descname"><span class="pre">checkNotResourceDestinationSuccess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Adventure_AI/AdventureAI.html#AdventureAI.checkNotResourceDestinationSuccess"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Adventure_AI.AdventureAI.AdventureAI.checkNotResourceDestinationSuccess" title="Permalink to this definition"></a></dt>
+<dd><p>Not resource case for testing if hero have got to the given target or not</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>target</strong> – coordinates of the tile</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Adventure_AI.AdventureAI.AdventureAI.checkResourceDestinationSuccess">
+<span class="sig-name descname"><span class="pre">checkResourceDestinationSuccess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Adventure_AI/AdventureAI.html#AdventureAI.checkResourceDestinationSuccess"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Adventure_AI.AdventureAI.AdventureAI.checkResourceDestinationSuccess" title="Permalink to this definition"></a></dt>
+<dd><p>Resource case for testing if hero have got to the given target or not</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>target</strong> – coordinates of the tile</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Adventure_AI.AdventureAI.AdventureAI.currHero">
+<span class="sig-name descname"><span class="pre">currHero</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Adventure_AI/AdventureAI.html#AdventureAI.currHero"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Adventure_AI.AdventureAI.AdventureAI.currHero" title="Permalink to this definition"></a></dt>
+<dd><p>Function which get current hero</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return Hero which is pointed by heroPointer</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Adventure_AI.AdventureAI.AdventureAI.delEnemiesFromGoals">
+<span class="sig-name descname"><span class="pre">delEnemiesFromGoals</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Adventure_AI/AdventureAI.html#AdventureAI.delEnemiesFromGoals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Adventure_AI.AdventureAI.AdventureAI.delEnemiesFromGoals" title="Permalink to this definition"></a></dt>
+<dd><p>Function which deletes enemy heroes position from the list with goals.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Adventure_AI.AdventureAI.AdventureAI.delMainHeroFromGoals">
+<span class="sig-name descname"><span class="pre">delMainHeroFromGoals</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Adventure_AI/AdventureAI.html#AdventureAI.delMainHeroFromGoals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Adventure_AI.AdventureAI.AdventureAI.delMainHeroFromGoals" title="Permalink to this definition"></a></dt>
+<dd><p>Function which deletes enemy heroes position from the list with goals.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Adventure_AI.AdventureAI.AdventureAI.deleteGoal">
+<span class="sig-name descname"><span class="pre">deleteGoal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Adventure_AI/AdventureAI.html#AdventureAI.deleteGoal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Adventure_AI.AdventureAI.AdventureAI.deleteGoal" title="Permalink to this definition"></a></dt>
+<dd><p>Function which deletes specific target. It is called only when we have got to the specific goal</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>target</strong> – coordinates of the tile</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Adventure_AI.AdventureAI.AdventureAI.detectAnotherObjects">
+<span class="sig-name descname"><span class="pre">detectAnotherObjects</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Adventure_AI/AdventureAI.html#AdventureAI.detectAnotherObjects"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Adventure_AI.AdventureAI.AdventureAI.detectAnotherObjects" title="Permalink to this definition"></a></dt>
+<dd><p>Detection function for all random things which are not random dwellings. Used in detectXY function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>target</strong> – (coordinates of tile)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Adventure_AI.AdventureAI.AdventureAI.detectDwelling">
+<span class="sig-name descname"><span class="pre">detectDwelling</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Adventure_AI/AdventureAI.html#AdventureAI.detectDwelling"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Adventure_AI.AdventureAI.AdventureAI.detectDwelling" title="Permalink to this definition"></a></dt>
+<dd><p>Detection function for random dwellings. Used in detectXY function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>target</strong> – (coordinates of tile)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Adventure_AI.AdventureAI.AdventureAI.detectXY">
+<span class="sig-name descname"><span class="pre">detectXY</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Adventure_AI/AdventureAI.html#AdventureAI.detectXY"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Adventure_AI.AdventureAI.AdventureAI.detectXY" title="Permalink to this definition"></a></dt>
+<dd><p>Function which are detecting specific tile on the map. Using OCR</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>target</strong> – (coordinates of tile)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Adventure_AI.AdventureAI.AdventureAI.discoverAreaAroundXY">
+<span class="sig-name descname"><span class="pre">discoverAreaAroundXY</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Adventure_AI/AdventureAI.html#AdventureAI.discoverAreaAroundXY"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Adventure_AI.AdventureAI.AdventureAI.discoverAreaAroundXY" title="Permalink to this definition"></a></dt>
+<dd><p>Function which discovers circular area around specific coord at the map</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>xy</strong> – center of discovered area</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Adventure_AI.AdventureAI.AdventureAI.discoveryValue">
+<span class="sig-name descname"><span class="pre">discoveryValue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">top</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bottom</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">left</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Adventure_AI/AdventureAI.html#AdventureAI.discoveryValue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Adventure_AI.AdventureAI.AdventureAI.discoveryValue" title="Permalink to this definition"></a></dt>
+<dd><p>Function which adds exploration goals to the list with goals</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – </p></li>
+<li><p><strong>y</strong> – </p></li>
+<li><p><strong>x1</strong> – </p></li>
+<li><p><strong>top</strong> – </p></li>
+<li><p><strong>bottom</strong> – </p></li>
+<li><p><strong>left</strong> – </p></li>
+<li><p><strong>right</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Adventure_AI.AdventureAI.AdventureAI.initStartHeroPosition">
+<span class="sig-name descname"><span class="pre">initStartHeroPosition</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Adventure_AI/AdventureAI.html#AdventureAI.initStartHeroPosition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Adventure_AI.AdventureAI.AdventureAI.initStartHeroPosition" title="Permalink to this definition"></a></dt>
+<dd><p>Function which initializing start position of the hero at the start of the game</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Adventure_AI.AdventureAI.AdventureAI.moveCameraToTarget">
+<span class="sig-name descname"><span class="pre">moveCameraToTarget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Adventure_AI/AdventureAI.html#AdventureAI.moveCameraToTarget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Adventure_AI.AdventureAI.AdventureAI.moveCameraToTarget" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Adventure_AI.AdventureAI.AdventureAI.moveCurrentHero">
+<span class="sig-name descname"><span class="pre">moveCurrentHero</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Adventure_AI/AdventureAI.html#AdventureAI.moveCurrentHero"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Adventure_AI.AdventureAI.AdventureAI.moveCurrentHero" title="Permalink to this definition"></a></dt>
+<dd><p>Function which moves current hero to specific target. It testing whether we are already at the destination
+tile or not and clicks on map to move on specific tile</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>target</strong> – coordinates of specific tile</p>
+</dd>
+<dt class="field-even">Return 0 if we are already on specific tile and we do not need to move, else None</dt>
+<dd class="field-even"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Adventure_AI.AdventureAI.AdventureAI.nextMove">
+<span class="sig-name descname"><span class="pre">nextMove</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Adventure_AI/AdventureAI.html#AdventureAI.nextMove"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Adventure_AI.AdventureAI.AdventureAI.nextMove" title="Permalink to this definition"></a></dt>
+<dd><p>Function which move current hero to the best target</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Adventure_AI.AdventureAI.AdventureAI.pass_unit_existing">
+<span class="sig-name descname"><span class="pre">pass_unit_existing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">notmain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">main</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">j</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Adventure_AI/AdventureAI.html#AdventureAI.pass_unit_existing"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Adventure_AI.AdventureAI.AdventureAI.pass_unit_existing" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Adventure_AI.AdventureAI.AdventureAI.pass_unit_not_existing">
+<span class="sig-name descname"><span class="pre">pass_unit_not_existing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">notmain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">main</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">j</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Adventure_AI/AdventureAI.html#AdventureAI.pass_unit_not_existing"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Adventure_AI.AdventureAI.AdventureAI.pass_unit_not_existing" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Adventure_AI.AdventureAI.AdventureAI.pass_unit_speed">
+<span class="sig-name descname"><span class="pre">pass_unit_speed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">notmain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">main</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">j</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Adventure_AI/AdventureAI.html#AdventureAI.pass_unit_speed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Adventure_AI.AdventureAI.AdventureAI.pass_unit_speed" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Adventure_AI.AdventureAI.AdventureAI.pass_unit_stronger">
+<span class="sig-name descname"><span class="pre">pass_unit_stronger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">notmain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">main</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">j</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Adventure_AI/AdventureAI.html#AdventureAI.pass_unit_stronger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Adventure_AI.AdventureAI.AdventureAI.pass_unit_stronger" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Adventure_AI.AdventureAI.AdventureAI.pass_unit_upgraded_not_upgraded">
+<span class="sig-name descname"><span class="pre">pass_unit_upgraded_not_upgraded</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">notmain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">main</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">j</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Adventure_AI/AdventureAI.html#AdventureAI.pass_unit_upgraded_not_upgraded"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Adventure_AI.AdventureAI.AdventureAI.pass_unit_upgraded_not_upgraded" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Adventure_AI.AdventureAI.AdventureAI.pass_units_from_main_to_poboczy">
+<span class="sig-name descname"><span class="pre">pass_units_from_main_to_poboczy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">notmain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">main</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">j</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Adventure_AI/AdventureAI.html#AdventureAI.pass_units_from_main_to_poboczy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Adventure_AI.AdventureAI.AdventureAI.pass_units_from_main_to_poboczy" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Adventure_AI.AdventureAI.AdventureAI.playHeroDay">
+<span class="sig-name descname"><span class="pre">playHeroDay</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Adventure_AI/AdventureAI.html#AdventureAI.playHeroDay"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Adventure_AI.AdventureAI.AdventureAI.playHeroDay" title="Permalink to this definition"></a></dt>
+<dd><p>Function which play one turn for current hero. It does multiple moves till hero has no movement points</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Adventure_AI.AdventureAI.AdventureAI.printTarget">
+<span class="sig-name descname"><span class="pre">printTarget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#Adventure_AI.AdventureAI.Item" title="Adventure_AI.AdventureAI.Item"><span class="pre">Item</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Adventure_AI/AdventureAI.html#AdventureAI.printTarget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Adventure_AI.AdventureAI.AdventureAI.printTarget" title="Permalink to this definition"></a></dt>
+<dd><p>Function for printing hero’s next target in the console. Used for debugging</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>target</strong> – coordinates of the tile</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="Adventure_AI.AdventureAI.Item">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Adventure_AI.AdventureAI.</span></span><span class="sig-name descname"><span class="pre">Item</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coord</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cost</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Adventure_AI/AdventureAI.html#Item"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Adventure_AI.AdventureAI.Item" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="Adventure_AI.AdventureAI.Item.getValue">
+<span class="sig-name descname"><span class="pre">getValue</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Adventure_AI/AdventureAI.html#Item.getValue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Adventure_AI.AdventureAI.Item.getValue" title="Permalink to this definition"></a></dt>
+<dd><p>Returns value of the Item (goal)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return value</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="Adventure_AI.AdventureAI.MapData">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Adventure_AI.AdventureAI.</span></span><span class="sig-name descname"><span class="pre">MapData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Adventure_AI/AdventureAI.html#MapData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Adventure_AI.AdventureAI.MapData" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="Adventure_AI.AdventureAI.MapData.fillControlZones">
+<span class="sig-name descname"><span class="pre">fillControlZones</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Adventure_AI/AdventureAI.html#MapData.fillControlZones"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Adventure_AI.AdventureAI.MapData.fillControlZones" title="Permalink to this definition"></a></dt>
+<dd><p>Function which fills initialized control zones of the monsters at the map. We need to remember state of the
+control zones for pathfinding algorithm. Control zone is like obstacle at the maskMap (map for pathfinding),
+but is changing in remembered state when we are moving to the neutral creature which is owner of this control
+zone.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Adventure_AI.AdventureAI.calculateFinalValue">
+<span class="sig-prename descclassname"><span class="pre">Adventure_AI.AdventureAI.</span></span><span class="sig-name descname"><span class="pre">calculateFinalValue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">itm</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Adventure_AI/AdventureAI.html#calculateFinalValue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Adventure_AI.AdventureAI.calculateFinalValue" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Adventure_AI.AdventureAI.costOfThePath">
+<span class="sig-prename descclassname"><span class="pre">Adventure_AI.AdventureAI.</span></span><span class="sig-name descname"><span class="pre">costOfThePath</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">goal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">heroesOnMap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matrix</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Adventure_AI/AdventureAI.html#costOfThePath"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Adventure_AI.AdventureAI.costOfThePath" title="Permalink to this definition"></a></dt>
+<dd><p>Function which calculates cost of the path from point A to point B on specific matrix. This function contains
+preparations for using findPath function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start</strong> – point A</p></li>
+<li><p><strong>goal</strong> – point B</p></li>
+<li><p><strong>heroesOnMap</strong> – list with all the heroes on the map (we need to treat them like an obstacle)</p></li>
+<li><p><strong>matrix</strong> – specific matrix where path will be found</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return cost</dt>
+<dd class="field-even"><p>integer value which is movement cost a hero need to bear to get to the goal point</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Adventure_AI.AdventureAI.findPath">
+<span class="sig-prename descclassname"><span class="pre">Adventure_AI.AdventureAI.</span></span><span class="sig-name descname"><span class="pre">findPath</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Adventure_AI/AdventureAI.html#findPath"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Adventure_AI.AdventureAI.findPath" title="Permalink to this definition"></a></dt>
+<dd><p>Function which finds path between point A and point B on the specific matrix. Used in costOfThePath() function</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>other</strong> – point A</p></li>
+<li><p><strong>node</strong> – point B</p></li>
+<li><p><strong>matrix</strong> – specific matrix where the path will be found</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>cost of the path</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Adventure_AI.AdventureAI.getNextBestTarget">
+<span class="sig-prename descclassname"><span class="pre">Adventure_AI.AdventureAI.</span></span><span class="sig-name descname"><span class="pre">getNextBestTarget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">items</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Adventure_AI/AdventureAI.html#getNextBestTarget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Adventure_AI.AdventureAI.getNextBestTarget" title="Permalink to this definition"></a></dt>
+<dd><p>Function which appoints next best goal from list of goals. The best goal is the goal with biggest difference between
+value of the goal and its path cost.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>items</strong> – list of goals</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>best goal</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Adventure_AI.AdventureAI.getSquareFromMatrix">
+<span class="sig-prename descclassname"><span class="pre">Adventure_AI.AdventureAI.</span></span><span class="sig-name descname"><span class="pre">getSquareFromMatrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">squareCoord</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Adventure_AI/AdventureAI.html#getSquareFromMatrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Adventure_AI.AdventureAI.getSquareFromMatrix" title="Permalink to this definition"></a></dt>
+<dd><p>Returns numpy array fragment of another numpy array from given left up (x1, y1) and right down (x2, y2) corners of
+the area.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>squareCoord</strong> – list with coordinates [x1, x2, y1, y2]</p></li>
+<li><p><strong>matrix</strong> – numpy array from which we want to cut some square area</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>numpy area which is fragment of the matrix param</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Adventure_AI.AdventureAI.takeSquareAroundXYinRange">
+<span class="sig-prename descclassname"><span class="pre">Adventure_AI.AdventureAI.</span></span><span class="sig-name descname"><span class="pre">takeSquareAroundXYinRange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">squareRange</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Adventure_AI/AdventureAI.html#takeSquareAroundXYinRange"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Adventure_AI.AdventureAI.takeSquareAroundXYinRange" title="Permalink to this definition"></a></dt>
+<dd><p>Function which takes square area around specific coordinates in specific range. It returns list=[x1, x2, y1, y2]
+where (x1, y1) is left up corner of the area and (x2, y2) is right down corner of the area. It pays attention to map
+boundaries. Works only for 72x72 arrays.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>xy</strong> – center of the square area</p></li>
+<li><p><strong>squareRange</strong> – (a - 1)/2 of the square where a is square’s side’s length.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>list with coordinates where (x1, y1) is left up corner of the area and (x2, y2) is right down corner of the</p>
+</dd>
+</dl>
+<p>area</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Adventure_AI.AdventureAI.tileInControlZone">
+<span class="sig-prename descclassname"><span class="pre">Adventure_AI.AdventureAI.</span></span><span class="sig-name descname"><span class="pre">tileInControlZone</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tilePos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">objMatrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Adventure_AI/AdventureAI.html#tileInControlZone"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Adventure_AI.AdventureAI.tileInControlZone" title="Permalink to this definition"></a></dt>
+<dd><p>Function which tests whether specific coordinate is located in the interior of the control zone. It investigates
+neighbours of the tested coordinate and looks for Slot class objects (neutral monsters)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tilePos</strong> – coordinates of the tested point</p></li>
+<li><p><strong>objMatrix</strong> – matrix which contains information about all the objects on the map</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>boolean value about being or not being in control zone</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-Adventure_AI.AdventureAI_Map_Init">
+<span id="adventure-ai-adventureai-map-init-module"></span><h2>Adventure_AI.AdventureAI_Map_Init module<a class="headerlink" href="#module-Adventure_AI.AdventureAI_Map_Init" title="Permalink to this heading"></a></h2>
+<p>This is the script that initializes the map.
+Description of the objects on map
+0 -&gt; obstacle
+1 -&gt; grass
+2 -&gt; dirt</p>
+<p>THESE THINGS WE DETECT WITH TESSERACT
+3 -&gt; random resource
+4 -&gt; random dwelling (IT has 2square size (left and right tile))
+5 -&gt; random castle
+6 -&gt; random monster
+7 -&gt; random artifact</p>
+<p>8 -&gt; treasure chest
+9 -&gt; creature banks
+On the map we have hardcoded objects as well (check theRest list in initMap() function)</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="Adventure_AI.AdventureAI_Map_Init.initMap">
+<span class="sig-prename descclassname"><span class="pre">Adventure_AI.AdventureAI_Map_Init.</span></span><span class="sig-name descname"><span class="pre">initMap</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Adventure_AI/AdventureAI_Map_Init.html#initMap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Adventure_AI.AdventureAI_Map_Init.initMap" title="Permalink to this definition"></a></dt>
+<dd><p>Function which initialize our hardcoded, a bit modified “Darwin’s Prize” map. It reads .png file which describes
+what is located at specific tile (Red -&gt; Obstacle, Dark brown -&gt; Grass, Brown -&gt; Dirt, Purple -&gt; Resource,
+Green -&gt; Dwelling, Blue -&gt; Monster, Yellow -&gt; Artifact, Cyan -&gt; Treasure Chest). Png has empty spaces at some tiles.
+These tiles are Other Objects (Mines, Buildings, Fountains etc.). Empty spaces are collected to unknown list and
+then are filled with Other Objects from theRest list in specific order.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>modified Darwin’s Prize object map (numpy array)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Adventure_AI.AdventureAI_Map_Init.read_map">
+<span class="sig-prename descclassname"><span class="pre">Adventure_AI.AdventureAI_Map_Init.</span></span><span class="sig-name descname"><span class="pre">read_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_to_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Adventure_AI/AdventureAI_Map_Init.html#read_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Adventure_AI.AdventureAI_Map_Init.read_map" title="Permalink to this definition"></a></dt>
+<dd><p>Function which reads h3m file map and converts its content to our old format to save backward compatibility
+:param: path_to_file -&gt; path to h3m file with map content
+:return: old format map from given h3m file</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Adventure_AI.AdventureAI_Map_Init.read_map_from_php_file">
+<span class="sig-prename descclassname"><span class="pre">Adventure_AI.AdventureAI_Map_Init.</span></span><span class="sig-name descname"><span class="pre">read_map_from_php_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_to_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Adventure_AI/AdventureAI_Map_Init.html#read_map_from_php_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Adventure_AI.AdventureAI_Map_Init.read_map_from_php_file" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-Adventure_AI.MapDict">
+<span id="adventure-ai-mapdict-module"></span><h2>Adventure_AI.MapDict module<a class="headerlink" href="#module-Adventure_AI.MapDict" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-Adventure_AI">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-Adventure_AI" title="Permalink to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="modules.html" class="btn btn-neutral float-left" title="homm3-bot" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="GUI_handling.html" class="btn btn-neutral float-right" title="GUI_handling package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Fryderyk Róg, Kacper Plesiak, Michał Gruba, Tymoteusz Skrzyński, Mateusz Comblik, Bartosz Szczepanek, Alan Konopko, Mateusz Mikszewicz, Daniel Bil, Piotr Łyczko.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

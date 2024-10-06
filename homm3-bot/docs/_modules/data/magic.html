@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>data.magic &mdash; HoMM3 Bot 2.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> HoMM3 Bot
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">homm3-bot</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">HoMM3 Bot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">data.magic</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for data.magic</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Script containing Spell class and all the spell objects&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="Spell"><a class="viewcode-back" href="../../data.html#data.magic.Spell">[docs]</a><span class="k">class</span> <span class="nc">Spell</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">school</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">lvl</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">duration</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">mana_cost</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">dmg</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Class representing a spell.</span>
+
+<span class="sd">        :param name: Name of the spell</span>
+<span class="sd">        :param school: School of the spell (there are 4)</span>
+<span class="sd">        :param lvl: Level of the school</span>
+<span class="sd">        :param duration: Duration of the spell</span>
+<span class="sd">        :param mana_cost: Mana cost of the spell</span>
+<span class="sd">        :param dmg: Damage of the spell</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="n">lvl</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">school</span> <span class="o">=</span> <span class="n">school</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mana_cost</span> <span class="o">=</span> <span class="n">mana_cost</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">duration</span> <span class="o">=</span> <span class="n">duration</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dmg</span> <span class="o">=</span> <span class="n">dmg</span></div>
+
+
+<div class="viewcode-block" id="Spells"><a class="viewcode-back" href="../../data.html#data.magic.Spells">[docs]</a><span class="k">class</span> <span class="nc">Spells</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">spells</span><span class="p">:</span> <span class="n">Spell</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Class representing spells (again)</span>
+
+<span class="sd">        :param spells: Spell class</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spells</span> <span class="o">=</span> <span class="n">spells</span></div>
+<span class="c1"># name, school, lvl, duration, mana_cost,dmg</span>
+<span class="c1"># lvl 1</span>
+<span class="n">Bloodlust</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Bloodlust&quot;</span><span class="p">,</span> <span class="s2">&quot;Fire Magic&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="n">Cure</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Cure&quot;</span><span class="p">,</span> <span class="s2">&quot;Water Magic&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+<span class="n">Curse</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Curse&quot;</span><span class="p">,</span> <span class="s2">&quot;Fire Magic&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+<span class="n">Dispel</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Dispel&quot;</span><span class="p">,</span> <span class="s2">&quot;Water Magic&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="n">Bless</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Bless&quot;</span><span class="p">,</span> <span class="s2">&quot;Water Magic&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="n">Haste</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Haste&quot;</span><span class="p">,</span> <span class="s2">&quot;Air Magic&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+<span class="n">Magic_Arrow</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Magic_Arrow&quot;</span><span class="p">,</span> <span class="s2">&quot;All Schools&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span> <span class="o">+</span> <span class="p">(</span><span class="mi">10</span> <span class="o">*</span> <span class="mi">5</span><span class="p">))</span>
+<span class="n">Protection_from_Fire</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Protection_from_Fire&quot;</span><span class="p">,</span> <span class="s2">&quot;Fire Magic&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="n">Protection_from_Water</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Protection_from_Water&quot;</span><span class="p">,</span> <span class="s2">&quot;Water Magic&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="n">Shield</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Shield&quot;</span><span class="p">,</span> <span class="s2">&quot;Earth Magic&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="n">Slow</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Slow&quot;</span><span class="p">,</span> <span class="s2">&quot;Earth Magic&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+<span class="n">Summon_Boat</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Summon_Boat&quot;</span><span class="p">,</span> <span class="s2">&quot;Water Magic&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+<span class="n">Stone_Skin</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Stone_Skin&quot;</span><span class="p">,</span> <span class="s2">&quot;Earth Magic&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="n">View_Air</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;View_Air&quot;</span><span class="p">,</span> <span class="s2">&quot;Air Magic&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">View_Earth</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;View_Earth&quot;</span><span class="p">,</span> <span class="s2">&quot;Earth Magic&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="c1"># lvl 2</span>
+<span class="n">Blind</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Blind&quot;</span><span class="p">,</span> <span class="s2">&quot;Fire Magic&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">Death_Ripple</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Death_Ripple&quot;</span><span class="p">,</span> <span class="s2">&quot;Earth Magic&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="o">+</span><span class="p">(</span><span class="mi">5</span> <span class="o">*</span> <span class="mi">5</span><span class="p">))</span>
+<span class="n">Disguise</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Disguise&quot;</span><span class="p">,</span> <span class="s2">&quot;Air Magic&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="n">Disrupting_Ray</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Disrupting_Ray&quot;</span><span class="p">,</span> <span class="s2">&quot;Air Magic&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">10000000</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">Fire_Wall</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Fire_Wall&quot;</span><span class="p">,</span> <span class="s2">&quot;Fire Magic&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+<span class="n">Fortune</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Fortune&quot;</span><span class="p">,</span> <span class="s2">&quot;Air Magic&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>
+<span class="n">Ice_Bolt</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Ice_Bolt&quot;</span><span class="p">,</span> <span class="s2">&quot;Water Magic&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">10</span><span class="o">+</span><span class="p">(</span><span class="mi">20</span> <span class="o">*</span> <span class="mi">5</span><span class="p">))</span>
+<span class="n">Lightning_Bolt</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Lightning_Bolt&quot;</span><span class="p">,</span> <span class="s2">&quot;Air Magic&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span> <span class="o">+</span> <span class="p">(</span><span class="mi">25</span><span class="o">*</span><span class="mi">5</span><span class="p">))</span>
+<span class="n">Precision</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Precision&quot;</span><span class="p">,</span> <span class="s2">&quot;Air Magic&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+<span class="n">Protection_from_Air</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Protection_from_Air&quot;</span><span class="p">,</span> <span class="s2">&quot;Air Magic&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>
+<span class="n">Quicksand</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Quicksand&quot;</span><span class="p">,</span> <span class="s2">&quot;Earth Magic&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">10000000</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+<span class="n">Remove_Obstacle</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Remove_Obstacle&quot;</span><span class="p">,</span> <span class="s2">&quot;Water Magic&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>
+<span class="n">Scuttle_Boat</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Scuttle_Boat&quot;</span><span class="p">,</span> <span class="s2">&quot;Water Magic&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+<span class="n">Visions</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Visions&quot;</span><span class="p">,</span> <span class="s2">&quot;All Schools&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="n">Weakness</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Weakness&quot;</span><span class="p">,</span> <span class="s2">&quot;Water Magic&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+<span class="c1"># lvl 3</span>
+<span class="n">Air_Shield</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Air_Shield&quot;</span><span class="p">,</span> <span class="s2">&quot;Air Magic&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">12</span><span class="p">)</span>
+<span class="n">Animate_Dead</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Animate_Dead&quot;</span><span class="p">,</span> <span class="s2">&quot;Earth Magic&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">10000000</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span>
+<span class="n">Anti_Magic</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Anti_Magic&quot;</span><span class="p">,</span> <span class="s2">&quot;Earth Magic&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span>
+<span class="n">Destroy_Undead</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Destroy_Undead&quot;</span><span class="p">,</span> <span class="s2">&quot;Air Magic&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">10</span> <span class="o">+</span> <span class="p">(</span><span class="mi">10</span><span class="o">*</span><span class="mi">5</span><span class="p">))</span>
+<span class="n">Earthquake</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Earthquake&quot;</span><span class="p">,</span> <span class="s2">&quot;Earth Magic&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">Fireball</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Fireball&quot;</span><span class="p">,</span> <span class="s2">&quot;Fire Magic&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">15</span><span class="o">+</span><span class="p">(</span><span class="mi">10</span><span class="o">*</span><span class="mi">5</span><span class="p">))</span>
+<span class="n">Force_Field</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Force_Field&quot;</span><span class="p">,</span> <span class="s2">&quot;Earth Magic&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">12</span><span class="p">)</span>
+<span class="n">Forgetfulness</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Forgetfulness&quot;</span><span class="p">,</span> <span class="s2">&quot;Water Magic&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">12</span><span class="p">)</span>
+<span class="n">Frost_Ring</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Frost_Ring&quot;</span><span class="p">,</span> <span class="s2">&quot;Water Magic&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">15</span> <span class="o">+</span> <span class="p">(</span><span class="mi">10</span> <span class="o">*</span> <span class="mi">5</span><span class="p">))</span>
+<span class="n">Hypnotize</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Hypnotize&quot;</span><span class="p">,</span> <span class="s2">&quot;Air Magic&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">18</span><span class="p">)</span>
+<span class="n">Land_Mine</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Land_Mine&quot;</span><span class="p">,</span> <span class="s2">&quot;Fire Magic&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5555555</span><span class="p">,</span> <span class="mi">18</span><span class="p">)</span>
+<span class="n">Mirth</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Mirth&quot;</span><span class="p">,</span> <span class="s2">&quot;Water Magic&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">12</span><span class="p">)</span>
+<span class="n">Misfortune</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Misfortune&quot;</span><span class="p">,</span> <span class="s2">&quot;Fire Magic&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">12</span><span class="p">)</span>
+<span class="n">Protection_from_Earth</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Protection_from_Earth&quot;</span><span class="p">,</span> <span class="s2">&quot;Earth Magic&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">12</span><span class="p">)</span>
+<span class="n">Teleport</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Teleport&quot;</span><span class="p">,</span> <span class="s2">&quot;Water Magic&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span>
+<span class="c1"># lvl 4</span>
+<span class="n">Armageddon</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Armageddon&quot;</span><span class="p">,</span> <span class="s2">&quot;Fire Magic&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">24</span><span class="p">)</span>
+<span class="n">Berserk</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Berserk&quot;</span><span class="p">,</span> <span class="s2">&quot;Fire Magic&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">Chain_Lightning</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Chain_Lightning&quot;</span><span class="p">,</span> <span class="s2">&quot;Air Magic&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">24</span><span class="p">)</span>
+<span class="n">Clone</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Clone&quot;</span><span class="p">,</span> <span class="s2">&quot;Water Magic&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">24</span><span class="p">)</span>
+<span class="n">Counterstrike</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Counterstrike&quot;</span><span class="p">,</span> <span class="s2">&quot;Air Magic&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">24</span><span class="p">)</span>
+<span class="n">Fire_Shield</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Fire_Shield&quot;</span><span class="p">,</span> <span class="s2">&quot;Fire Magic&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span>
+<span class="n">Frenzy</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Frenzy&quot;</span><span class="p">,</span> <span class="s2">&quot;Fire Magic&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span>  <span class="c1">#duration</span>
+<span class="n">Inferno</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Inferno&quot;</span><span class="p">,</span> <span class="s2">&quot;Fire Magic&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span>
+<span class="n">Meteor_Shower</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Meteor_Shower&quot;</span><span class="p">,</span> <span class="s2">&quot;Earth Magic&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span>
+<span class="n">Prayer</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Prayer&quot;</span><span class="p">,</span> <span class="s2">&quot;Water Magic&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span>
+<span class="n">Resurrection</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Resurrection&quot;</span><span class="p">,</span> <span class="s2">&quot;Earth Magic&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5555555</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">Slayer</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Slayer&quot;</span><span class="p">,</span> <span class="s2">&quot;Fire Magic&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span>
+<span class="n">Sorrow</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Sorrow&quot;</span><span class="p">,</span> <span class="s2">&quot;Earth Magic&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span>
+<span class="n">Town_Portal</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Town_Portal&quot;</span><span class="p">,</span> <span class="s2">&quot;Earth Magic&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span>
+<span class="n">Water_Walk</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Water_Walk&quot;</span><span class="p">,</span> <span class="s2">&quot;Water Magic&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">12</span><span class="p">)</span>
+<span class="c1"># lvl 5</span>
+<span class="n">Dimension_Door</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Dimension_Door&quot;</span><span class="p">,</span> <span class="s2">&quot;Air Magic&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">25</span><span class="p">)</span>
+<span class="n">Fly</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Fly&quot;</span><span class="p">,</span> <span class="s2">&quot;Air Magic&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">Implosion</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Implosion&quot;</span><span class="p">,</span> <span class="s2">&quot;Earth Magic&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">100</span> <span class="o">+</span> <span class="p">(</span><span class="mi">75</span> <span class="o">*</span> <span class="mi">5</span><span class="p">))</span>
+<span class="n">Magic_Mirror</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Magic_Mirror&quot;</span><span class="p">,</span> <span class="s2">&quot;Air Magic&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">25</span><span class="p">)</span>
+<span class="n">Sacrifice</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Sacrifice&quot;</span><span class="p">,</span> <span class="s2">&quot;Fire Magic&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">555555</span><span class="p">,</span> <span class="mi">25</span><span class="p">)</span>
+<span class="n">Summon_Air_Elemental</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Summon_Air_Elemental&quot;</span><span class="p">,</span> <span class="s2">&quot;Air Magic&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">100000</span><span class="p">,</span> <span class="mi">25</span><span class="p">)</span>
+<span class="n">Summon_Earth_Elemental</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Summon_Earth_Elemental&quot;</span><span class="p">,</span> <span class="s2">&quot;Earth Magic&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">100000</span><span class="p">,</span> <span class="mi">25</span><span class="p">)</span>
+<span class="n">Summon_Fire_Elemental</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Summon_Fire_Elemental&quot;</span><span class="p">,</span> <span class="s2">&quot;Fire Magic&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10000</span><span class="p">,</span> <span class="mi">25</span><span class="p">)</span>
+<span class="n">Summon_Water_Elemental</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Summon_Water_Elemental&quot;</span><span class="p">,</span> <span class="s2">&quot;Water Magic&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10000</span><span class="p">,</span> <span class="mi">25</span><span class="p">)</span>
+<span class="n">Titans_Lightning_Bolt</span> <span class="o">=</span> <span class="n">Spell</span><span class="p">(</span><span class="s2">&quot;Titans_Lightning_Bolt&quot;</span><span class="p">,</span> <span class="s2">&quot;Air Magic&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Fryderyk Róg, Kacper Plesiak, Michał Gruba, Tymoteusz Skrzyński, Mateusz Comblik, Bartosz Szczepanek, Alan Konopko, Mateusz Mikszewicz, Daniel Bil, Piotr Łyczko.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

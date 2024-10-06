@@ -1,0 +1,101 @@
+town\_upgrading package
+=======================
+
+Submodules
+----------
+
+town\_upgrading.castle\_upgrade module
+--------------------------------------
+
+.. automodule:: town_upgrading.castle_upgrade
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+town\_upgrading.choice\_generator module
+----------------------------------------
+
+.. automodule:: town_upgrading.choice_generator
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+town\_upgrading.conflux\_upgrade module
+---------------------------------------
+
+.. automodule:: town_upgrading.conflux_upgrade
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+town\_upgrading.cove\_upgrade module
+------------------------------------
+
+.. automodule:: town_upgrading.cove_upgrade
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+town\_upgrading.dungeon\_upgrade module
+---------------------------------------
+
+.. automodule:: town_upgrading.dungeon_upgrade
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+town\_upgrading.fortress\_upgrade module
+----------------------------------------
+
+.. automodule:: town_upgrading.fortress_upgrade
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+town\_upgrading.inferno\_upgrade module
+---------------------------------------
+
+.. automodule:: town_upgrading.inferno_upgrade
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+town\_upgrading.necropolis\_upgrade module
+------------------------------------------
+
+.. automodule:: town_upgrading.necropolis_upgrade
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+town\_upgrading.rampart\_upgrade module
+---------------------------------------
+
+.. automodule:: town_upgrading.rampart_upgrade
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+town\_upgrading.stronghold\_upgrade module
+------------------------------------------
+
+.. automodule:: town_upgrading.stronghold_upgrade
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+town\_upgrading.tower\_upgrade module
+-------------------------------------
+
+.. automodule:: town_upgrading.tower_upgrade
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: town_upgrading
+   :members:
+   :undoc-members:
+   :show-inheritance:

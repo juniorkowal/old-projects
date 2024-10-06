@@ -1,0 +1,45 @@
+GUI\_handling package
+=====================
+
+Submodules
+----------
+
+GUI\_handling.AdventureGUI module
+---------------------------------
+
+.. automodule:: GUI_handling.AdventureGUI
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+GUI\_handling.BattleGUI module
+------------------------------
+
+.. automodule:: GUI_handling.BattleGUI
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+GUI\_handling.TownGUI module
+----------------------------
+
+.. automodule:: GUI_handling.TownGUI
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+GUI\_handling.gui\_control module
+---------------------------------
+
+.. automodule:: GUI_handling.gui_control
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: GUI_handling
+   :members:
+   :undoc-members:
+   :show-inheritance:

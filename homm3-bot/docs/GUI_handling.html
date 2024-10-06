@@ -1,0 +1,1517 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GUI_handling package &mdash; HoMM3 Bot 2.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="battleAI package" href="battleAI.html" />
+    <link rel="prev" title="Adventure_AI package" href="Adventure_AI.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> HoMM3 Bot
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">homm3-bot</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Adventure_AI.html">Adventure_AI package</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">GUI_handling package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-GUI_handling.AdventureGUI">GUI_handling.AdventureGUI module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.accept_battle_result"><code class="docutils literal notranslate"><span class="pre">accept_battle_result()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.accept_offer"><code class="docutils literal notranslate"><span class="pre">accept_offer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.accept_retreat"><code class="docutils literal notranslate"><span class="pre">accept_retreat()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.access_marketplace"><code class="docutils literal notranslate"><span class="pre">access_marketplace()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.artifact_coordinates"><code class="docutils literal notranslate"><span class="pre">artifact_coordinates()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.cast_spell_adventure"><code class="docutils literal notranslate"><span class="pre">cast_spell_adventure()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.center_on_hero"><code class="docutils literal notranslate"><span class="pre">center_on_hero()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.change_artifact"><code class="docutils literal notranslate"><span class="pre">change_artifact()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.change_unit_make_room_when_join"><code class="docutils literal notranslate"><span class="pre">change_unit_make_room_when_join()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.change_units"><code class="docutils literal notranslate"><span class="pre">change_units()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.choose_chest"><code class="docutils literal notranslate"><span class="pre">choose_chest()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.choose_skill_upgrade"><code class="docutils literal notranslate"><span class="pre">choose_skill_upgrade()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.click_artifact"><code class="docutils literal notranslate"><span class="pre">click_artifact()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.click_cast_spell"><code class="docutils literal notranslate"><span class="pre">click_cast_spell()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.click_on_tile_adventure"><code class="docutils literal notranslate"><span class="pre">click_on_tile_adventure()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.click_unit_tile"><code class="docutils literal notranslate"><span class="pre">click_unit_tile()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.dig"><code class="docutils literal notranslate"><span class="pre">dig()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.dismiss_hero"><code class="docutils literal notranslate"><span class="pre">dismiss_hero()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.end_turn"><code class="docutils literal notranslate"><span class="pre">end_turn()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.enter_current_tile"><code class="docutils literal notranslate"><span class="pre">enter_current_tile()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.enter_town"><code class="docutils literal notranslate"><span class="pre">enter_town()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.generic_proposal"><code class="docutils literal notranslate"><span class="pre">generic_proposal()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.leave_screen"><code class="docutils literal notranslate"><span class="pre">leave_screen()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.level_up_choose_skill"><code class="docutils literal notranslate"><span class="pre">level_up_choose_skill()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.max_unit_buy"><code class="docutils literal notranslate"><span class="pre">max_unit_buy()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.move_camera_down"><code class="docutils literal notranslate"><span class="pre">move_camera_down()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.move_camera_left"><code class="docutils literal notranslate"><span class="pre">move_camera_left()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.move_camera_right"><code class="docutils literal notranslate"><span class="pre">move_camera_right()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.move_camera_up"><code class="docutils literal notranslate"><span class="pre">move_camera_up()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.move_hero"><code class="docutils literal notranslate"><span class="pre">move_hero()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.move_hero_bottom_left"><code class="docutils literal notranslate"><span class="pre">move_hero_bottom_left()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.move_hero_bottom_right"><code class="docutils literal notranslate"><span class="pre">move_hero_bottom_right()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.move_hero_down"><code class="docutils literal notranslate"><span class="pre">move_hero_down()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.move_hero_left"><code class="docutils literal notranslate"><span class="pre">move_hero_left()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.move_hero_right"><code class="docutils literal notranslate"><span class="pre">move_hero_right()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.move_hero_top_left"><code class="docutils literal notranslate"><span class="pre">move_hero_top_left()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.move_hero_top_right"><code class="docutils literal notranslate"><span class="pre">move_hero_top_right()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.move_hero_up"><code class="docutils literal notranslate"><span class="pre">move_hero_up()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.move_mouse_and_click_adventure"><code class="docutils literal notranslate"><span class="pre">move_mouse_and_click_adventure()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.move_mouse_by_pixel_relative"><code class="docutils literal notranslate"><span class="pre">move_mouse_by_pixel_relative()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.move_mouse_over_hero"><code class="docutils literal notranslate"><span class="pre">move_mouse_over_hero()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.move_mouse_over_town"><code class="docutils literal notranslate"><span class="pre">move_mouse_over_town()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.move_mouse_to_tile_adventure"><code class="docutils literal notranslate"><span class="pre">move_mouse_to_tile_adventure()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.move_to_tile_adventure"><code class="docutils literal notranslate"><span class="pre">move_to_tile_adventure()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.next_hero"><code class="docutils literal notranslate"><span class="pre">next_hero()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.press_enter"><code class="docutils literal notranslate"><span class="pre">press_enter()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.press_hero"><code class="docutils literal notranslate"><span class="pre">press_hero()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.press_kingdom_overview"><code class="docutils literal notranslate"><span class="pre">press_kingdom_overview()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.press_replay_opponent_turn"><code class="docutils literal notranslate"><span class="pre">press_replay_opponent_turn()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.press_town"><code class="docutils literal notranslate"><span class="pre">press_town()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.press_underworld_view"><code class="docutils literal notranslate"><span class="pre">press_underworld_view()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.put_hero_to_sleep"><code class="docutils literal notranslate"><span class="pre">put_hero_to_sleep()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.questlog"><code class="docutils literal notranslate"><span class="pre">questlog()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.recruit_unit"><code class="docutils literal notranslate"><span class="pre">recruit_unit()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.save_in_game"><code class="docutils literal notranslate"><span class="pre">save_in_game()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.scroll_town_down"><code class="docutils literal notranslate"><span class="pre">scroll_town_down()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.scroll_town_up"><code class="docutils literal notranslate"><span class="pre">scroll_town_up()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.seafaring_academy"><code class="docutils literal notranslate"><span class="pre">seafaring_academy()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.set_combat_formation"><code class="docutils literal notranslate"><span class="pre">set_combat_formation()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.system_options"><code class="docutils literal notranslate"><span class="pre">system_options()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.town_gate_adventure"><code class="docutils literal notranslate"><span class="pre">town_gate_adventure()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.upgrade_unit_hill_fort"><code class="docutils literal notranslate"><span class="pre">upgrade_unit_hill_fort()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.view_puzzle"><code class="docutils literal notranslate"><span class="pre">view_puzzle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.view_scenario_info"><code class="docutils literal notranslate"><span class="pre">view_scenario_info()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.view_world"><code class="docutils literal notranslate"><span class="pre">view_world()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.AdventureGUI.wake_hero_up"><code class="docutils literal notranslate"><span class="pre">wake_hero_up()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-GUI_handling.BattleGUI">GUI_handling.BattleGUI module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.BattleGUI.area_attack"><code class="docutils literal notranslate"><span class="pre">area_attack()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.BattleGUI.attack_enemy"><code class="docutils literal notranslate"><span class="pre">attack_enemy()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.BattleGUI.auto_combat"><code class="docutils literal notranslate"><span class="pre">auto_combat()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.BattleGUI.cast_spell_battle"><code class="docutils literal notranslate"><span class="pre">cast_spell_battle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.BattleGUI.default_spell_book_position"><code class="docutils literal notranslate"><span class="pre">default_spell_book_position()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.BattleGUI.defend"><code class="docutils literal notranslate"><span class="pre">defend()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.BattleGUI.fight_log"><code class="docutils literal notranslate"><span class="pre">fight_log()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.BattleGUI.move_mouse_and_click_battle"><code class="docutils literal notranslate"><span class="pre">move_mouse_and_click_battle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.BattleGUI.move_mouse_to_tile"><code class="docutils literal notranslate"><span class="pre">move_mouse_to_tile()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.BattleGUI.move_to_portrait"><code class="docutils literal notranslate"><span class="pre">move_to_portrait()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.BattleGUI.move_to_tile"><code class="docutils literal notranslate"><span class="pre">move_to_tile()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.BattleGUI.options"><code class="docutils literal notranslate"><span class="pre">options()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.BattleGUI.quick_combat"><code class="docutils literal notranslate"><span class="pre">quick_combat()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.BattleGUI.retreat"><code class="docutils literal notranslate"><span class="pre">retreat()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.BattleGUI.show_current_unit_stats"><code class="docutils literal notranslate"><span class="pre">show_current_unit_stats()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.BattleGUI.show_heroes_stats"><code class="docutils literal notranslate"><span class="pre">show_heroes_stats()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.BattleGUI.show_hide_queue"><code class="docutils literal notranslate"><span class="pre">show_hide_queue()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.BattleGUI.spell_book"><code class="docutils literal notranslate"><span class="pre">spell_book()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.BattleGUI.surrender"><code class="docutils literal notranslate"><span class="pre">surrender()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.BattleGUI.wait"><code class="docutils literal notranslate"><span class="pre">wait()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-GUI_handling.TownGUI">GUI_handling.TownGUI module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.TownGUI.buy_ballista_from_yard"><code class="docutils literal notranslate"><span class="pre">buy_ballista_from_yard()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.TownGUI.buy_building"><code class="docutils literal notranslate"><span class="pre">buy_building()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.TownGUI.buy_building_castle"><code class="docutils literal notranslate"><span class="pre">buy_building_castle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.TownGUI.buy_building_conflux"><code class="docutils literal notranslate"><span class="pre">buy_building_conflux()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.TownGUI.buy_building_cove"><code class="docutils literal notranslate"><span class="pre">buy_building_cove()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.TownGUI.buy_building_dungeon"><code class="docutils literal notranslate"><span class="pre">buy_building_dungeon()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.TownGUI.buy_building_fortress"><code class="docutils literal notranslate"><span class="pre">buy_building_fortress()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.TownGUI.buy_building_inferno"><code class="docutils literal notranslate"><span class="pre">buy_building_inferno()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.TownGUI.buy_building_necropolis"><code class="docutils literal notranslate"><span class="pre">buy_building_necropolis()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.TownGUI.buy_building_rampart"><code class="docutils literal notranslate"><span class="pre">buy_building_rampart()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.TownGUI.buy_building_stronghold"><code class="docutils literal notranslate"><span class="pre">buy_building_stronghold()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.TownGUI.buy_building_tower"><code class="docutils literal notranslate"><span class="pre">buy_building_tower()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.TownGUI.buy_generic_building"><code class="docutils literal notranslate"><span class="pre">buy_generic_building()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.TownGUI.buy_mage_guild"><code class="docutils literal notranslate"><span class="pre">buy_mage_guild()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.TownGUI.buy_marketplace"><code class="docutils literal notranslate"><span class="pre">buy_marketplace()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.TownGUI.buy_shipyard"><code class="docutils literal notranslate"><span class="pre">buy_shipyard()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.TownGUI.change_tile_unit"><code class="docutils literal notranslate"><span class="pre">change_tile_unit()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.TownGUI.click_artifact_merchant"><code class="docutils literal notranslate"><span class="pre">click_artifact_merchant()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.TownGUI.click_blacksmith"><code class="docutils literal notranslate"><span class="pre">click_blacksmith()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.TownGUI.click_building"><code class="docutils literal notranslate"><span class="pre">click_building()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.TownGUI.click_mage_guild"><code class="docutils literal notranslate"><span class="pre">click_mage_guild()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.TownGUI.click_magic"><code class="docutils literal notranslate"><span class="pre">click_magic()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.TownGUI.click_tavern"><code class="docutils literal notranslate"><span class="pre">click_tavern()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.TownGUI.click_tile"><code class="docutils literal notranslate"><span class="pre">click_tile()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.TownGUI.click_town_hall"><code class="docutils literal notranslate"><span class="pre">click_town_hall()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.TownGUI.dismiss_unit"><code class="docutils literal notranslate"><span class="pre">dismiss_unit()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.TownGUI.double_click_tile"><code class="docutils literal notranslate"><span class="pre">double_click_tile()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.TownGUI.hero_garrison_change"><code class="docutils literal notranslate"><span class="pre">hero_garrison_change()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.TownGUI.hire_hero"><code class="docutils literal notranslate"><span class="pre">hire_hero()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.TownGUI.learn_elemental_magic_town"><code class="docutils literal notranslate"><span class="pre">learn_elemental_magic_town()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.TownGUI.make_single_stack_unit"><code class="docutils literal notranslate"><span class="pre">make_single_stack_unit()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.TownGUI.merge_stacks_unit"><code class="docutils literal notranslate"><span class="pre">merge_stacks_unit()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.TownGUI.move_all_units_to_other_side"><code class="docutils literal notranslate"><span class="pre">move_all_units_to_other_side()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.TownGUI.move_mouse_and_click"><code class="docutils literal notranslate"><span class="pre">move_mouse_and_click()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.TownGUI.recruit_unit"><code class="docutils literal notranslate"><span class="pre">recruit_unit()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.TownGUI.split_even_unit"><code class="docutils literal notranslate"><span class="pre">split_even_unit()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.TownGUI.transform_skeleton"><code class="docutils literal notranslate"><span class="pre">transform_skeleton()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.TownGUI.upgrade_unit"><code class="docutils literal notranslate"><span class="pre">upgrade_unit()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.TownGUI.use_castle_gate"><code class="docutils literal notranslate"><span class="pre">use_castle_gate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#GUI_handling.TownGUI.use_freelancers_guild"><code class="docutils literal notranslate"><span class="pre">use_freelancers_guild()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-GUI_handling.gui_control">GUI_handling.gui_control module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-GUI_handling">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="battleAI.html">battleAI package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data.html">data package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_reader.html">file_reader package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hierarchyFunctions.html">hierarchyFunctions package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="image_processing.html">image_processing package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="main.html">main module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="map.html">map package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="path_finding_alghoritms.html">path_finding_alghoritms package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="save.html">save module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="town_upgrading.html">town_upgrading package</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">HoMM3 Bot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">homm3-bot</a></li>
+      <li class="breadcrumb-item active">GUI_handling package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/GUI_handling.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="gui-handling-package">
+<h1>GUI_handling package<a class="headerlink" href="#gui-handling-package" title="Permalink to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-GUI_handling.AdventureGUI">
+<span id="gui-handling-adventuregui-module"></span><h2>GUI_handling.AdventureGUI module<a class="headerlink" href="#module-GUI_handling.AdventureGUI" title="Permalink to this heading"></a></h2>
+<p>Script containing functions essential for handling  adventure GUI.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.accept_battle_result">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">accept_battle_result</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">accept</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#accept_battle_result"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.accept_battle_result" title="Permalink to this definition"></a></dt>
+<dd><p>accept battle result</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>accept</strong> – (Boolean) Yes -&gt; True, No -&gt; False</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.accept_offer">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">accept_offer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#accept_offer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.accept_offer" title="Permalink to this definition"></a></dt>
+<dd><p>accept offer</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.accept_retreat">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">accept_retreat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">accept</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#accept_retreat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.accept_retreat" title="Permalink to this definition"></a></dt>
+<dd><p>Accept retreat</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>accept</strong> – (Boolean) Yes -&gt; True, No -&gt; False</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.access_marketplace">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">access_marketplace</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#access_marketplace"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.access_marketplace" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.artifact_coordinates">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">artifact_coordinates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slot_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">artifacts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">additional_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#artifact_coordinates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.artifact_coordinates" title="Permalink to this definition"></a></dt>
+<dd><p>Inside function shouldn’t be touched</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>slot_id</strong> – </p></li>
+<li><p><strong>artifacts</strong> – </p></li>
+<li><p><strong>additional_id</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.cast_spell_adventure">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">cast_spell_adventure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#cast_spell_adventure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.cast_spell_adventure" title="Permalink to this definition"></a></dt>
+<dd><p>cast spell on the adventure map</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>id</strong> – Spell id</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.center_on_hero">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">center_on_hero</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#center_on_hero"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.center_on_hero" title="Permalink to this definition"></a></dt>
+<dd><p>center camera on hero</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.change_artifact">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">change_artifact</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slot_id_from</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slot_id_to</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">additional_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#change_artifact"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.change_artifact" title="Permalink to this definition"></a></dt>
+<dd><p>Artifacts are labeled according to <a class="reference external" href="https://heroes.thelazy.net/index.php/Artifact">https://heroes.thelazy.net/index.php/Artifact</a>
+you can either pass in the slot number or the slot name
+additional_id is the number given to miscellaneous or ring artifacts and ones in the backpack</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>slot_id_from</strong> – can be either slot number according to the dict or the slot name as str</p></li>
+<li><p><strong>slot_id_to</strong> – can be either slot number according to the dict or the slot name as str</p></li>
+<li><p><strong>additional_id</strong> – needed when inputting ring, misc or backpack, id of the additional slot</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.change_unit_make_room_when_join">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">change_unit_make_room_when_join</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inner_tile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outer_tile</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#change_unit_make_room_when_join"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.change_unit_make_room_when_join" title="Permalink to this definition"></a></dt>
+<dd><p>change units when a unit joins you and you have full unit</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inner_tile</strong> – number of inner tile</p></li>
+<li><p><strong>outer_tile</strong> – number of outer tile</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.change_units">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">change_units</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nr1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nr2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#change_units"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.change_units" title="Permalink to this definition"></a></dt>
+<dd><p>Inside hero’s inventory</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nr1</strong> – unit no 1</p></li>
+<li><p><strong>nr2</strong> – unit no 2</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.choose_chest">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">choose_chest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">choice</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#choose_chest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.choose_chest" title="Permalink to this definition"></a></dt>
+<dd><p>choose chest</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>choice</strong> – (str) “gold”, “exp” or “experience” is the correct value</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.choose_skill_upgrade">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">choose_skill_upgrade</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">side</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#choose_skill_upgrade"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.choose_skill_upgrade" title="Permalink to this definition"></a></dt>
+<dd><p>Old function no touchy</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>side</strong> – left or right side</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>does nothing</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.click_artifact">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">click_artifact</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slot_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">artifacts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">additional_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#click_artifact"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.click_artifact" title="Permalink to this definition"></a></dt>
+<dd><p>click on a given artifact inside function</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>slot_id</strong> – </p></li>
+<li><p><strong>artifacts</strong> – </p></li>
+<li><p><strong>additional_id</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.click_cast_spell">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">click_cast_spell</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#click_cast_spell"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.click_cast_spell" title="Permalink to this definition"></a></dt>
+<dd><p>click cast spell</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.click_on_tile_adventure">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">click_on_tile_adventure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#click_on_tile_adventure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.click_on_tile_adventure" title="Permalink to this definition"></a></dt>
+<dd><p>Hero is expected to be in the middle of the screen (x=0, y=0)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – “x” coordinate of the location to be clicked</p></li>
+<li><p><strong>y</strong> – “y” coordinate of the location to be clicked</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.click_unit_tile">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">click_unit_tile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#click_unit_tile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.click_unit_tile" title="Permalink to this definition"></a></dt>
+<dd><p>Inside hero’s inventory</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>nr</strong> – number of a unit</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.dig">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">dig</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#dig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.dig" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.dismiss_hero">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">dismiss_hero</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#dismiss_hero"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.dismiss_hero" title="Permalink to this definition"></a></dt>
+<dd><p>Dismiss hero First enter his inventory</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.end_turn">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">end_turn</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#end_turn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.end_turn" title="Permalink to this definition"></a></dt>
+<dd><p>end turn</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.enter_current_tile">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">enter_current_tile</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#enter_current_tile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.enter_current_tile" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.enter_town">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">enter_town</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">number</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#enter_town"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.enter_town" title="Permalink to this definition"></a></dt>
+<dd><p>enter town</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>number</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.generic_proposal">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">generic_proposal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">accept</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#generic_proposal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.generic_proposal" title="Permalink to this definition"></a></dt>
+<dd><p>Accept or reject proposal on screen</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.leave_screen">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">leave_screen</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#leave_screen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.leave_screen" title="Permalink to this definition"></a></dt>
+<dd><p>leave screen</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.level_up_choose_skill">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">level_up_choose_skill</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">number</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#level_up_choose_skill"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.level_up_choose_skill" title="Permalink to this definition"></a></dt>
+<dd><p>Choose skill
+Left skill is number 1, right one is number 2</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>number</strong> – (int) left -&gt; 1, right -&gt; 2</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.max_unit_buy">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">max_unit_buy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#max_unit_buy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.max_unit_buy" title="Permalink to this definition"></a></dt>
+<dd><p>selects amx amount of units in habitat</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.move_camera_down">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">move_camera_down</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#move_camera_down"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.move_camera_down" title="Permalink to this definition"></a></dt>
+<dd><p>move camera down</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.move_camera_left">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">move_camera_left</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#move_camera_left"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.move_camera_left" title="Permalink to this definition"></a></dt>
+<dd><p>move camera left</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.move_camera_right">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">move_camera_right</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#move_camera_right"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.move_camera_right" title="Permalink to this definition"></a></dt>
+<dd><p>move camera right</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.move_camera_up">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">move_camera_up</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#move_camera_up"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.move_camera_up" title="Permalink to this definition"></a></dt>
+<dd><p>move camera up</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.move_hero">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">move_hero</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#move_hero"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.move_hero" title="Permalink to this definition"></a></dt>
+<dd><p>Finishes the movement</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.move_hero_bottom_left">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">move_hero_bottom_left</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#move_hero_bottom_left"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.move_hero_bottom_left" title="Permalink to this definition"></a></dt>
+<dd><p>move hero bottom left</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.move_hero_bottom_right">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">move_hero_bottom_right</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#move_hero_bottom_right"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.move_hero_bottom_right" title="Permalink to this definition"></a></dt>
+<dd><p>move hero bottom right</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.move_hero_down">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">move_hero_down</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#move_hero_down"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.move_hero_down" title="Permalink to this definition"></a></dt>
+<dd><p>move hero down</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.move_hero_left">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">move_hero_left</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#move_hero_left"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.move_hero_left" title="Permalink to this definition"></a></dt>
+<dd><p>move hero left</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.move_hero_right">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">move_hero_right</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#move_hero_right"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.move_hero_right" title="Permalink to this definition"></a></dt>
+<dd><p>move hero right</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.move_hero_top_left">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">move_hero_top_left</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#move_hero_top_left"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.move_hero_top_left" title="Permalink to this definition"></a></dt>
+<dd><p>move hero top left</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.move_hero_top_right">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">move_hero_top_right</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#move_hero_top_right"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.move_hero_top_right" title="Permalink to this definition"></a></dt>
+<dd><p>move hero top right</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.move_hero_up">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">move_hero_up</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#move_hero_up"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.move_hero_up" title="Permalink to this definition"></a></dt>
+<dd><p>move hero up</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.move_mouse_and_click_adventure">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">move_mouse_and_click_adventure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#move_mouse_and_click_adventure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.move_mouse_and_click_adventure" title="Permalink to this definition"></a></dt>
+<dd><p>move mouse to the given coordinates and press on it</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – “x” coordinate of the location to be clicked</p></li>
+<li><p><strong>y</strong> – “y” coordinate of the location to be clicked</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.move_mouse_by_pixel_relative">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">move_mouse_by_pixel_relative</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#move_mouse_by_pixel_relative"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.move_mouse_by_pixel_relative" title="Permalink to this definition"></a></dt>
+<dd><p>Function for moving mouse by some pixel relative to the current mouse position</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – x pixel shift</p></li>
+<li><p><strong>y</strong> – y pixel shift</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.move_mouse_over_hero">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">move_mouse_over_hero</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">number</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#move_mouse_over_hero"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.move_mouse_over_hero" title="Permalink to this definition"></a></dt>
+<dd><p>move mouse over hero</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>number</strong> – hero number on the hero list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.move_mouse_over_town">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">move_mouse_over_town</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">number</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#move_mouse_over_town"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.move_mouse_over_town" title="Permalink to this definition"></a></dt>
+<dd><p>move mouse over town</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>number</strong> – town number on the town list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.move_mouse_to_tile_adventure">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">move_mouse_to_tile_adventure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#move_mouse_to_tile_adventure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.move_mouse_to_tile_adventure" title="Permalink to this definition"></a></dt>
+<dd><p>Move_mouse_to_tile on adventure
+Hero is expected to be in the middle of the screen (x=0, y=0)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – “x” coordinate of the location to be clicked</p></li>
+<li><p><strong>y</strong> – “y” coordinate of the location to be clicked</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.move_to_tile_adventure">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">move_to_tile_adventure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#move_to_tile_adventure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.move_to_tile_adventure" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – “x” coordinate of the location to be clicked</p></li>
+<li><p><strong>y</strong> – “y” coordinate of the location to be clicked</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.next_hero">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">next_hero</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#next_hero"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.next_hero" title="Permalink to this definition"></a></dt>
+<dd><p>next hero</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.press_enter">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">press_enter</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#press_enter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.press_enter" title="Permalink to this definition"></a></dt>
+<dd><p>presses enter</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>number</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.press_hero">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">press_hero</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">number</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#press_hero"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.press_hero" title="Permalink to this definition"></a></dt>
+<dd><p>press hero</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>number</strong> – hero number on the hero list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.press_kingdom_overview">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">press_kingdom_overview</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#press_kingdom_overview"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.press_kingdom_overview" title="Permalink to this definition"></a></dt>
+<dd><p>press kingdom overview</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.press_replay_opponent_turn">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">press_replay_opponent_turn</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#press_replay_opponent_turn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.press_replay_opponent_turn" title="Permalink to this definition"></a></dt>
+<dd><p>press replay opponent turn</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.press_town">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">press_town</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">number</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#press_town"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.press_town" title="Permalink to this definition"></a></dt>
+<dd><p>press town</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>number</strong> – town number on the town list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.press_underworld_view">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">press_underworld_view</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#press_underworld_view"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.press_underworld_view" title="Permalink to this definition"></a></dt>
+<dd><p>press underw</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.put_hero_to_sleep">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">put_hero_to_sleep</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#put_hero_to_sleep"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.put_hero_to_sleep" title="Permalink to this definition"></a></dt>
+<dd><p>put hero to sleep</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.questlog">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">questlog</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#questlog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.questlog" title="Permalink to this definition"></a></dt>
+<dd><p>open questlog</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.recruit_unit">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">recruit_unit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">amount</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#recruit_unit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.recruit_unit" title="Permalink to this definition"></a></dt>
+<dd><p>Recruits a specified amount of units from a habitat if there is free space.
+To recruit all units the amount should be: -1
+This function expects you to have all necessary resources</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>amount</strong> – amount of units to be recruited</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.save_in_game">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">save_in_game</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">savefile_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#save_in_game"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.save_in_game" title="Permalink to this definition"></a></dt>
+<dd><p>save game</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>savefile_name</strong> – name of the saved file</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.scroll_town_down">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">scroll_town_down</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#scroll_town_down"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.scroll_town_down" title="Permalink to this definition"></a></dt>
+<dd><p>scroll the town listing downwards</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.scroll_town_up">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">scroll_town_up</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#scroll_town_up"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.scroll_town_up" title="Permalink to this definition"></a></dt>
+<dd><p>scroll the town listing upwards</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.seafaring_academy">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">seafaring_academy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ability_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#seafaring_academy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.seafaring_academy" title="Permalink to this definition"></a></dt>
+<dd><p>Choose seafaring academy skill</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>ability_id</strong> – Ability id</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.set_combat_formation">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">set_combat_formation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">formation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#set_combat_formation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.set_combat_formation" title="Permalink to this definition"></a></dt>
+<dd><p>set combat formation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>formation</strong> – loose or tight</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>does nothing</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.system_options">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">system_options</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#system_options"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.system_options" title="Permalink to this definition"></a></dt>
+<dd><p>system options</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.town_gate_adventure">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">town_gate_adventure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">town_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#town_gate_adventure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.town_gate_adventure" title="Permalink to this definition"></a></dt>
+<dd><p>use town gate on the adventure map</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>town_id</strong> – id of town we want to move to</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.upgrade_unit_hill_fort">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">upgrade_unit_hill_fort</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tile_number</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#upgrade_unit_hill_fort"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.upgrade_unit_hill_fort" title="Permalink to this definition"></a></dt>
+<dd><p>Upgrade unit in a hill fort
+Specify a number or write a string ‘all’</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>tile_number</strong> – tile number</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.view_puzzle">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">view_puzzle</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#view_puzzle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.view_puzzle" title="Permalink to this definition"></a></dt>
+<dd><p>view puzzle</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.view_scenario_info">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">view_scenario_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#view_scenario_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.view_scenario_info" title="Permalink to this definition"></a></dt>
+<dd><p>view scenario info</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.view_world">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">view_world</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#view_world"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.view_world" title="Permalink to this definition"></a></dt>
+<dd><p>view world</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.AdventureGUI.wake_hero_up">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.AdventureGUI.</span></span><span class="sig-name descname"><span class="pre">wake_hero_up</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/AdventureGUI.html#wake_hero_up"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.AdventureGUI.wake_hero_up" title="Permalink to this definition"></a></dt>
+<dd><p>wake hero up</p>
+</dd></dl>
+
+</section>
+<section id="module-GUI_handling.BattleGUI">
+<span id="gui-handling-battlegui-module"></span><h2>GUI_handling.BattleGUI module<a class="headerlink" href="#module-GUI_handling.BattleGUI" title="Permalink to this heading"></a></h2>
+<p>Script containing functions essential for handling battle GUI.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.BattleGUI.area_attack">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.BattleGUI.</span></span><span class="sig-name descname"><span class="pre">area_attack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/BattleGUI.html#area_attack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.BattleGUI.area_attack" title="Permalink to this definition"></a></dt>
+<dd><p>Attack area. For Magogs and Liches</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – x coord</p></li>
+<li><p><strong>y</strong> – y coord</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.BattleGUI.attack_enemy">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.BattleGUI.</span></span><span class="sig-name descname"><span class="pre">attack_enemy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">direction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/BattleGUI.html#attack_enemy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.BattleGUI.attack_enemy" title="Permalink to this definition"></a></dt>
+<dd><p>Attacks the enemy on the given coordinates from a given direction. Possible directions are:
+‘top’, ‘top_right’, ‘right’, ‘bottom_right’, ‘bottom’, ‘bottom_left’, ‘left’, ‘top_left’
+Works the same way as move_to_tile with additional direction</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – x coord</p></li>
+<li><p><strong>y</strong> – y coord</p></li>
+<li><p><strong>direction</strong> – direction we want to attack from</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.BattleGUI.auto_combat">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.BattleGUI.</span></span><span class="sig-name descname"><span class="pre">auto_combat</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/BattleGUI.html#auto_combat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.BattleGUI.auto_combat" title="Permalink to this definition"></a></dt>
+<dd><p>auto combat</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.BattleGUI.cast_spell_battle">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.BattleGUI.</span></span><span class="sig-name descname"><span class="pre">cast_spell_battle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/BattleGUI.html#cast_spell_battle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.BattleGUI.cast_spell_battle" title="Permalink to this definition"></a></dt>
+<dd><p>Choose a spell. Its id is its position in the book, starting from 0, and not within the overall magic
+(If you have 3 spells of tier 1, 2 and 3 then tier 3 spell has id=2,
+because it lies on the 3rd position in the book)
+The spell is not played on the battlefield, its only chosen.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>id</strong> – (int) spell id</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.BattleGUI.default_spell_book_position">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.BattleGUI.</span></span><span class="sig-name descname"><span class="pre">default_spell_book_position</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/BattleGUI.html#default_spell_book_position"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.BattleGUI.default_spell_book_position" title="Permalink to this definition"></a></dt>
+<dd><p>Returns to the leftmost page of the spellbook</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.BattleGUI.defend">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.BattleGUI.</span></span><span class="sig-name descname"><span class="pre">defend</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/BattleGUI.html#defend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.BattleGUI.defend" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.BattleGUI.fight_log">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.BattleGUI.</span></span><span class="sig-name descname"><span class="pre">fight_log</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/BattleGUI.html#fight_log"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.BattleGUI.fight_log" title="Permalink to this definition"></a></dt>
+<dd><p>fight log</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.BattleGUI.move_mouse_and_click_battle">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.BattleGUI.</span></span><span class="sig-name descname"><span class="pre">move_mouse_and_click_battle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/BattleGUI.html#move_mouse_and_click_battle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.BattleGUI.move_mouse_and_click_battle" title="Permalink to this definition"></a></dt>
+<dd><p>move mouse and click during battle</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – x coord</p></li>
+<li><p><strong>y</strong> – y coord</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.BattleGUI.move_mouse_to_tile">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.BattleGUI.</span></span><span class="sig-name descname"><span class="pre">move_mouse_to_tile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">win_gui</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/BattleGUI.html#move_mouse_to_tile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.BattleGUI.move_mouse_to_tile" title="Permalink to this definition"></a></dt>
+<dd><p>move mouse to tile</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – x coord</p></li>
+<li><p><strong>y</strong> – y coord</p></li>
+<li><p><strong>win_gui</strong> – use win32gui</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.BattleGUI.move_to_portrait">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.BattleGUI.</span></span><span class="sig-name descname"><span class="pre">move_to_portrait</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">number</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/BattleGUI.html#move_to_portrait"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.BattleGUI.move_to_portrait" title="Permalink to this definition"></a></dt>
+<dd><p>move mouse to portrait in a queue</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>number</strong> – hero number</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.BattleGUI.move_to_tile">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.BattleGUI.</span></span><span class="sig-name descname"><span class="pre">move_to_tile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/BattleGUI.html#move_to_tile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.BattleGUI.move_to_tile" title="Permalink to this definition"></a></dt>
+<dd><p>Top left corner is the (0, 0) point.
+Adding x moves the chosen tile to the right, adding y moves it downwards</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – x coord</p></li>
+<li><p><strong>y</strong> – y coord</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.BattleGUI.options">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.BattleGUI.</span></span><span class="sig-name descname"><span class="pre">options</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/BattleGUI.html#options"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.BattleGUI.options" title="Permalink to this definition"></a></dt>
+<dd><p>click options</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.BattleGUI.quick_combat">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.BattleGUI.</span></span><span class="sig-name descname"><span class="pre">quick_combat</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/BattleGUI.html#quick_combat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.BattleGUI.quick_combat" title="Permalink to this definition"></a></dt>
+<dd><p>quick combat</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.BattleGUI.retreat">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.BattleGUI.</span></span><span class="sig-name descname"><span class="pre">retreat</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/BattleGUI.html#retreat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.BattleGUI.retreat" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.BattleGUI.show_current_unit_stats">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.BattleGUI.</span></span><span class="sig-name descname"><span class="pre">show_current_unit_stats</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/BattleGUI.html#show_current_unit_stats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.BattleGUI.show_current_unit_stats" title="Permalink to this definition"></a></dt>
+<dd><p>show unit stats</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.BattleGUI.show_heroes_stats">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.BattleGUI.</span></span><span class="sig-name descname"><span class="pre">show_heroes_stats</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/BattleGUI.html#show_heroes_stats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.BattleGUI.show_heroes_stats" title="Permalink to this definition"></a></dt>
+<dd><p>show hero stats</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.BattleGUI.show_hide_queue">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.BattleGUI.</span></span><span class="sig-name descname"><span class="pre">show_hide_queue</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/BattleGUI.html#show_hide_queue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.BattleGUI.show_hide_queue" title="Permalink to this definition"></a></dt>
+<dd><p>show or hide queue</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.BattleGUI.spell_book">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.BattleGUI.</span></span><span class="sig-name descname"><span class="pre">spell_book</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/BattleGUI.html#spell_book"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.BattleGUI.spell_book" title="Permalink to this definition"></a></dt>
+<dd><p>go into spell book</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.BattleGUI.surrender">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.BattleGUI.</span></span><span class="sig-name descname"><span class="pre">surrender</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/BattleGUI.html#surrender"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.BattleGUI.surrender" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.BattleGUI.wait">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.BattleGUI.</span></span><span class="sig-name descname"><span class="pre">wait</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/BattleGUI.html#wait"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.BattleGUI.wait" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-GUI_handling.TownGUI">
+<span id="gui-handling-towngui-module"></span><h2>GUI_handling.TownGUI module<a class="headerlink" href="#module-GUI_handling.TownGUI" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.TownGUI.buy_ballista_from_yard">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.TownGUI.</span></span><span class="sig-name descname"><span class="pre">buy_ballista_from_yard</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/TownGUI.html#buy_ballista_from_yard"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.TownGUI.buy_ballista_from_yard" title="Permalink to this definition"></a></dt>
+<dd><p>Stronghold only</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.TownGUI.buy_building">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.TownGUI.</span></span><span class="sig-name descname"><span class="pre">buy_building</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">faction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/TownGUI.html#buy_building"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.TownGUI.buy_building" title="Permalink to this definition"></a></dt>
+<dd><p>Actual function please don’t use anything to build other than this
+The generic function that should be used to buy everything</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – name of the building</p></li>
+<li><p><strong>faction</strong> – your current faction</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.TownGUI.buy_building_castle">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.TownGUI.</span></span><span class="sig-name descname"><span class="pre">buy_building_castle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/TownGUI.html#buy_building_castle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.TownGUI.buy_building_castle" title="Permalink to this definition"></a></dt>
+<dd><p>buy building</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>name</strong> – Name of the building</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.TownGUI.buy_building_conflux">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.TownGUI.</span></span><span class="sig-name descname"><span class="pre">buy_building_conflux</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/TownGUI.html#buy_building_conflux"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.TownGUI.buy_building_conflux" title="Permalink to this definition"></a></dt>
+<dd><p>buy building</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>name</strong> – Name of the building</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.TownGUI.buy_building_cove">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.TownGUI.</span></span><span class="sig-name descname"><span class="pre">buy_building_cove</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/TownGUI.html#buy_building_cove"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.TownGUI.buy_building_cove" title="Permalink to this definition"></a></dt>
+<dd><p>buy building</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>name</strong> – Name of the building</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.TownGUI.buy_building_dungeon">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.TownGUI.</span></span><span class="sig-name descname"><span class="pre">buy_building_dungeon</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/TownGUI.html#buy_building_dungeon"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.TownGUI.buy_building_dungeon" title="Permalink to this definition"></a></dt>
+<dd><p>buy building</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>name</strong> – Name of the building</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.TownGUI.buy_building_fortress">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.TownGUI.</span></span><span class="sig-name descname"><span class="pre">buy_building_fortress</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/TownGUI.html#buy_building_fortress"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.TownGUI.buy_building_fortress" title="Permalink to this definition"></a></dt>
+<dd><p>buy building</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>name</strong> – Name of the building</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.TownGUI.buy_building_inferno">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.TownGUI.</span></span><span class="sig-name descname"><span class="pre">buy_building_inferno</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/TownGUI.html#buy_building_inferno"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.TownGUI.buy_building_inferno" title="Permalink to this definition"></a></dt>
+<dd><p>buy building</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>name</strong> – Name of the building</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.TownGUI.buy_building_necropolis">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.TownGUI.</span></span><span class="sig-name descname"><span class="pre">buy_building_necropolis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/TownGUI.html#buy_building_necropolis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.TownGUI.buy_building_necropolis" title="Permalink to this definition"></a></dt>
+<dd><p>buy building</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>name</strong> – Name of the building</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.TownGUI.buy_building_rampart">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.TownGUI.</span></span><span class="sig-name descname"><span class="pre">buy_building_rampart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/TownGUI.html#buy_building_rampart"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.TownGUI.buy_building_rampart" title="Permalink to this definition"></a></dt>
+<dd><p>buy building</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>name</strong> – Name of the building</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.TownGUI.buy_building_stronghold">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.TownGUI.</span></span><span class="sig-name descname"><span class="pre">buy_building_stronghold</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/TownGUI.html#buy_building_stronghold"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.TownGUI.buy_building_stronghold" title="Permalink to this definition"></a></dt>
+<dd><p>buy building</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>name</strong> – Name of the building</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.TownGUI.buy_building_tower">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.TownGUI.</span></span><span class="sig-name descname"><span class="pre">buy_building_tower</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/TownGUI.html#buy_building_tower"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.TownGUI.buy_building_tower" title="Permalink to this definition"></a></dt>
+<dd><p>buy building</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>name</strong> – Name of the building</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.TownGUI.buy_generic_building">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.TownGUI.</span></span><span class="sig-name descname"><span class="pre">buy_generic_building</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/TownGUI.html#buy_generic_building"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.TownGUI.buy_generic_building" title="Permalink to this definition"></a></dt>
+<dd><p>buy a building don’t use</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>name</strong> – Name of the building</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.TownGUI.buy_mage_guild">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.TownGUI.</span></span><span class="sig-name descname"><span class="pre">buy_mage_guild</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">faction</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/TownGUI.html#buy_mage_guild"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.TownGUI.buy_mage_guild" title="Permalink to this definition"></a></dt>
+<dd><p>dont touch</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>faction</strong> – Your faction</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.TownGUI.buy_marketplace">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.TownGUI.</span></span><span class="sig-name descname"><span class="pre">buy_marketplace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">faction</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/TownGUI.html#buy_marketplace"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.TownGUI.buy_marketplace" title="Permalink to this definition"></a></dt>
+<dd><p>don’t use</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>faction</strong> – Your faction</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.TownGUI.buy_shipyard">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.TownGUI.</span></span><span class="sig-name descname"><span class="pre">buy_shipyard</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">faction</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/TownGUI.html#buy_shipyard"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.TownGUI.buy_shipyard" title="Permalink to this definition"></a></dt>
+<dd><p>dont use</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>faction</strong> – Your faction</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.TownGUI.change_tile_unit">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.TownGUI.</span></span><span class="sig-name descname"><span class="pre">change_tile_unit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tile_num1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tile_num2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/TownGUI.html#change_tile_unit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.TownGUI.change_tile_unit" title="Permalink to this definition"></a></dt>
+<dd><p>change units tile</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tile_num1</strong> – Unit number</p></li>
+<li><p><strong>tile_num2</strong> – Unit number</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.TownGUI.click_artifact_merchant">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.TownGUI.</span></span><span class="sig-name descname"><span class="pre">click_artifact_merchant</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">faction</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/TownGUI.html#click_artifact_merchant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.TownGUI.click_artifact_merchant" title="Permalink to this definition"></a></dt>
+<dd><p>click on artifact merchant</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>faction</strong> – your current faction</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.TownGUI.click_blacksmith">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.TownGUI.</span></span><span class="sig-name descname"><span class="pre">click_blacksmith</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">faction</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/TownGUI.html#click_blacksmith"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.TownGUI.click_blacksmith" title="Permalink to this definition"></a></dt>
+<dd><p>click on the blacksmith</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>faction</strong> – your current faction</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.TownGUI.click_building">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.TownGUI.</span></span><span class="sig-name descname"><span class="pre">click_building</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/TownGUI.html#click_building"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.TownGUI.click_building" title="Permalink to this definition"></a></dt>
+<dd><p>click on a building</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>id</strong> – Building number</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.TownGUI.click_mage_guild">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.TownGUI.</span></span><span class="sig-name descname"><span class="pre">click_mage_guild</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">faction</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/TownGUI.html#click_mage_guild"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.TownGUI.click_mage_guild" title="Permalink to this definition"></a></dt>
+<dd><p>click on the mage guild</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>faction</strong> – your current faction</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.TownGUI.click_magic">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.TownGUI.</span></span><span class="sig-name descname"><span class="pre">click_magic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/TownGUI.html#click_magic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.TownGUI.click_magic" title="Permalink to this definition"></a></dt>
+<dd><p>click on magic</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tier</strong> – magic tier 1-5</p></li>
+<li><p><strong>id</strong> – number of spell left to right, top to bottom</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.TownGUI.click_tavern">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.TownGUI.</span></span><span class="sig-name descname"><span class="pre">click_tavern</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">faction</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/TownGUI.html#click_tavern"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.TownGUI.click_tavern" title="Permalink to this definition"></a></dt>
+<dd><p>click tavern</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>faction</strong> – your current faction</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.TownGUI.click_tile">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.TownGUI.</span></span><span class="sig-name descname"><span class="pre">click_tile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tile_num</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/TownGUI.html#click_tile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.TownGUI.click_tile" title="Permalink to this definition"></a></dt>
+<dd><p>Click on a tile
+0-7 upper row, 8-15 lower row</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>tile_num</strong> – Unit number</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.TownGUI.click_town_hall">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.TownGUI.</span></span><span class="sig-name descname"><span class="pre">click_town_hall</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">faction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/TownGUI.html#click_town_hall"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.TownGUI.click_town_hall" title="Permalink to this definition"></a></dt>
+<dd><p>Click on town hall Don’t use</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>faction</strong> – Your faction</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.TownGUI.dismiss_unit">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.TownGUI.</span></span><span class="sig-name descname"><span class="pre">dismiss_unit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tile_num</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/TownGUI.html#dismiss_unit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.TownGUI.dismiss_unit" title="Permalink to this definition"></a></dt>
+<dd><p>dismiss a unit</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>tile_num</strong> – Our tile number</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.TownGUI.double_click_tile">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.TownGUI.</span></span><span class="sig-name descname"><span class="pre">double_click_tile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tile_num</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/TownGUI.html#double_click_tile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.TownGUI.double_click_tile" title="Permalink to this definition"></a></dt>
+<dd><p>double click on a tile</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>tile_num</strong> – Unit number</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.TownGUI.hero_garrison_change">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.TownGUI.</span></span><span class="sig-name descname"><span class="pre">hero_garrison_change</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">garrison</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'bottom'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/TownGUI.html#hero_garrison_change"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.TownGUI.hero_garrison_change" title="Permalink to this definition"></a></dt>
+<dd><p>change hero in garrison if the opposite garrison is empty
+Changed it because for some reason space button sometimes doesn’t click</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>garrison</strong> – Indicates whether to move starting from top or bottom</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.TownGUI.hire_hero">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.TownGUI.</span></span><span class="sig-name descname"><span class="pre">hire_hero</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/TownGUI.html#hire_hero"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.TownGUI.hire_hero" title="Permalink to this definition"></a></dt>
+<dd><p>Hires a hero in a tavern,</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>id</strong> – id=0 hires the left one, id=1 hires the right one</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.TownGUI.learn_elemental_magic_town">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.TownGUI.</span></span><span class="sig-name descname"><span class="pre">learn_elemental_magic_town</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/TownGUI.html#learn_elemental_magic_town"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.TownGUI.learn_elemental_magic_town" title="Permalink to this definition"></a></dt>
+<dd><p>Conflux only. Can chain buy by using + name=’air+water+…
+Learn elemental magic conflux only</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>name</strong> – one of ‘fire’, ‘water’, ‘earth’, ‘air’ or added together with a +</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.TownGUI.make_single_stack_unit">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.TownGUI.</span></span><span class="sig-name descname"><span class="pre">make_single_stack_unit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tile_num</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/TownGUI.html#make_single_stack_unit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.TownGUI.make_single_stack_unit" title="Permalink to this definition"></a></dt>
+<dd><p>take positions of unit and make it into a single stack</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>tile_num</strong> – Unit number</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.TownGUI.merge_stacks_unit">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.TownGUI.</span></span><span class="sig-name descname"><span class="pre">merge_stacks_unit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tile_num</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/TownGUI.html#merge_stacks_unit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.TownGUI.merge_stacks_unit" title="Permalink to this definition"></a></dt>
+<dd><p>merge stacks</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>tile_num</strong> – Unit number</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.TownGUI.move_all_units_to_other_side">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.TownGUI.</span></span><span class="sig-name descname"><span class="pre">move_all_units_to_other_side</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tile_num</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/TownGUI.html#move_all_units_to_other_side"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.TownGUI.move_all_units_to_other_side" title="Permalink to this definition"></a></dt>
+<dd><p>Moves every unit except if it moves from a hero.
+Then it moves every unit but one chosen, so the hero is left with 1 stack of 1 unit</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>tile_num</strong> – Tile number deciding which one unit will stay if taking army from a hero</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.TownGUI.move_mouse_and_click">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.TownGUI.</span></span><span class="sig-name descname"><span class="pre">move_mouse_and_click</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/TownGUI.html#move_mouse_and_click"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.TownGUI.move_mouse_and_click" title="Permalink to this definition"></a></dt>
+<dd><p>move mouse and click</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – x coordinate</p></li>
+<li><p><strong>y</strong> – y coordinate</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.TownGUI.recruit_unit">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.TownGUI.</span></span><span class="sig-name descname"><span class="pre">recruit_unit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">upgraded</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amount</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/TownGUI.html#recruit_unit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.TownGUI.recruit_unit" title="Permalink to this definition"></a></dt>
+<dd><p>Buys every unit chosen. tier=8 is the additional unit from the ‘Portal of summoning’ in Dungeon.
+Buy multiple units using ‘+’ e.g. tier=’1+2+3’, or using tier=’all’ -&gt; amount is not used then.
+Can also specify the amount of units bought, if not specified it buys every unit in the given order:
+e.g. tier=’4+1+2’ will buy every unit of tier 4 then 1 then 2 if there’s enough resources.
+If you only have e.g. 3 tiers (1, 2, 6) then to buy the 6th one you have to write 3 as it’s the 3rd bought
+!!!If buying a certain amount, then it has to be written as ‘10+2+3+…’ and has to have the same amount
+of specified numbers as the amount of tiers bought!!!
+amount=-1 is equivalent to buying every unit.
+Normally buys upgraded units but can also buy unupgraded by setting upgraded=False
+If you buy more than one tier and want some units unupgraded than it is necessary to specify each of them
+as upgraded=[True, False, True,…]. If all units are to be upgraded than no input is necessary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tier</strong> – Unit tier</p></li>
+<li><p><strong>upgraded</strong> – True/False</p></li>
+<li><p><strong>amount</strong> – amount to buy</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.TownGUI.split_even_unit">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.TownGUI.</span></span><span class="sig-name descname"><span class="pre">split_even_unit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tile_num</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/TownGUI.html#split_even_unit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.TownGUI.split_even_unit" title="Permalink to this definition"></a></dt>
+<dd><p>split units evenly</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>tile_num</strong> – Unit number</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.TownGUI.transform_skeleton">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.TownGUI.</span></span><span class="sig-name descname"><span class="pre">transform_skeleton</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/TownGUI.html#transform_skeleton"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.TownGUI.transform_skeleton" title="Permalink to this definition"></a></dt>
+<dd><p>Transform skeletons
+Necropolis only. id=’all’ for every unit, write id as id=’1+3+5+…’ otherwise</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>id</strong> – id of units to change from left to right</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.TownGUI.upgrade_unit">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.TownGUI.</span></span><span class="sig-name descname"><span class="pre">upgrade_unit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tile_num</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/TownGUI.html#upgrade_unit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.TownGUI.upgrade_unit" title="Permalink to this definition"></a></dt>
+<dd><p>upgrade unit</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>tile_num</strong> – Unit number</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.TownGUI.use_castle_gate">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.TownGUI.</span></span><span class="sig-name descname"><span class="pre">use_castle_gate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/TownGUI.html#use_castle_gate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.TownGUI.use_castle_gate" title="Permalink to this definition"></a></dt>
+<dd><p>Use castle gate
+Inferno only</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>id</strong> – number of the town you go to</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GUI_handling.TownGUI.use_freelancers_guild">
+<span class="sig-prename descclassname"><span class="pre">GUI_handling.TownGUI.</span></span><span class="sig-name descname"><span class="pre">use_freelancers_guild</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">unit_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resource_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amount</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GUI_handling/TownGUI.html#use_freelancers_guild"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GUI_handling.TownGUI.use_freelancers_guild" title="Permalink to this definition"></a></dt>
+<dd><p>Stronghold only</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>unit_id</strong> – unit id left to right 1-7</p></li>
+<li><p><strong>resource_id</strong> – left to right and top to bottom</p></li>
+<li><p><strong>amount</strong> – amount of units to sell</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-GUI_handling.gui_control">
+<span id="gui-handling-gui-control-module"></span><h2>GUI_handling.gui_control module<a class="headerlink" href="#module-GUI_handling.gui_control" title="Permalink to this heading"></a></h2>
+<p>File containing all the gui files for simpler implementation</p>
+</section>
+<section id="module-GUI_handling">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-GUI_handling" title="Permalink to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Adventure_AI.html" class="btn btn-neutral float-left" title="Adventure_AI package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="battleAI.html" class="btn btn-neutral float-right" title="battleAI package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Fryderyk Róg, Kacper Plesiak, Michał Gruba, Tymoteusz Skrzyński, Mateusz Comblik, Bartosz Szczepanek, Alan Konopko, Mateusz Mikszewicz, Daniel Bil, Piotr Łyczko.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

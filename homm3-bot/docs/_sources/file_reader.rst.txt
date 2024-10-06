@@ -1,0 +1,53 @@
+file\_reader package
+====================
+
+Submodules
+----------
+
+file\_reader.FileReader module
+------------------------------
+
+.. automodule:: file_reader.FileReader
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+file\_reader.MainMapClass module
+--------------------------------
+
+.. automodule:: file_reader.MainMapClass
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+file\_reader.MainMapClassVaraibles module
+-----------------------------------------
+
+.. automodule:: file_reader.MainMapClassVaraibles
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+file\_reader.MapConstants module
+--------------------------------
+
+.. automodule:: file_reader.MapConstants
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+file\_reader.OtherClasses module
+--------------------------------
+
+.. automodule:: file_reader.OtherClasses
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: file_reader
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,61 @@
+battleAI package
+================
+
+Submodules
+----------
+
+battleAI.BattleAI module
+------------------------
+
+.. automodule:: battleAI.BattleAI
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+battleAI.damage module
+----------------------
+
+.. automodule:: battleAI.damage
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+battleAI.deepQlearning module
+-----------------------------
+
+.. automodule:: battleAI.deepQlearning
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+battleAI.queue\_test module
+---------------------------
+
+.. automodule:: battleAI.queue_test
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+battleAI.reinforcmentLearningTest module
+----------------------------------------
+
+.. automodule:: battleAI.reinforcmentLearningTest
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+battleAI.reward module
+----------------------
+
+.. automodule:: battleAI.reward
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: battleAI
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>image_processing.screen_slicing &mdash; HoMM3 Bot 2.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> HoMM3 Bot
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">homm3-bot</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">HoMM3 Bot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">image_processing.screen_slicing</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for image_processing.screen_slicing</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Script containing classes and functions needed for extracting elements that are present on the screen&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">GUI_handling.BattleGUI</span> <span class="kn">import</span> <span class="n">move_to_portrait</span>
+<span class="kn">import</span> <span class="nn">cv2</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="c1"># import tesserocr</span>
+<span class="kn">from</span> <span class="nn">mss</span> <span class="kn">import</span> <span class="n">mss</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">mouse</span> <span class="kn">import</span> <span class="n">move</span>
+<span class="kn">from</span> <span class="nn">image_processing.ocr</span> <span class="kn">import</span> <span class="n">read_generic_numbers</span>
+<span class="kn">from</span> <span class="nn">data.building</span> <span class="kn">import</span> <span class="n">Cost</span>
+
+
+<div class="viewcode-block" id="ScreenStorage"><a class="viewcode-back" href="../../image_processing.html#image_processing.screen_slicing.ScreenStorage">[docs]</a><span class="k">class</span> <span class="nc">ScreenStorage</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">color</span> <span class="o">=</span> <span class="s2">&quot;Red&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        initialization of all storage elements and some loading of files for color checking functions</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">our_color</span> <span class="o">=</span> <span class="n">color</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cells</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">54</span><span class="p">,</span> <span class="mi">32</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_even</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">11</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_odd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">6</span><span class="p">,</span> <span class="mi">11</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resources</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">units_small</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">queue</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">screen_even</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">420</span><span class="p">,</span> <span class="mi">660</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">screen_odd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">504</span><span class="p">,</span> <span class="mi">660</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">screen</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">screen_even_old</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">420</span><span class="p">,</span> <span class="mi">660</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">screen_odd_old</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">504</span><span class="p">,</span> <span class="mi">660</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">11</span><span class="p">,</span> <span class="mi">15</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">quantity</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">queue_color</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">screen_admap</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stripsInQueueColorImages</span> <span class="o">=</span> <span class="n">readColors</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">adventure_map</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">colors_small_map</span> <span class="o">=</span> <span class="n">readColors2</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hero_positions</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">possible_units</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_turn_units</span> <span class="o">=</span> <span class="p">[]</span>
+
+<div class="viewcode-block" id="ScreenStorage.take_adventure_map"><a class="viewcode-back" href="../../image_processing.html#image_processing.screen_slicing.ScreenStorage.take_adventure_map">[docs]</a>    <span class="k">def</span> <span class="nf">take_adventure_map</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        function taking screenshot and slicing it a way to have each tile of adventure map under different index in list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">mss</span><span class="p">()</span> <span class="k">as</span> <span class="n">sct</span><span class="p">:</span>
+            <span class="n">monitor</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;top&#39;</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span> <span class="s1">&#39;left&#39;</span><span class="p">:</span> <span class="mi">32</span><span class="p">,</span> <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mi">1664</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mi">960</span><span class="p">}</span>
+            <span class="n">screen</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sct</span><span class="o">.</span><span class="n">grab</span><span class="p">(</span><span class="n">monitor</span><span class="p">))</span>
+            <span class="n">screen</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_RGBA2RGB</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cells</span> <span class="o">=</span> <span class="n">screen</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">52</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cells</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">temp1</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">30</span><span class="p">):</span>
+                <span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">[</span><span class="n">y</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">52</span><span class="p">):</span>
+                    <span class="n">img</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">z</span><span class="p">[</span><span class="n">x</span><span class="p">],</span> <span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mi">11</span><span class="p">))</span>
+                    <span class="n">temp1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cells</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">temp1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ScreenStorage.take_battle_templates"><a class="viewcode-back" href="../../image_processing.html#image_processing.screen_slicing.ScreenStorage.take_battle_templates">[docs]</a>    <span class="k">def</span> <span class="nf">take_battle_templates</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        function taking screenshot of battle image</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">mss</span><span class="p">()</span> <span class="k">as</span> <span class="n">sct</span><span class="p">:</span>
+            <span class="n">monitor</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;top&#39;</span><span class="p">:</span> <span class="mi">263</span><span class="p">,</span> <span class="s1">&#39;left&#39;</span><span class="p">:</span> <span class="mi">618</span><span class="p">,</span> <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mi">683</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mi">505</span><span class="p">}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">screen</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sct</span><span class="o">.</span><span class="n">grab</span><span class="p">(</span><span class="n">monitor</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">screen</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">screen</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_RGBA2RGB</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ScreenStorage.take_adventure_templates"><a class="viewcode-back" href="../../image_processing.html#image_processing.screen_slicing.ScreenStorage.take_adventure_templates">[docs]</a>    <span class="k">def</span> <span class="nf">take_adventure_templates</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        function taking image of adventure map</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">mss</span><span class="p">()</span> <span class="k">as</span> <span class="n">sct</span><span class="p">:</span>
+            <span class="n">monitor</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;top&#39;</span><span class="p">:</span> <span class="mi">35</span><span class="p">,</span> <span class="s1">&#39;left&#39;</span><span class="p">:</span> <span class="mi">27</span><span class="p">,</span> <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mi">1674</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mi">970</span><span class="p">}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">screen_admap</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sct</span><span class="o">.</span><span class="n">grab</span><span class="p">(</span><span class="n">monitor</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">screen_admap</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">screen_admap</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_RGBA2RGB</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ScreenStorage.take_battle"><a class="viewcode-back" href="../../image_processing.html#image_processing.screen_slicing.ScreenStorage.take_battle">[docs]</a>    <span class="k">def</span> <span class="nf">take_battle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        function creating a list with each possible place for unit in battle with image of that place</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">mss</span><span class="p">()</span> <span class="k">as</span> <span class="n">sct</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">screen_odd_old</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">screen_odd</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">screen_even_old</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">screen_even</span>
+            <span class="n">monitor_odd</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;top&#39;</span><span class="p">:</span> <span class="mi">263</span><span class="p">,</span> <span class="s1">&#39;left&#39;</span><span class="p">:</span> <span class="mi">640</span><span class="p">,</span> <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mi">660</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mi">504</span><span class="p">}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">screen_odd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sct</span><span class="o">.</span><span class="n">grab</span><span class="p">(</span><span class="n">monitor_odd</span><span class="p">))</span>
+            <span class="n">monitor_even</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;top&#39;</span><span class="p">:</span> <span class="mi">305</span><span class="p">,</span> <span class="s1">&#39;left&#39;</span><span class="p">:</span> <span class="mi">618</span><span class="p">,</span> <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mi">660</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mi">420</span><span class="p">}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">screen_even</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sct</span><span class="o">.</span><span class="n">grab</span><span class="p">(</span><span class="n">monitor_even</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">screen_odd</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">screen_odd</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_RGBA2RGB</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">screen_even</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">screen_even</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_RGBA2RGB</span><span class="p">)</span>
+            <span class="n">screen1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">screen_odd_old</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">screen2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">screen_odd</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">screen1</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">screen1</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2GRAY</span><span class="p">)</span>
+            <span class="n">screen2</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">screen2</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2GRAY</span><span class="p">)</span>
+            <span class="n">screen3</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">absdiff</span><span class="p">(</span><span class="n">screen1</span><span class="p">,</span> <span class="n">screen2</span><span class="p">)</span>
+            <span class="n">screen3</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">threshold</span><span class="p">(</span><span class="n">screen3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">THRESH_BINARY</span><span class="p">)</span>
+            <span class="n">screen1</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">bitwise_and</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">screen_odd</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">screen_odd</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">screen3</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_odd</span> <span class="o">=</span> <span class="n">screen1</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">84</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">44</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+            <span class="n">screen1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">screen_even_old</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">screen2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">screen_even</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">screen1</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">screen1</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2GRAY</span><span class="p">)</span>
+            <span class="n">screen2</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">screen2</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2GRAY</span><span class="p">)</span>
+            <span class="n">screen3</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">absdiff</span><span class="p">(</span><span class="n">screen1</span><span class="p">,</span> <span class="n">screen2</span><span class="p">)</span>
+            <span class="n">screen3</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">threshold</span><span class="p">(</span><span class="n">screen3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">THRESH_BINARY</span><span class="p">)</span>
+            <span class="n">screen1</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">bitwise_and</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">screen_even</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">screen_even</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">screen3</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_even</span> <span class="o">=</span> <span class="n">screen1</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">84</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">44</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_even</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_even</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_odd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_odd</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_odd</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_even</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
+                                 <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_odd</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span>
+                                 <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_even</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_odd</span><span class="p">[</span><span class="mi">2</span><span class="p">]],</span>
+                                 <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_even</span><span class="p">[</span><span class="mi">2</span><span class="p">]],</span>
+                                 <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_odd</span><span class="p">[</span><span class="mi">3</span><span class="p">]],</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_even</span><span class="p">[</span><span class="mi">3</span><span class="p">]],</span>
+                                 <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_odd</span><span class="p">[</span><span class="mi">4</span><span class="p">]],</span>
+                                 <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_even</span><span class="p">[</span><span class="mi">4</span><span class="p">]],</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_odd</span><span class="p">[</span><span class="mi">5</span><span class="p">]]]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_even</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_even</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_odd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_odd</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">temp1</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">11</span><span class="p">):</span>
+                <span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells</span><span class="p">[</span><span class="n">y</span><span class="p">]</span>
+                <span class="n">z</span> <span class="o">=</span> <span class="n">z</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">15</span><span class="p">):</span>
+                    <span class="n">img</span> <span class="o">=</span> <span class="n">z</span><span class="p">[</span><span class="n">x</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                    <span class="n">img</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">17</span><span class="p">))</span>
+                    <span class="n">temp1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">temp1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ScreenStorage.take_possible_units"><a class="viewcode-back" href="../../image_processing.html#image_processing.screen_slicing.ScreenStorage.take_possible_units">[docs]</a>    <span class="k">def</span> <span class="nf">take_possible_units</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        function creating a list with each possible place for unit in battle</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">mss</span><span class="p">()</span> <span class="k">as</span> <span class="n">sct</span><span class="p">:</span>
+            <span class="n">monitor_odd</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;top&#39;</span><span class="p">:</span> <span class="mi">263</span><span class="p">,</span> <span class="s1">&#39;left&#39;</span><span class="p">:</span> <span class="mi">640</span><span class="p">,</span> <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mi">660</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mi">504</span><span class="p">}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">screen_odd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sct</span><span class="o">.</span><span class="n">grab</span><span class="p">(</span><span class="n">monitor_odd</span><span class="p">))</span>
+            <span class="n">monitor_even</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;top&#39;</span><span class="p">:</span> <span class="mi">305</span><span class="p">,</span> <span class="s1">&#39;left&#39;</span><span class="p">:</span> <span class="mi">618</span><span class="p">,</span> <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mi">660</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mi">420</span><span class="p">}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">screen_even</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sct</span><span class="o">.</span><span class="n">grab</span><span class="p">(</span><span class="n">monitor_even</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">screen_odd</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">screen_odd</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_RGBA2RGB</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">screen_even</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">screen_even</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_RGBA2RGB</span><span class="p">)</span>
+            <span class="n">screen1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">screen_odd_old</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">screen2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">screen_odd</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">screen2</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">screen2</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2GRAY</span><span class="p">)</span>
+            <span class="n">screen1</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">screen1</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2GRAY</span><span class="p">)</span>
+            <span class="n">screen3</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">absdiff</span><span class="p">(</span><span class="n">screen1</span><span class="p">,</span> <span class="n">screen2</span><span class="p">)</span>
+            <span class="c1">#screen3 = cv2.threshold(screen3, 0, 15, cv2.THRESH_BINARY)</span>
+            <span class="c1">#screen1 = cv2.bitwise_and(self.screen_odd, self.screen_odd, mask=screen3[1])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_odd</span> <span class="o">=</span> <span class="n">screen3</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">84</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">44</span><span class="p">)</span>
+            <span class="n">screen1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">screen_even_old</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">screen2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">screen_even</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">screen1</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">screen1</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2GRAY</span><span class="p">)</span>
+            <span class="n">screen2</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">screen2</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2GRAY</span><span class="p">)</span>
+            <span class="n">screen3</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">absdiff</span><span class="p">(</span><span class="n">screen1</span><span class="p">,</span> <span class="n">screen2</span><span class="p">)</span>
+            <span class="c1">#screen3 = cv2.threshold(screen3, 0, 15, cv2.THRESH_BINARY)</span>
+            <span class="c1">#screen1 = cv2.bitwise_and(self.screen_even, self.screen_even, mask=screen3[1])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_even</span> <span class="o">=</span> <span class="n">screen3</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">84</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">44</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_even</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_even</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_odd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_odd</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_odd</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_even</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
+                                 <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_odd</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span>
+                                 <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_even</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_odd</span><span class="p">[</span><span class="mi">2</span><span class="p">]],</span>
+                                 <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_even</span><span class="p">[</span><span class="mi">2</span><span class="p">]],</span>
+                                 <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_odd</span><span class="p">[</span><span class="mi">3</span><span class="p">]],</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_even</span><span class="p">[</span><span class="mi">3</span><span class="p">]],</span>
+                                 <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_odd</span><span class="p">[</span><span class="mi">4</span><span class="p">]],</span>
+                                 <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_even</span><span class="p">[</span><span class="mi">4</span><span class="p">]],</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_odd</span><span class="p">[</span><span class="mi">5</span><span class="p">]]]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_even</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_even</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_odd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_odd</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">temp1</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">11</span><span class="p">):</span>
+                <span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells</span><span class="p">[</span><span class="n">y</span><span class="p">]</span>
+                <span class="n">z</span> <span class="o">=</span> <span class="n">z</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">15</span><span class="p">):</span>
+                    <span class="n">img</span> <span class="o">=</span> <span class="n">z</span><span class="p">[</span><span class="n">x</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                    <span class="n">img</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+                    <span class="k">if</span> <span class="n">img</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">:</span>
+                        <span class="n">temp1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">temp1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_turn_units</span><span class="p">:</span>
+                <span class="n">temp1</span><span class="p">[</span><span class="mi">15</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">possible_units</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">temp1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">screen_even_old</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">screen_even</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">screen_odd_old</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">screen_odd</span></div>
+
+<div class="viewcode-block" id="ScreenStorage.take_possible_units_temp"><a class="viewcode-back" href="../../image_processing.html#image_processing.screen_slicing.ScreenStorage.take_possible_units_temp">[docs]</a>    <span class="k">def</span> <span class="nf">take_possible_units_temp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">terrain</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        function creating a list with each possible place for unit in battle</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">mss</span><span class="p">()</span> <span class="k">as</span> <span class="n">sct</span><span class="p">:</span>
+            <span class="n">terrain_even</span> <span class="o">=</span> <span class="n">terrain</span>
+            <span class="n">terrain_odd</span> <span class="o">=</span> <span class="n">terrain</span>
+            <span class="n">monitor_odd</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;top&#39;</span><span class="p">:</span> <span class="mi">263</span><span class="p">,</span> <span class="s1">&#39;left&#39;</span><span class="p">:</span> <span class="mi">640</span><span class="p">,</span> <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mi">660</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mi">504</span><span class="p">}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">screen_odd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sct</span><span class="o">.</span><span class="n">grab</span><span class="p">(</span><span class="n">monitor_odd</span><span class="p">))</span>
+            <span class="n">monitor_even</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;top&#39;</span><span class="p">:</span> <span class="mi">305</span><span class="p">,</span> <span class="s1">&#39;left&#39;</span><span class="p">:</span> <span class="mi">618</span><span class="p">,</span> <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mi">660</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mi">420</span><span class="p">}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">screen_even</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sct</span><span class="o">.</span><span class="n">grab</span><span class="p">(</span><span class="n">monitor_even</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">screen_odd</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">screen_odd</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_RGBA2RGB</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">screen_even</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">screen_even</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_RGBA2RGB</span><span class="p">)</span>
+            <span class="n">screen1</span> <span class="o">=</span> <span class="n">terrain_odd</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">screen2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">screen_odd</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">screen1</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">screen1</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2GRAY</span><span class="p">)</span>
+            <span class="n">screen2</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">screen2</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2GRAY</span><span class="p">)</span>
+            <span class="n">screen3</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">absdiff</span><span class="p">(</span><span class="n">screen1</span><span class="p">,</span> <span class="n">screen2</span><span class="p">)</span>
+            <span class="n">screen3</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">threshold</span><span class="p">(</span><span class="n">screen3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">THRESH_BINARY</span><span class="p">)</span>
+            <span class="n">screen1</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">bitwise_and</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">screen_odd</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">screen_odd</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">screen3</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_odd</span> <span class="o">=</span> <span class="n">screen1</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">84</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">44</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+            <span class="n">screen1</span> <span class="o">=</span> <span class="n">terrain_even</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">screen2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">screen_even</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">screen1</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">screen1</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2GRAY</span><span class="p">)</span>
+            <span class="n">screen2</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">screen2</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2GRAY</span><span class="p">)</span>
+            <span class="n">screen3</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">absdiff</span><span class="p">(</span><span class="n">screen1</span><span class="p">,</span> <span class="n">screen2</span><span class="p">)</span>
+            <span class="n">screen3</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">threshold</span><span class="p">(</span><span class="n">screen3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">THRESH_BINARY</span><span class="p">)</span>
+            <span class="n">screen1</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">bitwise_and</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">screen_even</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">screen_even</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">screen3</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_even</span> <span class="o">=</span> <span class="n">screen1</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">84</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">44</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_even</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_even</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_odd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_odd</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_odd</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_even</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
+                                 <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_odd</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span>
+                                 <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_even</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_odd</span><span class="p">[</span><span class="mi">2</span><span class="p">]],</span>
+                                 <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_even</span><span class="p">[</span><span class="mi">2</span><span class="p">]],</span>
+                                 <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_odd</span><span class="p">[</span><span class="mi">3</span><span class="p">]],</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_even</span><span class="p">[</span><span class="mi">3</span><span class="p">]],</span>
+                                 <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_odd</span><span class="p">[</span><span class="mi">4</span><span class="p">]],</span>
+                                 <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_even</span><span class="p">[</span><span class="mi">4</span><span class="p">]],</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_odd</span><span class="p">[</span><span class="mi">5</span><span class="p">]]]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_even</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_even</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_odd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_odd</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">temp1</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">11</span><span class="p">):</span>
+                <span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells</span><span class="p">[</span><span class="n">y</span><span class="p">]</span>
+                <span class="n">z</span> <span class="o">=</span> <span class="n">z</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">15</span><span class="p">):</span>
+                    <span class="n">img</span> <span class="o">=</span> <span class="n">z</span><span class="p">[</span><span class="n">x</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                    <span class="n">img</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+                    <span class="k">if</span> <span class="n">img</span> <span class="o">&gt;</span> <span class="mi">20</span><span class="p">:</span>
+                        <span class="n">temp1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">temp1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">possible_units</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">temp1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ScreenStorage.take_queue_to_find_unit_raw"><a class="viewcode-back" href="../../image_processing.html#image_processing.screen_slicing.ScreenStorage.take_queue_to_find_unit_raw">[docs]</a>    <span class="k">def</span> <span class="nf">take_queue_to_find_unit_raw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        function creating list of unit portraits from queue</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">move</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.08</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">queue</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">queue_color</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">with</span> <span class="n">mss</span><span class="p">()</span> <span class="k">as</span> <span class="n">sct</span><span class="p">:</span>
+            <span class="n">monitor</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;top&#39;</span><span class="p">:</span> <span class="mi">776</span><span class="p">,</span> <span class="s1">&#39;left&#39;</span><span class="p">:</span> <span class="mi">660</span><span class="p">,</span> <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mi">600</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mi">56</span><span class="p">}</span>
+            <span class="n">screen</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sct</span><span class="o">.</span><span class="n">grab</span><span class="p">(</span><span class="n">monitor</span><span class="p">))</span>
+            <span class="n">screen</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_RGBA2RGB</span><span class="p">)</span>
+            <span class="n">screen</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="p">(</span><span class="mi">56</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+            <span class="n">screen</span> <span class="o">=</span> <span class="n">screen</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">15</span><span class="p">):</span>
+                <span class="n">img</span> <span class="o">=</span> <span class="n">screen</span><span class="p">[</span><span class="n">x</span><span class="p">]</span>
+                <span class="n">cv2</span><span class="o">.</span><span class="n">rectangle</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">37</span><span class="p">,</span> <span class="mi">53</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">img</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ScreenStorage.take_queue_to_find_unit"><a class="viewcode-back" href="../../image_processing.html#image_processing.screen_slicing.ScreenStorage.take_queue_to_find_unit">[docs]</a>    <span class="k">def</span> <span class="nf">take_queue_to_find_unit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        function taking unit borders from queue to find at which unit we are pointing</span>
+
+<span class="sd">        :param x: x index of tile in battle</span>
+<span class="sd">        :param y: y index of tile in battle</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">queue</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">queue_color</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">temp_move</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.08</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">mss</span><span class="p">()</span> <span class="k">as</span> <span class="n">sct</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">15</span><span class="p">):</span>
+                <span class="n">monitor</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;top&#39;</span><span class="p">:</span> <span class="mi">776</span><span class="p">,</span> <span class="s1">&#39;left&#39;</span><span class="p">:</span> <span class="mi">660</span> <span class="o">+</span> <span class="n">x</span> <span class="o">*</span> <span class="mi">40</span><span class="p">,</span> <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mi">56</span><span class="p">}</span>
+                <span class="n">screen</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sct</span><span class="o">.</span><span class="n">grab</span><span class="p">(</span><span class="n">monitor</span><span class="p">))</span>
+                <span class="n">screen</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_RGBA2RGB</span><span class="p">)</span>
+                <span class="n">cv2</span><span class="o">.</span><span class="n">rectangle</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">37</span><span class="p">,</span> <span class="mi">53</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">screen</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ScreenStorage.take_battle_map"><a class="viewcode-back" href="../../image_processing.html#image_processing.screen_slicing.ScreenStorage.take_battle_map">[docs]</a>    <span class="k">def</span> <span class="nf">take_battle_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        function taking differential image between battle when we are pointing to current unit and selected unit other than that similar to take_battle</span>
+
+<span class="sd">        :param num: number of unit for which we are checking posiible places</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">mss</span><span class="p">()</span> <span class="k">as</span> <span class="n">sct</span><span class="p">:</span>
+            <span class="n">move_to_portrait</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.08</span><span class="p">)</span>
+            <span class="n">monitor_odd</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;top&#39;</span><span class="p">:</span> <span class="mi">263</span><span class="p">,</span> <span class="s1">&#39;left&#39;</span><span class="p">:</span> <span class="mi">640</span><span class="p">,</span> <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mi">660</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mi">504</span><span class="p">}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">screen_odd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sct</span><span class="o">.</span><span class="n">grab</span><span class="p">(</span><span class="n">monitor_odd</span><span class="p">))</span>
+            <span class="n">monitor_even</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;top&#39;</span><span class="p">:</span> <span class="mi">305</span><span class="p">,</span> <span class="s1">&#39;left&#39;</span><span class="p">:</span> <span class="mi">618</span><span class="p">,</span> <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mi">660</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mi">420</span><span class="p">}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">screen_even</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sct</span><span class="o">.</span><span class="n">grab</span><span class="p">(</span><span class="n">monitor_even</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">screen_odd</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">screen_odd</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_RGBA2RGB</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">screen_even</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">screen_even</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_RGBA2RGB</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">screen_odd</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">screen_odd</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">screen_even</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">screen_even</span><span class="p">)</span>
+            <span class="c1"># self.screen_odd = canny(self.screen_odd)</span>
+            <span class="c1"># self.screen_even = canny(self.screen_even)</span>
+            <span class="n">screen11</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">screen_odd</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">screen12</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">screen_even</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">move_to_portrait</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.08</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">screen_odd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sct</span><span class="o">.</span><span class="n">grab</span><span class="p">(</span><span class="n">monitor_odd</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">screen_even</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sct</span><span class="o">.</span><span class="n">grab</span><span class="p">(</span><span class="n">monitor_even</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">screen_odd</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">screen_odd</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_RGBA2RGB</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">screen_even</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">screen_even</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_RGBA2RGB</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">screen_odd</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">screen_odd</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">screen_even</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">screen_even</span><span class="p">)</span>
+            <span class="c1"># self.screen_odd = canny(self.screen_odd)</span>
+            <span class="c1"># self.screen_even = canny(self.screen_even)</span>
+            <span class="n">screen21</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">screen_odd</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="c1"># screen11 = cv2.cvtColor(screen11, cv2.COLOR_BGR2GRAY)</span>
+            <span class="c1"># screen21 = cv2.cvtColor(screen21, cv2.COLOR_BGR2GRAY)</span>
+            <span class="n">screen31</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">absdiff</span><span class="p">(</span><span class="n">screen11</span><span class="p">,</span> <span class="n">screen21</span><span class="p">)</span>
+            <span class="n">screen31</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">threshold</span><span class="p">(</span><span class="n">screen31</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">THRESH_BINARY</span><span class="p">)</span>
+            <span class="n">screen11</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">bitwise_and</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">screen_odd</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">screen_odd</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">screen31</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">test</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">screen11</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_odd</span> <span class="o">=</span> <span class="n">screen11</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">84</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">44</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">screen22</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">screen_even</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="c1"># screen12 = cv2.cvtColor(screen12, cv2.COLOR_BGR2GRAY)</span>
+            <span class="c1"># screen22 = cv2.cvtColor(screen22, cv2.COLOR_BGR2GRAY)</span>
+            <span class="n">screen32</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">absdiff</span><span class="p">(</span><span class="n">screen12</span><span class="p">,</span> <span class="n">screen22</span><span class="p">)</span>
+            <span class="n">screen32</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">threshold</span><span class="p">(</span><span class="n">screen32</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">THRESH_BINARY</span><span class="p">)</span>
+            <span class="n">screen12</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">bitwise_and</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">screen_even</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">screen_even</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">screen32</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_even</span> <span class="o">=</span> <span class="n">screen12</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">84</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">44</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_even</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_even</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_odd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_odd</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_odd</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_even</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_odd</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span>
+                                 <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_even</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_odd</span><span class="p">[</span><span class="mi">2</span><span class="p">]],</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_even</span><span class="p">[</span><span class="mi">2</span><span class="p">]],</span>
+                                 <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_odd</span><span class="p">[</span><span class="mi">3</span><span class="p">]],</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_even</span><span class="p">[</span><span class="mi">3</span><span class="p">]],</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_odd</span><span class="p">[</span><span class="mi">4</span><span class="p">]],</span>
+                                 <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_even</span><span class="p">[</span><span class="mi">4</span><span class="p">]],</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_odd</span><span class="p">[</span><span class="mi">5</span><span class="p">]]]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_even</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_even</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_odd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_odd</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">temp1</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">11</span><span class="p">):</span>
+                <span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells</span><span class="p">[</span><span class="n">y</span><span class="p">]</span>
+                <span class="n">z</span> <span class="o">=</span> <span class="n">z</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">15</span><span class="p">):</span>
+                    <span class="n">img</span> <span class="o">=</span> <span class="n">z</span><span class="p">[</span><span class="n">x</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                    <span class="c1"># img = cv2.resize(img, (9, 17))</span>
+                    <span class="n">temp1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">temp1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ScreenStorage.take_battle_map_first"><a class="viewcode-back" href="../../image_processing.html#image_processing.screen_slicing.ScreenStorage.take_battle_map_first">[docs]</a>    <span class="k">def</span> <span class="nf">take_battle_map_first</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        obsolete function for taking battle image</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">mss</span><span class="p">()</span> <span class="k">as</span> <span class="n">sct</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">screen_odd_old</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">screen_odd</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">screen_even_old</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">screen_even</span>
+            <span class="n">monitor_odd</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;top&#39;</span><span class="p">:</span> <span class="mi">263</span><span class="p">,</span> <span class="s1">&#39;left&#39;</span><span class="p">:</span> <span class="mi">640</span><span class="p">,</span> <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mi">660</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mi">504</span><span class="p">}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">screen_odd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sct</span><span class="o">.</span><span class="n">grab</span><span class="p">(</span><span class="n">monitor_odd</span><span class="p">))</span>
+            <span class="n">monitor_even</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;top&#39;</span><span class="p">:</span> <span class="mi">305</span><span class="p">,</span> <span class="s1">&#39;left&#39;</span><span class="p">:</span> <span class="mi">618</span><span class="p">,</span> <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mi">660</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mi">420</span><span class="p">}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">screen_even</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sct</span><span class="o">.</span><span class="n">grab</span><span class="p">(</span><span class="n">monitor_even</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">screen_odd</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">screen_odd</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_RGBA2RGB</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">screen_even</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">screen_even</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_RGBA2RGB</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_odd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">screen_odd</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">84</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">44</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_even</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">screen_even</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">84</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">44</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_even</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_even</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_odd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_odd</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_odd</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_even</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_odd</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span>
+                                 <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_even</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_odd</span><span class="p">[</span><span class="mi">2</span><span class="p">]],</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_even</span><span class="p">[</span><span class="mi">2</span><span class="p">]],</span>
+                                 <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_odd</span><span class="p">[</span><span class="mi">3</span><span class="p">]],</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_even</span><span class="p">[</span><span class="mi">3</span><span class="p">]],</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_odd</span><span class="p">[</span><span class="mi">4</span><span class="p">]],</span>
+                                 <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_even</span><span class="p">[</span><span class="mi">4</span><span class="p">]],</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_odd</span><span class="p">[</span><span class="mi">5</span><span class="p">]]]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_even</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_even</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_odd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells_odd</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">temp1</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">11</span><span class="p">):</span>
+                <span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells</span><span class="p">[</span><span class="n">y</span><span class="p">]</span>
+                <span class="n">z</span> <span class="o">=</span> <span class="n">z</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">15</span><span class="p">):</span>
+                    <span class="n">img</span> <span class="o">=</span> <span class="n">z</span><span class="p">[</span><span class="n">x</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                    <span class="c1"># img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)</span>
+                    <span class="c1">#</span>
+                    <span class="c1"># img_blur = cv2.GaussianBlur(img_gray, (3, 3), 0)</span>
+                    <span class="c1">#</span>
+                    <span class="c1"># edges = cv2.Canny(image=img_blur, threshold1=50, threshold2=200)</span>
+                    <span class="c1">#</span>
+                    <span class="c1"># erosion = cv2.erode(edges, (0.7, 0.7), iterations=1)</span>
+                    <span class="c1">#</span>
+                    <span class="c1"># img = cv2.dilate(erosion, (0.7, 0.7), iterations=10)</span>
+                    <span class="c1"># img = cv2.bitwise_and(z[x], z[x], mask=img)</span>
+                    <span class="n">img</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">17</span><span class="p">))</span>
+                    <span class="n">temp1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">battle_cells</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">temp1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ScreenStorage.take_resources"><a class="viewcode-back" href="../../image_processing.html#image_processing.screen_slicing.ScreenStorage.take_resources">[docs]</a>    <span class="k">def</span> <span class="nf">take_resources</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        function taking image of resource bar</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">mss</span><span class="p">()</span> <span class="k">as</span> <span class="n">sct</span><span class="p">:</span>
+            <span class="n">monitor</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;top&#39;</span><span class="p">:</span> <span class="mi">1058</span><span class="p">,</span> <span class="s1">&#39;left&#39;</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span> <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mi">595</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mi">15</span><span class="p">}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">resources</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sct</span><span class="o">.</span><span class="n">grab</span><span class="p">(</span><span class="n">monitor</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="ScreenStorage.take_adventure_map_units_window"><a class="viewcode-back" href="../../image_processing.html#image_processing.screen_slicing.ScreenStorage.take_adventure_map_units_window">[docs]</a>    <span class="k">def</span> <span class="nf">take_adventure_map_units_window</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        function taking image of unit portraits from adventure map</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">mss</span><span class="p">()</span> <span class="k">as</span> <span class="n">sct</span><span class="p">:</span>
+            <span class="n">monitor</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;top&#39;</span><span class="p">:</span> <span class="mi">536</span><span class="p">,</span> <span class="s1">&#39;left&#39;</span><span class="p">:</span> <span class="mi">1769</span><span class="p">,</span> <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mi">99</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mi">33</span><span class="p">}</span>
+            <span class="n">screen</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sct</span><span class="o">.</span><span class="n">grab</span><span class="p">(</span><span class="n">monitor</span><span class="p">))</span>
+            <span class="n">screen</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_RGBA2RGB</span><span class="p">)</span>
+            <span class="n">screen</span> <span class="o">=</span> <span class="n">screen</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">33</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">33</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+            <span class="n">screen</span> <span class="o">=</span> <span class="n">screen</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">monitor</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;top&#39;</span><span class="p">:</span> <span class="mi">584</span><span class="p">,</span> <span class="s1">&#39;left&#39;</span><span class="p">:</span> <span class="mi">1751</span><span class="p">,</span> <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mi">132</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mi">33</span><span class="p">}</span>
+            <span class="n">screen2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sct</span><span class="o">.</span><span class="n">grab</span><span class="p">(</span><span class="n">monitor</span><span class="p">))</span>
+            <span class="n">screen2</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">screen2</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_RGBA2RGB</span><span class="p">)</span>
+            <span class="n">screen2</span> <span class="o">=</span> <span class="n">screen2</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">33</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">33</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+            <span class="n">screen2</span> <span class="o">=</span> <span class="n">screen2</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">units_small</span> <span class="o">=</span> <span class="p">[</span><span class="n">screen</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">screen</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">screen</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">screen2</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">screen2</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">screen2</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+                                <span class="n">screen2</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">]]</span></div>
+
+<div class="viewcode-block" id="ScreenStorage.take_queue"><a class="viewcode-back" href="../../image_processing.html#image_processing.screen_slicing.ScreenStorage.take_queue">[docs]</a>    <span class="k">def</span> <span class="nf">take_queue</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        funtion creating list of unit portraits from queue (grayscale) and taking color and unit amount part of queue</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">mss</span><span class="p">()</span> <span class="k">as</span> <span class="n">sct</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">queue</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">queue_color</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">monitor</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;top&#39;</span><span class="p">:</span> <span class="mi">779</span><span class="p">,</span> <span class="s1">&#39;left&#39;</span><span class="p">:</span> <span class="mi">662</span><span class="p">,</span> <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mi">660</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mi">38</span><span class="p">}</span>
+            <span class="n">screen</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sct</span><span class="o">.</span><span class="n">grab</span><span class="p">(</span><span class="n">monitor</span><span class="p">))</span>
+            <span class="n">monitor2</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;top&#39;</span><span class="p">:</span> <span class="mi">817</span><span class="p">,</span> <span class="s1">&#39;left&#39;</span><span class="p">:</span> <span class="mi">662</span><span class="p">,</span> <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mi">660</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">}</span>
+            <span class="n">screen</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_RGBA2GRAY</span><span class="p">)</span>
+            <span class="n">screen2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sct</span><span class="o">.</span><span class="n">grab</span><span class="p">(</span><span class="n">monitor2</span><span class="p">))</span>
+            <span class="n">screen2</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">screen2</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_RGBA2RGB</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">15</span><span class="p">):</span>
+                <span class="n">img</span> <span class="o">=</span> <span class="n">screen</span><span class="p">[:,</span> <span class="mi">40</span> <span class="o">*</span> <span class="n">x</span><span class="p">:</span><span class="mi">40</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">36</span><span class="p">]</span>
+                <span class="c1"># monitor = {&#39;top&#39;: 779, &#39;left&#39;: 662 + x * 40, &#39;width&#39;: 36, &#39;height&#39;: 38}</span>
+                <span class="c1"># screen = np.array(sct.grab(monitor))</span>
+                <span class="c1"># monitor2 = {&#39;top&#39;: 817, &#39;left&#39;: 662 + x * 40, &#39;width&#39;: 36, &#39;height&#39;: 10}</span>
+                <span class="c1"># screen = cv2.cvtColor(screen, cv2.COLOR_RGBA2GRAY)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+                <span class="c1"># screen = np.array(sct.grab(monitor2))</span>
+                <span class="c1"># screen = cv2.cvtColor(screen, cv2.COLOR_RGBA2RGB)</span>
+                <span class="n">img</span> <span class="o">=</span> <span class="n">screen2</span><span class="p">[:,</span> <span class="mi">40</span> <span class="o">*</span> <span class="n">x</span><span class="p">:</span><span class="mi">40</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">36</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">queue_color</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">img</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ScreenStorage.take_one_from_queue"><a class="viewcode-back" href="../../image_processing.html#image_processing.screen_slicing.ScreenStorage.take_one_from_queue">[docs]</a>    <span class="k">def</span> <span class="nf">take_one_from_queue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        funtion taking selected unit from queue</span>
+
+<span class="sd">        :param n: number of unit in queue</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">mss</span><span class="p">()</span> <span class="k">as</span> <span class="n">sct</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">queue</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">move_to_portrait</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.08</span><span class="p">)</span>
+            <span class="n">monitor</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;top&#39;</span><span class="p">:</span> <span class="mi">776</span><span class="p">,</span> <span class="s1">&#39;left&#39;</span><span class="p">:</span> <span class="mi">660</span> <span class="o">+</span> <span class="n">n</span> <span class="o">*</span> <span class="mi">40</span><span class="p">,</span> <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mi">56</span><span class="p">}</span>
+            <span class="n">screen</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sct</span><span class="o">.</span><span class="n">grab</span><span class="p">(</span><span class="n">monitor</span><span class="p">))</span>
+            <span class="n">screen</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_RGBA2RGB</span><span class="p">)</span>
+            <span class="n">cv2</span><span class="o">.</span><span class="n">rectangle</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">37</span><span class="p">,</span> <span class="mi">53</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">screen</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ScreenStorage.take_firstFromQueue"><a class="viewcode-back" href="../../image_processing.html#image_processing.screen_slicing.ScreenStorage.take_firstFromQueue">[docs]</a>    <span class="k">def</span> <span class="nf">take_firstFromQueue</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        function taking image of first unit in queue (grayscale) and its amount and color part of graphic</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">mss</span><span class="p">()</span> <span class="k">as</span> <span class="n">sct</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">queue</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">queue_color</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">monitor</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;top&#39;</span><span class="p">:</span> <span class="mi">779</span><span class="p">,</span> <span class="s1">&#39;left&#39;</span><span class="p">:</span> <span class="mi">662</span><span class="p">,</span> <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mi">36</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mi">38</span><span class="p">}</span>
+            <span class="n">screen</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sct</span><span class="o">.</span><span class="n">grab</span><span class="p">(</span><span class="n">monitor</span><span class="p">))</span>
+            <span class="n">monitor2</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;top&#39;</span><span class="p">:</span> <span class="mi">817</span><span class="p">,</span> <span class="s1">&#39;left&#39;</span><span class="p">:</span> <span class="mi">662</span><span class="p">,</span> <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mi">36</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">}</span>
+            <span class="n">screen</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_RGBA2GRAY</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">screen</span><span class="p">)</span>
+            <span class="n">screen</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sct</span><span class="o">.</span><span class="n">grab</span><span class="p">(</span><span class="n">monitor2</span><span class="p">))</span>
+            <span class="n">screen</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_RGBA2RGB</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">queue_color</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">screen</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ScreenStorage.take_unit_quantity"><a class="viewcode-back" href="../../image_processing.html#image_processing.screen_slicing.ScreenStorage.take_unit_quantity">[docs]</a>    <span class="k">def</span> <span class="nf">take_unit_quantity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        function taking images of unit amounts from queue</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">mss</span><span class="p">()</span> <span class="k">as</span> <span class="n">sct</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">quantity</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">15</span><span class="p">):</span>
+                <span class="n">monitor</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;top&#39;</span><span class="p">:</span> <span class="mi">817</span><span class="p">,</span> <span class="s1">&#39;left&#39;</span><span class="p">:</span> <span class="mi">662</span> <span class="o">+</span> <span class="n">x</span> <span class="o">*</span> <span class="mi">40</span><span class="p">,</span> <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mi">36</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mi">15</span><span class="p">}</span>
+                <span class="n">screen</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sct</span><span class="o">.</span><span class="n">grab</span><span class="p">(</span><span class="n">monitor</span><span class="p">))</span>
+                <span class="n">screen</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_RGBA2RGB</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">quantity</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">screen</span><span class="p">)</span></div></div>
+
+
+<span class="c1"># class HeroMenu: # we dont use it in current version</span>
+<span class="c1">#     def __init__(self):</span>
+<span class="c1">#         self.units = []</span>
+<span class="c1">#         self.head = []</span>
+<span class="c1">#         self.cape = []</span>
+<span class="c1">#         self.neck = []</span>
+<span class="c1">#         self.right_hand = []</span>
+<span class="c1">#         self.left_hand = []</span>
+<span class="c1">#         self.ring = []</span>
+<span class="c1">#         self.feet = []</span>
+<span class="c1">#         self.torso = []</span>
+<span class="c1">#         self.misc = []</span>
+<span class="c1">#         self.backpack = []</span>
+<span class="c1">#         self.lower_slots = []</span>
+<span class="c1">#</span>
+<span class="c1">#     def take_units(self):</span>
+<span class="c1">#         with mss() as sct:</span>
+<span class="c1">#             monitor = {&#39;top&#39;: 730, &#39;left&#39;: 637, &#39;width&#39;: 462, &#39;height&#39;: 67}</span>
+<span class="c1">#             img = np.array(sct.grab(monitor))</span>
+<span class="c1">#             img = cv2.cvtColor(img, cv2.COLOR_RGBA2RGB)</span>
+<span class="c1">#             img = img.reshape(67, 7, 66, 3)</span>
+<span class="c1">#             self.units = img.swapaxes(0, 1)</span>
+<span class="c1">#</span>
+<span class="c1">#     def take_artifacts(self):</span>
+<span class="c1">#         with mss() as sct:</span>
+<span class="c1">#             monitor = {&#39;top&#39;: 267, &#39;left&#39;: 940, &#39;width&#39;: 274, &#39;height&#39;: 382}</span>
+<span class="c1">#             img = np.array(sct.grab(monitor))</span>
+<span class="c1">#             img = cv2.cvtColor(img, cv2.COLOR_RGBA2RGB)</span>
+<span class="c1">#             h = 45</span>
+<span class="c1">#             w = 45</span>
+<span class="c1">#             self.head = img[1:1 + h, 127:127 + w]</span>
+<span class="c1">#             self.cape = img[213:213 + h, 186:186 + w]</span>
+<span class="c1">#             self.neck = img[51:51 + h, 127:127 + w]</span>
+<span class="c1">#             self.right_hand = img[40:40 + h, 1:1 + w]</span>
+<span class="c1">#             self.left_hand = img[155:155 + h, 180:180 + w]</span>
+<span class="c1">#             self.ring = [img[40:40 + h, 49:49 + w], img[155:155 + h, 228:228 + w]]</span>
+<span class="c1">#             self.feet = img[266:266 + h, 133:133 + w]</span>
+<span class="c1">#             self.torso = img[102:102 + h, 127:127 + w]</span>
+<span class="c1">#             self.misc = [img[114:114 + h, 1:1 + w], img[164:164 + h, 17:17 + w], img[215:215 + h, 33:33 + w],</span>
+<span class="c1">#                          img[266:266 + h, 49:49 + w], img[266:266 + h, 0:0 + w]]</span>
+<span class="c1">#             y = 336</span>
+<span class="c1">#             self.lower_slots = [img[y:y + h, 21:21 + w], img[y:y + h, 67:67 + w], img[y:y + h, 113:113 + w],</span>
+<span class="c1">#                                 img[y:y + h, 159:159 + w], img[y:y + h, 205:205 + w]]</span>
+<span class="c1">#</span>
+<span class="c1">#     def take_backpack(self):</span>
+<span class="c1">#         with mss() as sct:</span>
+<span class="c1">#             monitor = {&#39;top&#39;: 481, &#39;left&#39;: 888, &#39;width&#39;: 368, &#39;height&#39;: 368}</span>
+<span class="c1">#             img = np.array(sct.grab(monitor))</span>
+<span class="c1">#             img = cv2.cvtColor(img, cv2.COLOR_RGBA2RGB)</span>
+<span class="c1">#             img = img.reshape(8, 46, 8, 46, 3)</span>
+<span class="c1">#             img = img.swapaxes(1, 2)</span>
+<span class="c1">#             self.backpack = list()</span>
+<span class="c1">#             for i in range(8):</span>
+<span class="c1">#                 for j in range(8):</span>
+<span class="c1">#                     self.backpack.append(img[i, j])</span>
+
+
+<span class="c1"># def read_city_building(x, y, building):</span>
+<span class="c1">#     with mss() as sct:</span>
+<span class="c1">#         monitor = {&#39;top&#39;: y, &#39;left&#39;: x, &#39;width&#39;: 595, &#39;height&#39;: 15}</span>
+<span class="c1">#         img = np.array(sct.grab(monitor))</span>
+<span class="c1">#         color = img[0, 0]</span>
+<span class="c1">#         # (find nearest color)</span>
+<span class="c1">#         # (change information)</span>
+
+
+<span class="c1"># def read_current_resources(image_source: ScreenStorage):</span>
+<span class="c1">#     time.sleep(5)</span>
+<span class="c1">#     image_source.take_resources()</span>
+<span class="c1">#     img = cv2.cvtColor(image_source.resources, cv2.COLOR_RGBA2GRAY)</span>
+<span class="c1">#     img = cv2.threshold(img, 250, 255, cv2.THRESH_BINARY_INV)</span>
+<span class="c1">#     img = img[1].reshape(15, 7, 85)</span>
+<span class="c1">#     img = img.swapaxes(0, 1)</span>
+<span class="c1">#     res_list = []</span>
+<span class="c1">#     with tesserocr.PyTessBaseAPI(oem=tesserocr.OEM.LSTM_ONLY) as api:</span>
+<span class="c1">#         for x in range(7):</span>
+<span class="c1">#             temp = img[x]</span>
+<span class="c1">#             temp = cv2.resize(temp, (255, 45))</span>
+<span class="c1">#             im_pil = Image.fromarray(temp)</span>
+<span class="c1">#             # res_list.append(tesserocr.image_to_text(im_pil))</span>
+<span class="c1">#             api.SetImage(im_pil)</span>
+<span class="c1">#             res_list.append(api.GetUTF8Text())</span>
+<span class="c1">#</span>
+<span class="c1">#     return res_list</span>
+
+<div class="viewcode-block" id="readTemplates"><a class="viewcode-back" href="../../image_processing.html#image_processing.screen_slicing.readTemplates">[docs]</a><span class="k">def</span> <span class="nf">readTemplates</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    old function for reading templates from files</span>
+
+<span class="sd">    :return: list of images</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">templates</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;template/&quot;</span><span class="p">)):</span>
+        <span class="n">img</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;template/&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="p">))</span>
+        <span class="n">templates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">templates</span></div>
+
+
+<div class="viewcode-block" id="readColors"><a class="viewcode-back" href="../../image_processing.html#image_processing.screen_slicing.readColors">[docs]</a><span class="k">def</span> <span class="nf">readColors</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    function reading player colors from battle</span>
+
+<span class="sd">    :return: list of pixels with names to compare our future images to color</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">colors</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;colors2/&quot;</span><span class="p">)):</span>
+        <span class="n">img</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;colors2/&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="p">))</span>
+        <span class="n">img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">colors</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">img</span><span class="p">,</span> <span class="n">filename</span><span class="p">[:</span><span class="o">-</span><span class="mi">4</span><span class="p">]))</span>
+
+    <span class="k">return</span> <span class="n">colors</span></div>
+
+
+<div class="viewcode-block" id="readColors2"><a class="viewcode-back" href="../../image_processing.html#image_processing.screen_slicing.readColors2">[docs]</a><span class="k">def</span> <span class="nf">readColors2</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    function reading player colors from world view</span>
+
+<span class="sd">    :return: list of pixels with names to compare our future images to color</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">colors</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;colors_small_map/&quot;</span><span class="p">)):</span>
+        <span class="n">img</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;colors_small_map/&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="p">))</span>
+        <span class="n">img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">colors</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">img</span><span class="p">,</span> <span class="n">filename</span><span class="p">[:</span><span class="o">-</span><span class="mi">4</span><span class="p">]))</span>
+
+    <span class="k">return</span> <span class="n">colors</span></div>
+
+
+<span class="c1"># def slice_battle():</span>
+<span class="c1">#     ss = ScreenStorage()</span>
+<span class="c1">#     ss.take_battle_map_first()</span>
+<span class="c1">#     cells = []</span>
+<span class="c1">#     for i in range(15):</span>
+<span class="c1">#         for j in range(5):</span>
+<span class="c1">#             cells.append(ss.battle_cells_even[i, j])</span>
+<span class="c1">#         for j in range(6):</span>
+<span class="c1">#             cells.append(ss.battle_cells_odd[i, j])</span>
+<span class="c1">#     for i, x in enumerate(cells):</span>
+<span class="c1">#         cv2.imwrite(&quot;battle1_11_&quot; + str(i) + &#39;.jpg&#39;, x)</span>
+
+
+<span class="c1"># def slice_map():</span>
+<span class="c1">#     ss = ScreenStorage()</span>
+<span class="c1">#     ss.take_adventure_map()</span>
+<span class="c1">#     cells = []</span>
+<span class="c1">#     for i in range(52):</span>
+<span class="c1">#         for j in range(30):</span>
+<span class="c1">#             cells.append(ss.cells[i, j])</span>
+<span class="c1">#     for i, x in enumerate(cells):</span>
+<span class="c1">#         cv2.imwrite(&quot;ts_structure_0_&quot; + str(i) + &#39;.jpg&#39;, x)</span>
+
+
+<div class="viewcode-block" id="slice_queue"><a class="viewcode-back" href="../../image_processing.html#image_processing.screen_slicing.slice_queue">[docs]</a><span class="k">def</span> <span class="nf">slice_queue</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    function saving images of unit queue in current folder</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ss</span> <span class="o">=</span> <span class="n">ScreenStorage</span><span class="p">()</span>
+    <span class="n">ss</span><span class="o">.</span><span class="n">take_queue</span><span class="p">()</span>
+    <span class="n">cells</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">15</span><span class="p">):</span>
+        <span class="n">cells</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ss</span><span class="o">.</span><span class="n">queue_color</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cells</span><span class="p">):</span>
+        <span class="n">cv2</span><span class="o">.</span><span class="n">imwrite</span><span class="p">(</span><span class="s2">&quot;ts_queue_color_2_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.jpg&#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span></div>
+
+
+<span class="c1"># def slice_hero_units():</span>
+<span class="c1">#     units = HeroMenu()</span>
+<span class="c1">#     units.take_units()</span>
+<span class="c1">#     cells = []</span>
+<span class="c1">#     for i in range(7):</span>
+<span class="c1">#         cells.append(units.units[i])</span>
+<span class="c1">#     for i, x in enumerate(cells):</span>
+<span class="c1">#         cv2.imwrite(&quot;ts_hero_0_&quot; + str(i) + &#39;.jpg&#39;, x)</span>
+<span class="c1">#</span>
+<span class="c1">#</span>
+<span class="c1"># def slice_hero_artifacts():</span>
+<span class="c1">#     units = HeroMenu()</span>
+<span class="c1">#     units.take_artifacts()</span>
+<span class="c1">#     cells = [units.head, units.cape, units.neck, units.right_hand, units.left_hand, units.ring[0], units.ring[1],</span>
+<span class="c1">#              units.feet, units.torso, units.misc[0], units.misc[1], units.misc[2], units.misc[3], units.misc[4],</span>
+<span class="c1">#              units.lower_slots[0], units.lower_slots[1], units.lower_slots[2], units.lower_slots[3],</span>
+<span class="c1">#              units.lower_slots[4]]</span>
+<span class="c1">#     for i, x in enumerate(cells):</span>
+<span class="c1">#         cv2.imwrite(&quot;ts_hero_art_0_&quot; + str(i) + &#39;.jpg&#39;, x)</span>
+
+
+<span class="c1"># def canny(image):</span>
+<span class="c1">#     img = image.copy()</span>
+<span class="c1">#     #img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)</span>
+<span class="c1">#     #img_blur = cv2.GaussianBlur(img, (3, 3), 0)</span>
+<span class="c1">#     edges = cv2.Canny(image=img, threshold1=100, threshold2=200)</span>
+<span class="c1">#     # erosion = cv2.erode(edges, (0.7, 0.7), iterations=1)</span>
+<span class="c1">#     # img = cv2.dilate(erosion, (0.7, 0.7), iterations=10)</span>
+<span class="c1">#     img = cv2.bitwise_and(image, image, mask=edges)</span>
+<span class="c1">#     return img</span>
+
+<div class="viewcode-block" id="temp_move"><a class="viewcode-back" href="../../image_processing.html#image_processing.screen_slicing.temp_move">[docs]</a><span class="k">def</span> <span class="nf">temp_move</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    function moving mouse to select tile in battle</span>
+
+<span class="sd">    :param x: x coordinate of hex in battle</span>
+<span class="sd">    :param y: y coordinate of hex in battle</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">y</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">beginning</span> <span class="o">=</span> <span class="p">(</span><span class="mi">640</span><span class="p">,</span> <span class="mi">330</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">beginning</span> <span class="o">=</span> <span class="p">(</span><span class="mi">660</span><span class="p">,</span> <span class="mi">330</span><span class="p">)</span>
+    <span class="n">expected_move</span> <span class="o">=</span> <span class="p">(</span><span class="n">beginning</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">x</span> <span class="o">*</span> <span class="mi">44</span><span class="p">,</span> <span class="n">beginning</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">y</span> <span class="o">*</span> <span class="mi">42</span><span class="p">)</span>
+    <span class="n">move</span><span class="p">(</span><span class="n">expected_move</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">expected_move</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">duration</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="take_console"><a class="viewcode-back" href="../../image_processing.html#image_processing.screen_slicing.take_console">[docs]</a><span class="k">def</span> <span class="nf">take_console</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    function taking image of game console</span>
+
+<span class="sd">    :return: image of console</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="n">mss</span><span class="p">()</span> <span class="k">as</span> <span class="n">sct</span><span class="p">:</span>
+        <span class="n">monitor</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;top&#39;</span><span class="p">:</span> <span class="mi">1035</span><span class="p">,</span> <span class="s1">&#39;left&#39;</span><span class="p">:</span> <span class="mi">700</span><span class="p">,</span> <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mi">400</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mi">20</span><span class="p">}</span>
+        <span class="n">screen</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sct</span><span class="o">.</span><span class="n">grab</span><span class="p">(</span><span class="n">monitor</span><span class="p">))</span>
+        <span class="n">screen</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_RGBA2RGB</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">screen</span></div>
+
+
+<div class="viewcode-block" id="take_small_map"><a class="viewcode-back" href="../../image_processing.html#image_processing.screen_slicing.take_small_map">[docs]</a><span class="k">def</span> <span class="nf">take_small_map</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    function taking image of world view</span>
+
+<span class="sd">    :return: list of tiles from world view corresponding to tiles in full map</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="n">mss</span><span class="p">()</span> <span class="k">as</span> <span class="n">sct</span><span class="p">:</span>
+        <span class="n">monitor</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;top&#39;</span><span class="p">:</span> <span class="mi">124</span><span class="p">,</span> <span class="s1">&#39;left&#39;</span><span class="p">:</span> <span class="mi">468</span><span class="p">,</span> <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mi">792</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mi">792</span><span class="p">}</span>
+        <span class="n">screen</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sct</span><span class="o">.</span><span class="n">grab</span><span class="p">(</span><span class="n">monitor</span><span class="p">))</span>
+        <span class="n">screen</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_RGBA2RGB</span><span class="p">)</span>
+        <span class="n">screen</span> <span class="o">=</span> <span class="n">screen</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">72</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">72</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="n">screen</span> <span class="o">=</span> <span class="n">screen</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">screen2</span> <span class="o">=</span> <span class="p">[[]]</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">72</span><span class="p">):</span>
+            <span class="n">screen2</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+            <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">72</span><span class="p">):</span>
+                <span class="n">screen2</span><span class="p">[</span><span class="n">x</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">screen</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">],</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)))</span>
+        <span class="c1"># temp1 = []</span>
+        <span class="c1"># for y in range(72):</span>
+        <span class="c1">#     z = screen[y]</span>
+        <span class="c1">#     for x in range(72):</span>
+        <span class="c1">#         temp1.append(z[x])</span>
+        <span class="c1"># cells = np.array(temp1)</span>
+        <span class="c1"># return cells</span>
+        <span class="n">screen2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">screen2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">screen2</span></div>
+
+
+<div class="viewcode-block" id="save_small_map"><a class="viewcode-back" href="../../image_processing.html#image_processing.screen_slicing.save_small_map">[docs]</a><span class="k">def</span> <span class="nf">save_small_map</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Saves world viev</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">list</span> <span class="o">=</span> <span class="n">take_small_map</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">72</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">72</span><span class="p">):</span>
+            <span class="n">cv2</span><span class="o">.</span><span class="n">imwrite</span><span class="p">(</span><span class="s2">&quot;ts_small_map_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">j</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.jpg&#39;</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="take_resources_"><a class="viewcode-back" href="../../image_processing.html#image_processing.screen_slicing.take_resources_">[docs]</a><span class="k">def</span> <span class="nf">take_resources_</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    function taking image of resource bar</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="n">mss</span><span class="p">()</span> <span class="k">as</span> <span class="n">sct</span><span class="p">:</span>
+        <span class="n">monitor</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;top&#39;</span><span class="p">:</span> <span class="mi">1058</span><span class="p">,</span> <span class="s1">&#39;left&#39;</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span> <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mi">595</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mi">15</span><span class="p">}</span>
+        <span class="n">img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sct</span><span class="o">.</span><span class="n">grab</span><span class="p">(</span><span class="n">monitor</span><span class="p">))</span>
+        <span class="n">img</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_RGBA2RGB</span><span class="p">)</span>
+        <span class="n">img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">85</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">img</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="check_resources"><a class="viewcode-back" href="../../image_processing.html#image_processing.screen_slicing.check_resources">[docs]</a><span class="k">def</span> <span class="nf">check_resources</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">res_range</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">generic</span><span class="p">:</span> <span class="n">Cost</span> <span class="o">=</span> <span class="n">Cost</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">only_one</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Function that is responsible for updating player&#39;s resources..</span>
+
+<span class="sd">        :param player: Player object</span>
+<span class="sd">        :param res_range: Range of the given resource (size on screen)</span>
+<span class="sd">        :param generic: objecgt of class cost containing value of minimal added resources for case when ocr cannot read our resources</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="n">resource</span> <span class="o">=</span> <span class="n">take_resources_</span><span class="p">()</span>
+    <span class="n">possible_resources</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">only_one</span><span class="p">:</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">n</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">resource</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">s_</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">26</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">banned_psm</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">good_number</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">tries</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="n">good_number</span> <span class="ow">and</span> <span class="n">tries</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">resources</span><span class="p">,</span> <span class="n">psm</span> <span class="o">=</span> <span class="n">read_generic_numbers</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">banned_psm</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+            <span class="n">banned_psm</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">psm</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">res_range</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="nb">int</span><span class="p">(</span><span class="n">resources</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">res_range</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="n">good_number</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">tries</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="n">tries</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">good_number</span><span class="p">:</span>
+            <span class="n">possible_resources</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">resources</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">possible_resources</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">res</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">resource</span><span class="p">):</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">s_</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">26</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">banned_psm</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">good_number</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">tries</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">while</span> <span class="ow">not</span> <span class="n">good_number</span> <span class="ow">and</span> <span class="n">tries</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">resources</span><span class="p">,</span> <span class="n">psm</span> <span class="o">=</span> <span class="n">read_generic_numbers</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">banned_psm</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+                <span class="n">banned_psm</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">psm</span><span class="p">)</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">res_range</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="nb">int</span><span class="p">(</span><span class="n">resources</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">res_range</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]:</span>
+                        <span class="n">good_number</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="n">tries</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                    <span class="n">tries</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">good_number</span><span class="p">:</span>
+                <span class="n">possible_resources</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">resources</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">possible_resources</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">possible_resources</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">player</span><span class="o">.</span><span class="n">gold</span> <span class="o">=</span> <span class="n">possible_resources</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">player</span><span class="o">.</span><span class="n">gold</span> <span class="o">+=</span> <span class="n">generic</span><span class="o">.</span><span class="n">gold</span>
+    <span class="k">if</span> <span class="n">possible_resources</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">player</span><span class="o">.</span><span class="n">wood</span> <span class="o">=</span> <span class="n">possible_resources</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">player</span><span class="o">.</span><span class="n">wood</span> <span class="o">+=</span> <span class="n">generic</span><span class="o">.</span><span class="n">wood</span>
+    <span class="k">if</span> <span class="n">possible_resources</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">player</span><span class="o">.</span><span class="n">mercury</span> <span class="o">=</span> <span class="n">possible_resources</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">player</span><span class="o">.</span><span class="n">mercury</span> <span class="o">+=</span> <span class="n">generic</span><span class="o">.</span><span class="n">mercury</span>
+    <span class="k">if</span> <span class="n">possible_resources</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">player</span><span class="o">.</span><span class="n">ore</span> <span class="o">=</span> <span class="n">possible_resources</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">player</span><span class="o">.</span><span class="n">ore</span> <span class="o">+=</span> <span class="n">generic</span><span class="o">.</span><span class="n">ore</span>
+    <span class="k">if</span> <span class="n">possible_resources</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">player</span><span class="o">.</span><span class="n">sulfur</span> <span class="o">=</span> <span class="n">possible_resources</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">player</span><span class="o">.</span><span class="n">sulfur</span> <span class="o">+=</span> <span class="n">generic</span><span class="o">.</span><span class="n">sulfur</span>
+    <span class="k">if</span> <span class="n">possible_resources</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">player</span><span class="o">.</span><span class="n">crystal</span> <span class="o">=</span> <span class="n">possible_resources</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">player</span><span class="o">.</span><span class="n">crystal</span> <span class="o">+=</span> <span class="n">generic</span><span class="o">.</span><span class="n">crystal</span>
+    <span class="k">if</span> <span class="n">possible_resources</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">player</span><span class="o">.</span><span class="n">gems</span> <span class="o">=</span> <span class="n">possible_resources</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">player</span><span class="o">.</span><span class="n">gems</span> <span class="o">+=</span> <span class="n">generic</span><span class="o">.</span><span class="n">gems</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Fryderyk Róg, Kacper Plesiak, Michał Gruba, Tymoteusz Skrzyński, Mateusz Comblik, Bartosz Szczepanek, Alan Konopko, Mateusz Mikszewicz, Daniel Bil, Piotr Łyczko.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

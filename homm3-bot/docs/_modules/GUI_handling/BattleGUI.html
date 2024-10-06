@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GUI_handling.BattleGUI &mdash; HoMM3 Bot 2.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> HoMM3 Bot
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">homm3-bot</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">HoMM3 Bot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">GUI_handling.BattleGUI</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for GUI_handling.BattleGUI</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Script containing functions essential for handling battle GUI.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">keyboard</span> <span class="k">as</span> <span class="nn">kb</span>
+<span class="kn">import</span> <span class="nn">mouse</span>
+<span class="kn">import</span> <span class="nn">ctypes</span>
+
+<span class="c1"># Each tile has (45, 54) pixels on battle map</span>
+
+<span class="c1"># Battlefield point (0, 0) has coordinates (660, 330) pixels</span>
+
+<span class="c1"># There&#39;s (15, 11) tiles on the battle map</span>
+
+
+<div class="viewcode-block" id="move_mouse_and_click_battle"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.BattleGUI.move_mouse_and_click_battle">[docs]</a><span class="k">def</span> <span class="nf">move_mouse_and_click_battle</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    move mouse and click during battle</span>
+
+<span class="sd">    :param x: x coord</span>
+<span class="sd">    :param y: y coord</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">mouse</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+    <span class="n">mouse</span><span class="o">.</span><span class="n">click</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="surrender"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.BattleGUI.surrender">[docs]</a><span class="k">def</span> <span class="nf">surrender</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    surrender</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;s&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="quick_combat"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.BattleGUI.quick_combat">[docs]</a><span class="k">def</span> <span class="nf">quick_combat</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    quick combat</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;q&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="wait"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.BattleGUI.wait">[docs]</a><span class="k">def</span> <span class="nf">wait</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    wait</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;w&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="retreat"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.BattleGUI.retreat">[docs]</a><span class="k">def</span> <span class="nf">retreat</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    retreat</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="show_current_unit_stats"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.BattleGUI.show_current_unit_stats">[docs]</a><span class="k">def</span> <span class="nf">show_current_unit_stats</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    show unit stats</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;t&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="show_heroes_stats"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.BattleGUI.show_heroes_stats">[docs]</a><span class="k">def</span> <span class="nf">show_heroes_stats</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    show hero stats</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;i&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="options"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.BattleGUI.options">[docs]</a><span class="k">def</span> <span class="nf">options</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    click options</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;o&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="auto_combat"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.BattleGUI.auto_combat">[docs]</a><span class="k">def</span> <span class="nf">auto_combat</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    auto combat</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="defend"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.BattleGUI.defend">[docs]</a><span class="k">def</span> <span class="nf">defend</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    defend</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;d&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="fight_log"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.BattleGUI.fight_log">[docs]</a><span class="k">def</span> <span class="nf">fight_log</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    fight log</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;h&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="show_hide_queue"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.BattleGUI.show_hide_queue">[docs]</a><span class="k">def</span> <span class="nf">show_hide_queue</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    show or hide queue</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;z&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="spell_book"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.BattleGUI.spell_book">[docs]</a><span class="k">def</span> <span class="nf">spell_book</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    go into spell book</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="move_mouse_to_tile"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.BattleGUI.move_mouse_to_tile">[docs]</a><span class="k">def</span> <span class="nf">move_mouse_to_tile</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">win_gui</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    move mouse to tile</span>
+
+<span class="sd">    :param x: x coord</span>
+<span class="sd">    :param y: y coord</span>
+<span class="sd">    :param win_gui: use win32gui</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">y</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">beginning</span> <span class="o">=</span> <span class="p">(</span><span class="mi">640</span><span class="p">,</span> <span class="mi">330</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">beginning</span> <span class="o">=</span> <span class="p">(</span><span class="mi">660</span><span class="p">,</span> <span class="mi">330</span><span class="p">)</span>
+    <span class="n">expected_move</span> <span class="o">=</span> <span class="p">(</span><span class="n">beginning</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">x</span><span class="o">*</span><span class="mi">44</span><span class="p">,</span> <span class="n">beginning</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">y</span><span class="o">*</span><span class="mi">42</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">win_gui</span><span class="p">:</span>
+        <span class="n">ctypes</span><span class="o">.</span><span class="n">windll</span><span class="o">.</span><span class="n">user32</span><span class="o">.</span><span class="n">SetCursorPos</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">expected_move</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">expected_move</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">mouse</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">expected_move</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">expected_move</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">duration</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="move_to_tile"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.BattleGUI.move_to_tile">[docs]</a><span class="k">def</span> <span class="nf">move_to_tile</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Top left corner is the (0, 0) point.</span>
+<span class="sd">    Adding x moves the chosen tile to the right, adding y moves it downwards</span>
+
+<span class="sd">    :param x: x coord</span>
+<span class="sd">    :param y: y coord</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">y</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">beginning</span> <span class="o">=</span> <span class="p">(</span><span class="mi">640</span><span class="p">,</span> <span class="mi">330</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">beginning</span> <span class="o">=</span> <span class="p">(</span><span class="mi">660</span><span class="p">,</span> <span class="mi">330</span><span class="p">)</span>
+    <span class="n">expected_move</span> <span class="o">=</span> <span class="p">(</span><span class="n">beginning</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">x</span><span class="o">*</span><span class="mi">44</span><span class="p">,</span> <span class="n">beginning</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">y</span><span class="o">*</span><span class="mi">42</span><span class="p">)</span>
+
+    <span class="n">move_mouse_and_click_battle</span><span class="p">(</span><span class="n">expected_move</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">expected_move</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;done&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="attack_enemy"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.BattleGUI.attack_enemy">[docs]</a><span class="k">def</span> <span class="nf">attack_enemy</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">direction</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Attacks the enemy on the given coordinates from a given direction. Possible directions are:</span>
+<span class="sd">    &#39;top&#39;, &#39;top_right&#39;, &#39;right&#39;, &#39;bottom_right&#39;, &#39;bottom&#39;, &#39;bottom_left&#39;, &#39;left&#39;, &#39;top_left&#39;</span>
+<span class="sd">    Works the same way as move_to_tile with additional direction</span>
+
+<span class="sd">    :param x: x coord</span>
+<span class="sd">    :param y: y coord</span>
+<span class="sd">    :param direction: direction we want to attack from</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">direction</span> <span class="o">=</span> <span class="n">direction</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">y</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">beginning</span> <span class="o">=</span> <span class="p">(</span><span class="mi">640</span><span class="p">,</span> <span class="mi">330</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">beginning</span> <span class="o">=</span> <span class="p">(</span><span class="mi">660</span><span class="p">,</span> <span class="mi">330</span><span class="p">)</span>
+    <span class="n">expected_move</span> <span class="o">=</span> <span class="p">(</span><span class="n">beginning</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">x</span><span class="o">*</span><span class="mi">44</span><span class="p">,</span> <span class="n">beginning</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">y</span><span class="o">*</span><span class="mi">42</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">direction</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;top&#39;</span><span class="p">,</span> <span class="s1">&#39;top_right&#39;</span><span class="p">,</span> <span class="s1">&#39;right&#39;</span><span class="p">,</span> <span class="s1">&#39;bottom_right&#39;</span><span class="p">,</span> <span class="s1">&#39;bottom&#39;</span><span class="p">,</span> <span class="s1">&#39;bottom_left&#39;</span><span class="p">,</span> <span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="s1">&#39;top_left&#39;</span><span class="p">}:</span>
+        <span class="k">if</span> <span class="n">direction</span> <span class="o">==</span> <span class="s1">&#39;top&#39;</span><span class="p">:</span>
+            <span class="n">expected_move</span> <span class="o">=</span> <span class="p">(</span><span class="n">beginning</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">x</span> <span class="o">*</span> <span class="mi">44</span><span class="p">,</span> <span class="n">beginning</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">y</span> <span class="o">*</span> <span class="mi">42</span> <span class="o">-</span> <span class="mi">10</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">direction</span> <span class="o">==</span> <span class="s1">&#39;top_right&#39;</span><span class="p">:</span>
+            <span class="n">expected_move</span> <span class="o">=</span> <span class="p">(</span><span class="n">beginning</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">x</span> <span class="o">*</span> <span class="mi">44</span> <span class="o">+</span> <span class="mi">10</span><span class="p">,</span> <span class="n">beginning</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">y</span> <span class="o">*</span> <span class="mi">42</span> <span class="o">-</span> <span class="mi">10</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">direction</span> <span class="o">==</span> <span class="s1">&#39;right&#39;</span><span class="p">:</span>
+            <span class="n">expected_move</span> <span class="o">=</span> <span class="p">(</span><span class="n">beginning</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">x</span> <span class="o">*</span> <span class="mi">44</span> <span class="o">+</span> <span class="mi">10</span><span class="p">,</span> <span class="n">beginning</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">y</span> <span class="o">*</span> <span class="mi">42</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">direction</span> <span class="o">==</span> <span class="s1">&#39;bottom_right&#39;</span><span class="p">:</span>
+            <span class="n">expected_move</span> <span class="o">=</span> <span class="p">(</span><span class="n">beginning</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">x</span> <span class="o">*</span> <span class="mi">44</span> <span class="o">+</span> <span class="mi">10</span><span class="p">,</span> <span class="n">beginning</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">y</span> <span class="o">*</span> <span class="mi">42</span> <span class="o">+</span> <span class="mi">10</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">direction</span> <span class="o">==</span> <span class="s1">&#39;bottom&#39;</span><span class="p">:</span>
+            <span class="n">expected_move</span> <span class="o">=</span> <span class="p">(</span><span class="n">beginning</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">x</span> <span class="o">*</span> <span class="mi">44</span><span class="p">,</span> <span class="n">beginning</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">y</span> <span class="o">*</span> <span class="mi">42</span> <span class="o">+</span> <span class="mi">10</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">direction</span> <span class="o">==</span> <span class="s1">&#39;bottom_left&#39;</span><span class="p">:</span>
+            <span class="n">expected_move</span> <span class="o">=</span> <span class="p">(</span><span class="n">beginning</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">x</span> <span class="o">*</span> <span class="mi">44</span> <span class="o">-</span> <span class="mi">10</span><span class="p">,</span> <span class="n">beginning</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">y</span> <span class="o">*</span> <span class="mi">42</span> <span class="o">+</span> <span class="mi">10</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">direction</span> <span class="o">==</span> <span class="s1">&#39;left&#39;</span><span class="p">:</span>
+            <span class="n">expected_move</span> <span class="o">=</span> <span class="p">(</span><span class="n">beginning</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">x</span> <span class="o">*</span> <span class="mi">44</span> <span class="o">-</span> <span class="mi">10</span><span class="p">,</span> <span class="n">beginning</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">y</span> <span class="o">*</span> <span class="mi">42</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">direction</span> <span class="o">==</span> <span class="s1">&#39;top_left&#39;</span><span class="p">:</span>
+            <span class="n">expected_move</span> <span class="o">=</span> <span class="p">(</span><span class="n">beginning</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">x</span> <span class="o">*</span> <span class="mi">44</span> <span class="o">-</span> <span class="mi">10</span><span class="p">,</span> <span class="n">beginning</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">y</span> <span class="o">*</span> <span class="mi">42</span> <span class="o">-</span> <span class="mi">10</span><span class="p">)</span>
+        <span class="n">move_mouse_and_click_battle</span><span class="p">(</span><span class="n">expected_move</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">expected_move</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="area_attack"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.BattleGUI.area_attack">[docs]</a><span class="k">def</span> <span class="nf">area_attack</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Attack area. For Magogs and Liches</span>
+
+<span class="sd">    :param x: x coord</span>
+<span class="sd">    :param y: y coord</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">press</span><span class="p">(</span><span class="s1">&#39;G&#39;</span><span class="p">)</span>
+    <span class="n">move_to_tile</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">release</span><span class="p">(</span><span class="s1">&#39;G&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="default_spell_book_position"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.BattleGUI.default_spell_book_position">[docs]</a><span class="k">def</span> <span class="nf">default_spell_book_position</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns to the leftmost page of the spellbook</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">move_mouse_and_click_battle</span><span class="p">(</span><span class="mi">660</span><span class="p">,</span> <span class="mi">292</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+    <span class="n">mouse</span><span class="o">.</span><span class="n">click</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="cast_spell_battle"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.BattleGUI.cast_spell_battle">[docs]</a><span class="k">def</span> <span class="nf">cast_spell_battle</span><span class="p">(</span><span class="nb">id</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Choose a spell. Its id is its position in the book, starting from 0, and not within the overall magic</span>
+<span class="sd">    (If you have 3 spells of tier 1, 2 and 3 then tier 3 spell has id=2,</span>
+<span class="sd">    because it lies on the 3rd position in the book)</span>
+<span class="sd">    The spell is not played on the battlefield, its only chosen.</span>
+
+<span class="sd">    :param id: (int) spell id</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">move_mouse_and_click_battle</span><span class="p">(</span><span class="mi">655</span><span class="p">,</span> <span class="mi">292</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">move_mouse_and_click_battle</span><span class="p">(</span><span class="mi">655</span><span class="p">,</span> <span class="mi">292</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">id</span> <span class="o">&gt;=</span> <span class="mi">48</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click_battle</span><span class="p">(</span><span class="mi">1260</span><span class="p">,</span> <span class="mi">292</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+        <span class="n">move_mouse_and_click_battle</span><span class="p">(</span><span class="mi">1260</span><span class="p">,</span> <span class="mi">292</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">id</span> <span class="o">&gt;=</span> <span class="mi">24</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click_battle</span><span class="p">(</span><span class="mi">1260</span><span class="p">,</span> <span class="mi">292</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="nb">id</span> <span class="o">%</span> <span class="mi">24</span>
+    <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">idx</span> <span class="o">&lt;=</span> <span class="mi">11</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click_battle</span><span class="p">(</span><span class="mi">705</span> <span class="o">+</span> <span class="mi">90</span><span class="o">*</span><span class="p">(</span><span class="n">idx</span> <span class="o">%</span> <span class="mi">3</span><span class="p">),</span> <span class="mi">330</span> <span class="o">+</span> <span class="mi">90</span><span class="o">*</span><span class="nb">int</span><span class="p">(</span><span class="n">idx</span> <span class="o">/</span> <span class="mi">3</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click_battle</span><span class="p">(</span><span class="mi">1015</span> <span class="o">+</span> <span class="mi">90</span> <span class="o">*</span> <span class="p">(</span><span class="n">idx</span> <span class="o">%</span> <span class="mi">3</span><span class="p">),</span> <span class="mi">330</span> <span class="o">+</span> <span class="mi">90</span> <span class="o">*</span> <span class="nb">int</span><span class="p">((</span><span class="n">idx</span><span class="o">-</span><span class="mi">12</span><span class="p">)</span> <span class="o">/</span> <span class="mi">3</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="move_to_portrait"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.BattleGUI.move_to_portrait">[docs]</a><span class="k">def</span> <span class="nf">move_to_portrait</span><span class="p">(</span><span class="n">number</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    move mouse to portrait in a queue</span>
+
+<span class="sd">    :param number: hero number</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">mouse</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="mi">678</span> <span class="o">+</span> <span class="n">number</span><span class="o">*</span><span class="mi">40</span><span class="p">,</span> <span class="mi">800</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></div>
+
+
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Fryderyk Róg, Kacper Plesiak, Michał Gruba, Tymoteusz Skrzyński, Mateusz Comblik, Bartosz Szczepanek, Alan Konopko, Mateusz Mikszewicz, Daniel Bil, Piotr Łyczko.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

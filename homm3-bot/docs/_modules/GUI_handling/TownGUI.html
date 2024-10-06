@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GUI_handling.TownGUI &mdash; HoMM3 Bot 2.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> HoMM3 Bot
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">homm3-bot</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">HoMM3 Bot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">GUI_handling.TownGUI</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for GUI_handling.TownGUI</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">keyboard</span> <span class="k">as</span> <span class="nn">kb</span>
+<span class="kn">import</span> <span class="nn">mouse</span>
+<span class="sd">&quot;&quot;&quot;Script containing functions essential for handling town GUI.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="move_mouse_and_click"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.TownGUI.move_mouse_and_click">[docs]</a><span class="k">def</span> <span class="nf">move_mouse_and_click</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    move mouse and click</span>
+
+<span class="sd">    :param x: x coordinate</span>
+<span class="sd">    :param y: y coordinate</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">mouse</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+    <span class="n">mouse</span><span class="o">.</span><span class="n">click</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="hero_garrison_change"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.TownGUI.hero_garrison_change">[docs]</a><span class="k">def</span> <span class="nf">hero_garrison_change</span><span class="p">(</span><span class="n">garrison</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;bottom&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    change hero in garrison if the opposite garrison is empty</span>
+<span class="sd">    Changed it because for some reason space button sometimes doesn&#39;t click</span>
+
+<span class="sd">    :param garrison: Indicates whether to move starting from top or bottom</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">garrison</span> <span class="o">==</span> <span class="s1">&#39;bottom&#39;</span><span class="p">:</span>
+        <span class="n">coords_from</span> <span class="o">=</span> <span class="p">(</span><span class="mi">830</span><span class="p">,</span> <span class="mi">750</span><span class="p">)</span>
+        <span class="n">coords_to</span> <span class="o">=</span> <span class="p">(</span><span class="mi">830</span><span class="p">,</span> <span class="mi">650</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">coords_from</span> <span class="o">=</span> <span class="p">(</span><span class="mi">830</span><span class="p">,</span> <span class="mi">650</span><span class="p">)</span>
+        <span class="n">coords_to</span> <span class="o">=</span> <span class="p">(</span><span class="mi">830</span><span class="p">,</span> <span class="mi">750</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+    <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="n">coords_from</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">coords_from</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.2</span><span class="p">)</span>
+    <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="n">coords_to</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">coords_to</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.2</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="click_building"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.TownGUI.click_building">[docs]</a><span class="k">def</span> <span class="nf">click_building</span><span class="p">(</span><span class="nb">id</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    click on a building</span>
+
+<span class="sd">    :param id: Building number</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="mi">0</span> <span class="o">&gt;</span> <span class="nb">id</span> <span class="o">&gt;</span> <span class="mi">18</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Id should be within (0, 18)&quot;</span><span class="p">)</span>
+        <span class="k">return</span>
+    <span class="n">mouse</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="mi">830</span> <span class="o">+</span> <span class="mi">62</span> <span class="o">*</span> <span class="p">(</span><span class="nb">id</span> <span class="o">%</span> <span class="mi">8</span><span class="p">),</span> <span class="mi">660</span> <span class="o">+</span> <span class="mi">100</span> <span class="o">*</span> <span class="p">(</span><span class="nb">id</span> <span class="o">/</span> <span class="mi">8</span><span class="p">),</span> <span class="n">duration</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+    <span class="n">mouse</span><span class="o">.</span><span class="n">click</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="click_tile"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.TownGUI.click_tile">[docs]</a><span class="k">def</span> <span class="nf">click_tile</span><span class="p">(</span><span class="n">tile_num</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Click on a tile</span>
+<span class="sd">    0-7 upper row, 8-15 lower row</span>
+
+<span class="sd">    :param tile_num: Unit number</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">tile_num</span> <span class="o">&lt;=</span> <span class="mi">15</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">830</span> <span class="o">+</span> <span class="mi">62</span> <span class="o">*</span> <span class="p">(</span><span class="n">tile_num</span> <span class="o">%</span> <span class="mi">8</span><span class="p">),</span> <span class="mi">660</span> <span class="o">+</span> <span class="mi">100</span> <span class="o">*</span> <span class="nb">int</span><span class="p">(</span><span class="n">tile_num</span> <span class="o">/</span> <span class="mi">8</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Tile number should be within 0-15&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="change_tile_unit"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.TownGUI.change_tile_unit">[docs]</a><span class="k">def</span> <span class="nf">change_tile_unit</span><span class="p">(</span><span class="n">tile_num1</span><span class="p">,</span> <span class="n">tile_num2</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    change units tile</span>
+
+<span class="sd">    :param tile_num1: Unit number</span>
+<span class="sd">    :param tile_num2: Unit number</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">click_tile</span><span class="p">(</span><span class="n">tile_num1</span><span class="p">)</span>
+    <span class="n">click_tile</span><span class="p">(</span><span class="n">tile_num2</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="double_click_tile"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.TownGUI.double_click_tile">[docs]</a><span class="k">def</span> <span class="nf">double_click_tile</span><span class="p">(</span><span class="n">tile_num</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    double click on a tile</span>
+
+<span class="sd">    :param tile_num: Unit number</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">click_tile</span><span class="p">(</span><span class="n">tile_num</span><span class="p">)</span>
+    <span class="n">click_tile</span><span class="p">(</span><span class="n">tile_num</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="upgrade_unit"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.TownGUI.upgrade_unit">[docs]</a><span class="k">def</span> <span class="nf">upgrade_unit</span><span class="p">(</span><span class="n">tile_num</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    upgrade unit</span>
+
+<span class="sd">    :param tile_num: Unit number</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">double_click_tile</span><span class="p">(</span><span class="n">tile_num</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+    <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">881</span><span class="p">,</span> <span class="mi">465</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;enter&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="make_single_stack_unit"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.TownGUI.make_single_stack_unit">[docs]</a><span class="k">def</span> <span class="nf">make_single_stack_unit</span><span class="p">(</span><span class="n">tile_num</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    take positions of unit and make it into a single stack</span>
+
+<span class="sd">    :param tile_num: Unit number</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">press</span><span class="p">(</span><span class="s2">&quot;ctrl&quot;</span><span class="p">)</span>
+    <span class="n">click_tile</span><span class="p">(</span><span class="n">tile_num</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">release</span><span class="p">(</span><span class="s2">&quot;ctrl&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="merge_stacks_unit"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.TownGUI.merge_stacks_unit">[docs]</a><span class="k">def</span> <span class="nf">merge_stacks_unit</span><span class="p">(</span><span class="n">tile_num</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    merge stacks</span>
+
+<span class="sd">    :param tile_num: Unit number</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">press</span><span class="p">(</span><span class="s2">&quot;left alt&quot;</span><span class="p">)</span>
+    <span class="n">click_tile</span><span class="p">(</span><span class="n">tile_num</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">release</span><span class="p">(</span><span class="s2">&quot;left alt&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="split_even_unit"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.TownGUI.split_even_unit">[docs]</a><span class="k">def</span> <span class="nf">split_even_unit</span><span class="p">(</span><span class="n">tile_num</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    split units evenly</span>
+
+<span class="sd">    :param tile_num: Unit number</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">press</span><span class="p">(</span><span class="s2">&quot;shift&quot;</span><span class="p">)</span>
+    <span class="n">click_tile</span><span class="p">(</span><span class="n">tile_num</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">release</span><span class="p">(</span><span class="s2">&quot;shift&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="move_all_units_to_other_side"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.TownGUI.move_all_units_to_other_side">[docs]</a><span class="k">def</span> <span class="nf">move_all_units_to_other_side</span><span class="p">(</span><span class="n">tile_num</span><span class="p">:</span> <span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Moves every unit except if it moves from a hero.</span>
+<span class="sd">    Then it moves every unit but one chosen, so the hero is left with 1 stack of 1 unit</span>
+
+<span class="sd">    :param tile_num: Tile number deciding which one unit will stay if taking army from a hero</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">press</span><span class="p">(</span><span class="s2">&quot;ctrl+alt+shift&quot;</span><span class="p">)</span>
+    <span class="n">click_tile</span><span class="p">(</span><span class="n">tile_num</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">release</span><span class="p">(</span><span class="s2">&quot;ctrl+alt+shift&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="dismiss_unit"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.TownGUI.dismiss_unit">[docs]</a><span class="k">def</span> <span class="nf">dismiss_unit</span><span class="p">(</span><span class="n">tile_num</span><span class="p">:</span> <span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    dismiss a unit</span>
+
+<span class="sd">    :param tile_num: Our tile number</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">press</span><span class="p">(</span><span class="s2">&quot;alt+shift&quot;</span><span class="p">)</span>
+    <span class="n">click_tile</span><span class="p">(</span><span class="n">tile_num</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">release</span><span class="p">(</span><span class="s2">&quot;alt+shift&quot;</span><span class="p">)</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s2">&quot;enter&quot;</span><span class="p">)</span></div>
+
+
+<span class="c1"># TODO: Amount not implemented yet</span>
+<div class="viewcode-block" id="recruit_unit"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.TownGUI.recruit_unit">[docs]</a><span class="k">def</span> <span class="nf">recruit_unit</span><span class="p">(</span><span class="n">tier</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">upgraded</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">amount</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Buys every unit chosen. tier=8 is the additional unit from the &#39;Portal of summoning&#39; in Dungeon.</span>
+<span class="sd">    Buy multiple units using &#39;+&#39; e.g. tier=&#39;1+2+3&#39;, or using tier=&#39;all&#39; -&gt; amount is not used then.</span>
+<span class="sd">    Can also specify the amount of units bought, if not specified it buys every unit in the given order:</span>
+<span class="sd">    e.g. tier=&#39;4+1+2&#39; will buy every unit of tier 4 then 1 then 2 if there&#39;s enough resources.</span>
+<span class="sd">    If you only have e.g. 3 tiers (1, 2, 6) then to buy the 6th one you have to write 3 as it&#39;s the 3rd bought</span>
+<span class="sd">    !!!If buying a certain amount, then it has to be written as &#39;10+2+3+...&#39; and has to have the same amount</span>
+<span class="sd">    of specified numbers as the amount of tiers bought!!!</span>
+<span class="sd">    amount=-1 is equivalent to buying every unit.</span>
+<span class="sd">    Normally buys upgraded units but can also buy unupgraded by setting upgraded=False</span>
+<span class="sd">    If you buy more than one tier and want some units unupgraded than it is necessary to specify each of them</span>
+<span class="sd">    as upgraded=[True, False, True,...]. If all units are to be upgraded than no input is necessary.</span>
+
+<span class="sd">    :param tier: Unit tier</span>
+<span class="sd">    :param upgraded: True/False</span>
+<span class="sd">    :param amount: amount to buy</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">tier</span> <span class="o">=</span> <span class="n">tier</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>  <span class="c1"># Remove all accidental whitespaces</span>
+    <span class="n">tier_split</span> <span class="o">=</span> <span class="n">tier</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;+&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">upgraded</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">upgraded</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">tier_split</span><span class="p">:</span>
+            <span class="n">upgraded</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">amount</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">amount</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">tier_split</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">count</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="n">count</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                <span class="n">amount</span> <span class="o">+=</span> <span class="s1">&#39;-1+&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">amount</span> <span class="o">+=</span> <span class="s1">&#39;-1&#39;</span>
+    <span class="n">amount</span> <span class="o">=</span> <span class="n">amount</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">amount_split</span> <span class="o">=</span> <span class="n">amount</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;+&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tier_split</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">amount_split</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">upgraded</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The number of given amount and upgrades must be the same as the amount of bought tiers&quot;</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="k">for</span> <span class="n">tier</span><span class="p">,</span> <span class="n">upgrade</span><span class="p">,</span> <span class="n">amount</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">tier_split</span><span class="p">,</span> <span class="n">upgraded</span><span class="p">,</span> <span class="n">amount_split</span><span class="p">):</span>
+        <span class="n">amount</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">amount</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">upgrade</span><span class="p">:</span>
+            <span class="n">main_button</span> <span class="o">=</span> <span class="s1">&#39;ctrl&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">main_button</span> <span class="o">=</span> <span class="s1">&#39;alt&#39;</span>
+
+        <span class="k">if</span> <span class="n">tier</span> <span class="o">!=</span> <span class="s1">&#39;all&#39;</span><span class="p">:</span>
+            <span class="n">kb</span><span class="o">.</span><span class="n">press</span><span class="p">(</span><span class="n">main_button</span><span class="p">)</span>
+            <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">600</span> <span class="o">+</span> <span class="mi">50</span> <span class="o">*</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">tier</span><span class="p">)</span> <span class="o">%</span> <span class="mi">5</span><span class="p">)</span> <span class="o">-</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">715</span> <span class="o">+</span> <span class="mi">50</span> <span class="o">*</span> <span class="nb">int</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">tier</span><span class="p">)</span> <span class="o">/</span> <span class="mi">5</span><span class="p">))</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+            <span class="n">kb</span><span class="o">.</span><span class="n">release</span><span class="p">(</span><span class="n">main_button</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">main_button</span><span class="p">,</span> <span class="n">do_press</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">do_release</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="c1">#kb.release(main_button)</span>
+            <span class="c1">#while not kb.is_pressed(main_button):</span>
+                <span class="c1">#print(kb.is_pressed(main_button))</span>
+                <span class="c1">#time.sleep(0.1)</span>
+            <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">700</span><span class="p">,</span> <span class="mi">670</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+            <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">main_button</span><span class="p">,</span> <span class="n">do_press</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">do_release</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">break</span></div>
+
+
+<div class="viewcode-block" id="click_town_hall"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.TownGUI.click_town_hall">[docs]</a><span class="k">def</span> <span class="nf">click_town_hall</span><span class="p">(</span><span class="n">faction</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Click on town hall Don&#39;t use</span>
+
+<span class="sd">    :param faction: Your faction</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">faction</span> <span class="o">=</span> <span class="n">faction</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">faction</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;castle&#39;</span><span class="p">,</span> <span class="s1">&#39;rampart&#39;</span><span class="p">,</span> <span class="s1">&#39;tower&#39;</span><span class="p">,</span> <span class="s1">&#39;inferno&#39;</span><span class="p">,</span> <span class="s1">&#39;necropolis&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;dungeon&#39;</span><span class="p">,</span> <span class="s1">&#39;stronghold&#39;</span><span class="p">,</span> <span class="s1">&#39;fortress&#39;</span><span class="p">,</span> <span class="s1">&#39;conflux&#39;</span><span class="p">,</span> <span class="s1">&#39;cove&#39;</span><span class="p">}:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Wrong faction name&#39;</span><span class="p">)</span>
+        <span class="k">return</span>
+    <span class="k">if</span> <span class="n">faction</span> <span class="o">==</span> <span class="s1">&#39;castle&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">690</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">faction</span> <span class="o">==</span> <span class="s1">&#39;rampart&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1230</span><span class="p">,</span> <span class="mi">525</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">faction</span> <span class="o">==</span> <span class="s1">&#39;tower&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">660</span><span class="p">,</span> <span class="mi">535</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">faction</span> <span class="o">==</span> <span class="s1">&#39;inferno&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">650</span><span class="p">,</span> <span class="mi">450</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">faction</span> <span class="o">==</span> <span class="s1">&#39;necropolis&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1100</span><span class="p">,</span> <span class="mi">370</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">faction</span> <span class="o">==</span> <span class="s1">&#39;dungeon&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">650</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">faction</span> <span class="o">==</span> <span class="s1">&#39;stronghold&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">680</span><span class="p">,</span> <span class="mi">560</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">faction</span> <span class="o">==</span> <span class="s1">&#39;fortress&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">870</span><span class="p">,</span> <span class="mi">380</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">faction</span> <span class="o">==</span> <span class="s1">&#39;conflux&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">670</span><span class="p">,</span> <span class="mi">530</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">faction</span> <span class="o">==</span> <span class="s1">&#39;cove&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">660</span><span class="p">,</span> <span class="mi">450</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="buy_generic_building"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.TownGUI.buy_generic_building">[docs]</a><span class="k">def</span> <span class="nf">buy_generic_building</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    buy a building don&#39;t use</span>
+
+<span class="sd">    :param name: Name of the building</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;town_hall&#39;</span> <span class="ow">or</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;city_hall&#39;</span> <span class="ow">or</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;capitol&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">660</span><span class="p">,</span> <span class="mi">310</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;fort&#39;</span> <span class="ow">or</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;citadel&#39;</span> <span class="ow">or</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;castle&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">860</span><span class="p">,</span> <span class="mi">310</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;tavern&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1050</span><span class="p">,</span> <span class="mi">310</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;blacksmith&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1250</span><span class="p">,</span> <span class="mi">310</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;t1&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">660</span><span class="p">,</span> <span class="mi">630</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;t2&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">860</span><span class="p">,</span> <span class="mi">630</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;t3&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1050</span><span class="p">,</span> <span class="mi">630</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;t4&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1250</span><span class="p">,</span> <span class="mi">630</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;t5&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">760</span><span class="p">,</span> <span class="mi">730</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;t6&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">960</span><span class="p">,</span> <span class="mi">730</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;t7&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1150</span><span class="p">,</span> <span class="mi">730</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="buy_marketplace"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.TownGUI.buy_marketplace">[docs]</a><span class="k">def</span> <span class="nf">buy_marketplace</span><span class="p">(</span><span class="n">faction</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    don&#39;t use</span>
+
+<span class="sd">    :param faction: Your faction</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">faction</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;castle&#39;</span><span class="p">,</span> <span class="s1">&#39;fortress&#39;</span><span class="p">,</span> <span class="s1">&#39;rampart&#39;</span><span class="p">,</span> <span class="p">}:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">760</span><span class="p">,</span> <span class="mi">420</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">670</span><span class="p">,</span> <span class="mi">420</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="buy_mage_guild"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.TownGUI.buy_mage_guild">[docs]</a><span class="k">def</span> <span class="nf">buy_mage_guild</span><span class="p">(</span><span class="n">faction</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    dont touch</span>
+
+<span class="sd">    :param faction: Your faction</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">faction</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;castle&#39;</span><span class="p">,</span> <span class="s1">&#39;fortress&#39;</span><span class="p">,</span> <span class="s1">&#39;rampart&#39;</span><span class="p">,</span> <span class="p">}:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">960</span><span class="p">,</span> <span class="mi">420</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">860</span><span class="p">,</span> <span class="mi">420</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="buy_shipyard"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.TownGUI.buy_shipyard">[docs]</a><span class="k">def</span> <span class="nf">buy_shipyard</span><span class="p">(</span><span class="n">faction</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    dont use</span>
+
+<span class="sd">    :param faction: Your faction</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">faction</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;castle&#39;</span><span class="p">,</span> <span class="s1">&#39;cove&#39;</span><span class="p">,</span> <span class="s1">&#39;conflux&#39;</span><span class="p">,</span> <span class="s1">&#39;fortress&#39;</span><span class="p">,</span> <span class="s1">&#39;necropolis&#39;</span><span class="p">}:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;This faction can&#39;t build a shipyard&quot;</span><span class="p">)</span>
+        <span class="k">return</span>
+    <span class="k">elif</span> <span class="n">faction</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;castle&#39;</span><span class="p">,</span> <span class="s1">&#39;fortress&#39;</span><span class="p">}:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1150</span><span class="p">,</span> <span class="mi">420</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">faction</span> <span class="o">==</span> <span class="s1">&#39;cove&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1050</span><span class="p">,</span> <span class="mi">420</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1250</span><span class="p">,</span> <span class="mi">420</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="buy_building_castle"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.TownGUI.buy_building_castle">[docs]</a><span class="k">def</span> <span class="nf">buy_building_castle</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    buy building</span>
+
+<span class="sd">    :param name: Name of the building</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;brotherhood_of_the_sword&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1050</span><span class="p">,</span> <span class="mi">310</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;stables&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">860</span><span class="p">,</span> <span class="mi">530</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;griffin_bastion&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1050</span><span class="p">,</span> <span class="mi">530</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;lighthouse&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1150</span><span class="p">,</span> <span class="mi">420</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="buy_building_rampart"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.TownGUI.buy_building_rampart">[docs]</a><span class="k">def</span> <span class="nf">buy_building_rampart</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    buy building</span>
+
+<span class="sd">    :param name: Name of the building</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;mystic_pond&#39;</span><span class="p">,</span> <span class="s1">&#39;fountain_of_fortune&#39;</span><span class="p">}:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1150</span><span class="p">,</span> <span class="mi">420</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;dendroid_saplings&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">960</span><span class="p">,</span> <span class="mi">530</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;treasury&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">760</span><span class="p">,</span> <span class="mi">530</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;miners&#39; guild&quot;</span><span class="p">,</span> <span class="s1">&#39;miners_guild&#39;</span><span class="p">}:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1150</span><span class="p">,</span> <span class="mi">530</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="buy_building_tower"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.TownGUI.buy_building_tower">[docs]</a><span class="k">def</span> <span class="nf">buy_building_tower</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    buy building</span>
+
+<span class="sd">    :param name: Name of the building</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;library&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1050</span><span class="p">,</span> <span class="mi">420</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;wall_of_knowledge&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1250</span><span class="p">,</span> <span class="mi">420</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;sculptors_wings&#39;</span><span class="p">,</span> <span class="s2">&quot;sculptor&#39;s wings&quot;</span><span class="p">}:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1150</span><span class="p">,</span> <span class="mi">530</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;artifact_merchants&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">760</span><span class="p">,</span> <span class="mi">530</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;lookout_tower&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">960</span><span class="p">,</span> <span class="mi">530</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="buy_building_inferno"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.TownGUI.buy_building_inferno">[docs]</a><span class="k">def</span> <span class="nf">buy_building_inferno</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    buy building</span>
+
+<span class="sd">    :param name: Name of the building</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;order_of_fire&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1050</span><span class="p">,</span> <span class="mi">420</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;brimstone_stormclouds&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1250</span><span class="p">,</span> <span class="mi">420</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;birthing_pools&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">960</span><span class="p">,</span> <span class="mi">530</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;cages&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1150</span><span class="p">,</span> <span class="mi">530</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;castle_gate&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">760</span><span class="p">,</span> <span class="mi">530</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="buy_building_necropolis"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.TownGUI.buy_building_necropolis">[docs]</a><span class="k">def</span> <span class="nf">buy_building_necropolis</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    buy building</span>
+
+<span class="sd">    :param name: Name of the building</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;necromancy_amplifier&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1050</span><span class="p">,</span> <span class="mi">420</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;cover_of_darkness&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">760</span><span class="p">,</span> <span class="mi">530</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;skeleton_transformer&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">960</span><span class="p">,</span> <span class="mi">530</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;unearthed_graves&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1150</span><span class="p">,</span> <span class="mi">530</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="buy_building_dungeon"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.TownGUI.buy_building_dungeon">[docs]</a><span class="k">def</span> <span class="nf">buy_building_dungeon</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    buy building</span>
+
+<span class="sd">    :param name: Name of the building</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;mana_vortex&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1050</span><span class="p">,</span> <span class="mi">420</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;portal_of_summoning&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1250</span><span class="p">,</span> <span class="mi">420</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;artifact_merchants&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">760</span><span class="p">,</span> <span class="mi">530</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;battle_scholar_academy&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">960</span><span class="p">,</span> <span class="mi">530</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;mushroom_rings&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1150</span><span class="p">,</span> <span class="mi">530</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="buy_building_stronghold"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.TownGUI.buy_building_stronghold">[docs]</a><span class="k">def</span> <span class="nf">buy_building_stronghold</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    buy building</span>
+
+<span class="sd">    :param name: Name of the building</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;hall_of_valhalla&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1050</span><span class="p">,</span> <span class="mi">420</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;escape_tunnel&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1250</span><span class="p">,</span> <span class="mi">420</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;freelancers_guild&#39;</span><span class="p">,</span> <span class="s2">&quot;freelancer&#39;s guild&quot;</span><span class="p">}:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">760</span><span class="p">,</span> <span class="mi">530</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;ballista_yard&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">960</span><span class="p">,</span> <span class="mi">530</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;mess_hall&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1150</span><span class="p">,</span> <span class="mi">530</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="buy_building_fortress"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.TownGUI.buy_building_fortress">[docs]</a><span class="k">def</span> <span class="nf">buy_building_fortress</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    buy building</span>
+
+<span class="sd">    :param name: Name of the building</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;cage_of_warlords&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">760</span><span class="p">,</span> <span class="mi">530</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;glyphs_of_fear&#39;</span><span class="p">,</span> <span class="s1">&#39;blood_obelisk&#39;</span><span class="p">}:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">960</span><span class="p">,</span> <span class="mi">530</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;captains_quarters&#39;</span><span class="p">,</span> <span class="s2">&quot;captain&#39;s quarters&quot;</span><span class="p">}:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1150</span><span class="p">,</span> <span class="mi">530</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="buy_building_conflux"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.TownGUI.buy_building_conflux">[docs]</a><span class="k">def</span> <span class="nf">buy_building_conflux</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    buy building</span>
+
+<span class="sd">    :param name: Name of the building</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;magic_university&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1050</span><span class="p">,</span> <span class="mi">420</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;artifact_merchants&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">760</span><span class="p">,</span> <span class="mi">530</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;vault_of_ashes&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">960</span><span class="p">,</span> <span class="mi">530</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;garden_of_life&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1150</span><span class="p">,</span> <span class="mi">530</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="buy_building_cove"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.TownGUI.buy_building_cove">[docs]</a><span class="k">def</span> <span class="nf">buy_building_cove</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    buy building</span>
+
+<span class="sd">    :param name: Name of the building</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;thieves_guild&#39;</span><span class="p">,</span> <span class="s2">&quot;thieves&#39; guild&quot;</span><span class="p">}:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1250</span><span class="p">,</span> <span class="mi">420</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;pub&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">760</span><span class="p">,</span> <span class="mi">530</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;grotto&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">960</span><span class="p">,</span> <span class="mi">530</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;roost&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1150</span><span class="p">,</span> <span class="mi">530</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="buy_building"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.TownGUI.buy_building">[docs]</a><span class="k">def</span> <span class="nf">buy_building</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">faction</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Actual function please don&#39;t use anything to build other than this</span>
+<span class="sd">    The generic function that should be used to buy everything</span>
+
+<span class="sd">    :param name: name of the building</span>
+<span class="sd">    :param faction: your current faction</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">faction</span> <span class="o">=</span> <span class="n">faction</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">faction</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;castle&#39;</span><span class="p">,</span> <span class="s1">&#39;rampart&#39;</span><span class="p">,</span> <span class="s1">&#39;tower&#39;</span><span class="p">,</span> <span class="s1">&#39;inferno&#39;</span><span class="p">,</span> <span class="s1">&#39;necropolis&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;dungeon&#39;</span><span class="p">,</span> <span class="s1">&#39;stronghold&#39;</span><span class="p">,</span> <span class="s1">&#39;fortress&#39;</span><span class="p">,</span> <span class="s1">&#39;conflux&#39;</span><span class="p">,</span> <span class="s1">&#39;cove&#39;</span><span class="p">}:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Wrong faction name&#39;</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="n">click_town_hall</span><span class="p">(</span><span class="n">faction</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;town_hall&#39;</span><span class="p">,</span> <span class="s1">&#39;city_hall&#39;</span><span class="p">,</span> <span class="s1">&#39;capitol&#39;</span><span class="p">,</span> <span class="s1">&#39;fort&#39;</span><span class="p">,</span> <span class="s1">&#39;citadel&#39;</span><span class="p">,</span> <span class="s1">&#39;castle&#39;</span><span class="p">,</span> <span class="s1">&#39;blacksmith&#39;</span><span class="p">,</span> <span class="s1">&#39;tavern&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;t1&#39;</span><span class="p">,</span> <span class="s1">&#39;t2&#39;</span><span class="p">,</span> <span class="s1">&#39;t3&#39;</span><span class="p">,</span> <span class="s1">&#39;t4&#39;</span><span class="p">,</span> <span class="s1">&#39;t5&#39;</span><span class="p">,</span> <span class="s1">&#39;t6&#39;</span><span class="p">,</span> <span class="s1">&#39;t7&#39;</span><span class="p">}:</span>
+        <span class="n">buy_generic_building</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;marketplace&#39;</span><span class="p">,</span> <span class="s1">&#39;resource_silo&#39;</span><span class="p">):</span>
+        <span class="n">buy_marketplace</span><span class="p">(</span><span class="n">faction</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;mage_guild&#39;</span><span class="p">:</span>
+        <span class="n">buy_mage_guild</span><span class="p">(</span><span class="n">faction</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;shipyard&#39;</span><span class="p">:</span>
+        <span class="n">buy_shipyard</span><span class="p">(</span><span class="n">faction</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">faction</span> <span class="o">==</span> <span class="s1">&#39;castle&#39;</span><span class="p">:</span>
+        <span class="n">buy_building_castle</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">faction</span> <span class="o">==</span> <span class="s1">&#39;rampart&#39;</span><span class="p">:</span>
+        <span class="n">buy_building_rampart</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">faction</span> <span class="o">==</span> <span class="s1">&#39;tower&#39;</span><span class="p">:</span>
+        <span class="n">buy_building_tower</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">faction</span> <span class="o">==</span> <span class="s1">&#39;inferno&#39;</span><span class="p">:</span>
+        <span class="n">buy_building_inferno</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">faction</span> <span class="o">==</span> <span class="s1">&#39;necropolis&#39;</span><span class="p">:</span>
+        <span class="n">buy_building_necropolis</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">faction</span> <span class="o">==</span> <span class="s1">&#39;dungeon&#39;</span><span class="p">:</span>
+        <span class="n">buy_building_dungeon</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">faction</span> <span class="o">==</span> <span class="s1">&#39;stronghold&#39;</span><span class="p">:</span>
+        <span class="n">buy_building_stronghold</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">faction</span> <span class="o">==</span> <span class="s1">&#39;fortress&#39;</span><span class="p">:</span>
+        <span class="n">buy_building_fortress</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">faction</span> <span class="o">==</span> <span class="s1">&#39;conflux&#39;</span><span class="p">:</span>
+        <span class="n">buy_building_conflux</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">faction</span> <span class="o">==</span> <span class="s1">&#39;cove&#39;</span><span class="p">:</span>
+        <span class="n">buy_building_cove</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
+    <span class="n">mouse</span><span class="o">.</span><span class="n">click</span><span class="p">()</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;enter&#39;</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="click_tavern"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.TownGUI.click_tavern">[docs]</a><span class="k">def</span> <span class="nf">click_tavern</span><span class="p">(</span><span class="n">faction</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    click tavern</span>
+
+<span class="sd">    :param faction: your current faction</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">faction</span> <span class="o">=</span> <span class="n">faction</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">faction</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;castle&#39;</span><span class="p">,</span> <span class="s1">&#39;rampart&#39;</span><span class="p">,</span> <span class="s1">&#39;tower&#39;</span><span class="p">,</span> <span class="s1">&#39;inferno&#39;</span><span class="p">,</span> <span class="s1">&#39;necropolis&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;dungeon&#39;</span><span class="p">,</span> <span class="s1">&#39;stronghold&#39;</span><span class="p">,</span> <span class="s1">&#39;fortress&#39;</span><span class="p">,</span> <span class="s1">&#39;conflux&#39;</span><span class="p">,</span> <span class="s1">&#39;cove&#39;</span><span class="p">}:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Wrong faction name&#39;</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="k">if</span> <span class="n">faction</span> <span class="o">==</span> <span class="s1">&#39;castle&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">585</span><span class="p">,</span> <span class="mi">530</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">faction</span> <span class="o">==</span> <span class="s1">&#39;rampart&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">825</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">faction</span> <span class="o">==</span> <span class="s1">&#39;tower&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">580</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">faction</span> <span class="o">==</span> <span class="s1">&#39;inferno&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">700</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">faction</span> <span class="o">==</span> <span class="s1">&#39;necropolis&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1160</span><span class="p">,</span> <span class="mi">450</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">faction</span> <span class="o">==</span> <span class="s1">&#39;dungeon&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">810</span><span class="p">,</span> <span class="mi">570</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">faction</span> <span class="o">==</span> <span class="s1">&#39;stronghold&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">820</span><span class="p">,</span> <span class="mi">560</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">faction</span> <span class="o">==</span> <span class="s1">&#39;fortress&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1315</span><span class="p">,</span> <span class="mi">510</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">faction</span> <span class="o">==</span> <span class="s1">&#39;conflux&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1150</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">faction</span> <span class="o">==</span> <span class="s1">&#39;cove&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">630</span><span class="p">,</span> <span class="mi">560</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="click_mage_guild"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.TownGUI.click_mage_guild">[docs]</a><span class="k">def</span> <span class="nf">click_mage_guild</span><span class="p">(</span><span class="n">faction</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    click on the mage guild</span>
+
+<span class="sd">    :param faction: your current faction</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">faction</span> <span class="o">=</span> <span class="n">faction</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">faction</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;castle&#39;</span><span class="p">,</span> <span class="s1">&#39;rampart&#39;</span><span class="p">,</span> <span class="s1">&#39;tower&#39;</span><span class="p">,</span> <span class="s1">&#39;inferno&#39;</span><span class="p">,</span> <span class="s1">&#39;necropolis&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;dungeon&#39;</span><span class="p">,</span> <span class="s1">&#39;stronghold&#39;</span><span class="p">,</span> <span class="s1">&#39;fortress&#39;</span><span class="p">,</span> <span class="s1">&#39;conflux&#39;</span><span class="p">,</span> <span class="s1">&#39;cove&#39;</span><span class="p">}:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Wrong faction name&#39;</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="k">if</span> <span class="n">faction</span> <span class="o">==</span> <span class="s1">&#39;castle&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1320</span><span class="p">,</span> <span class="mi">480</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">faction</span> <span class="o">==</span> <span class="s1">&#39;rampart&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1100</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">faction</span> <span class="o">==</span> <span class="s1">&#39;tower&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1233</span><span class="p">,</span> <span class="mi">432</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">faction</span> <span class="o">==</span> <span class="s1">&#39;inferno&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1300</span><span class="p">,</span> <span class="mi">440</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">faction</span> <span class="o">==</span> <span class="s1">&#39;necropolis&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">970</span><span class="p">,</span> <span class="mi">380</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">faction</span> <span class="o">==</span> <span class="s1">&#39;dungeon&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">770</span><span class="p">,</span> <span class="mi">420</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">faction</span> <span class="o">==</span> <span class="s1">&#39;stronghold&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1085</span><span class="p">,</span> <span class="mi">335</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">faction</span> <span class="o">==</span> <span class="s1">&#39;fortress&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">615</span><span class="p">,</span> <span class="mi">490</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">faction</span> <span class="o">==</span> <span class="s1">&#39;conflux&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">820</span><span class="p">,</span> <span class="mi">490</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">faction</span> <span class="o">==</span> <span class="s1">&#39;cove&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">930</span><span class="p">,</span> <span class="mi">400</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="click_blacksmith"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.TownGUI.click_blacksmith">[docs]</a><span class="k">def</span> <span class="nf">click_blacksmith</span><span class="p">(</span><span class="n">faction</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    click on the blacksmith</span>
+
+<span class="sd">    :param faction: your current faction</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">faction</span> <span class="o">=</span> <span class="n">faction</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">faction</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;castle&#39;</span><span class="p">,</span> <span class="s1">&#39;rampart&#39;</span><span class="p">,</span> <span class="s1">&#39;tower&#39;</span><span class="p">,</span> <span class="s1">&#39;inferno&#39;</span><span class="p">,</span> <span class="s1">&#39;necropolis&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;dungeon&#39;</span><span class="p">,</span> <span class="s1">&#39;stronghold&#39;</span><span class="p">,</span> <span class="s1">&#39;fortress&#39;</span><span class="p">,</span> <span class="s1">&#39;conflux&#39;</span><span class="p">,</span> <span class="s1">&#39;cove&#39;</span><span class="p">}:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Wrong faction name&#39;</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="k">if</span> <span class="n">faction</span> <span class="o">==</span> <span class="s1">&#39;castle&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">865</span><span class="p">,</span> <span class="mi">560</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">faction</span> <span class="o">==</span> <span class="s1">&#39;rampart&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1210</span><span class="p">,</span> <span class="mi">405</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">faction</span> <span class="o">==</span> <span class="s1">&#39;tower&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1100</span><span class="p">,</span> <span class="mi">560</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">faction</span> <span class="o">==</span> <span class="s1">&#39;inferno&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1300</span><span class="p">,</span> <span class="mi">580</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">faction</span> <span class="o">==</span> <span class="s1">&#39;necropolis&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">995</span><span class="p">,</span> <span class="mi">525</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">faction</span> <span class="o">==</span> <span class="s1">&#39;dungeon&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1145</span><span class="p">,</span> <span class="mi">540</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">faction</span> <span class="o">==</span> <span class="s1">&#39;stronghold&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1280</span><span class="p">,</span> <span class="mi">570</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">faction</span> <span class="o">==</span> <span class="s1">&#39;fortress&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">960</span><span class="p">,</span> <span class="mi">450</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">faction</span> <span class="o">==</span> <span class="s1">&#39;conflux&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1060</span><span class="p">,</span> <span class="mi">470</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">faction</span> <span class="o">==</span> <span class="s1">&#39;cove&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1290</span><span class="p">,</span> <span class="mi">565</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="click_magic"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.TownGUI.click_magic">[docs]</a><span class="k">def</span> <span class="nf">click_magic</span><span class="p">(</span><span class="n">tier</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    click on magic</span>
+
+<span class="sd">    :param tier: magic tier 1-5</span>
+<span class="sd">    :param id: number of spell left to right, top to bottom</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">tier</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">mouse</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="mi">815</span> <span class="o">+</span> <span class="mi">95</span><span class="o">*</span><span class="nb">id</span><span class="p">,</span> <span class="mi">715</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="n">mouse</span><span class="o">.</span><span class="n">click</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">tier</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">mouse</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="mi">650</span><span class="p">,</span> <span class="mi">320</span> <span class="o">+</span> <span class="mi">95</span><span class="o">*</span><span class="nb">id</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="n">mouse</span><span class="o">.</span><span class="n">click</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">tier</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="n">mouse</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="mi">1170</span> <span class="o">+</span> <span class="mi">105</span><span class="o">*</span><span class="p">(</span><span class="nb">id</span> <span class="o">%</span> <span class="mi">2</span><span class="p">),</span> <span class="mi">350</span> <span class="o">+</span> <span class="mi">75</span><span class="o">*</span><span class="nb">int</span><span class="p">(</span><span class="nb">id</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span> <span class="n">duration</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="n">mouse</span><span class="o">.</span><span class="n">click</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">tier</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="n">mouse</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="mi">782</span><span class="p">,</span> <span class="mi">310</span> <span class="o">+</span> <span class="mi">100</span><span class="o">*</span><span class="nb">id</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="n">mouse</span><span class="o">.</span><span class="n">click</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">tier</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>
+        <span class="n">mouse</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="mi">1090</span> <span class="o">+</span> <span class="mi">100</span><span class="o">*</span><span class="nb">id</span><span class="p">,</span> <span class="mi">590</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="n">mouse</span><span class="o">.</span><span class="n">click</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="click_artifact_merchant"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.TownGUI.click_artifact_merchant">[docs]</a><span class="k">def</span> <span class="nf">click_artifact_merchant</span><span class="p">(</span><span class="n">faction</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    click on artifact merchant</span>
+
+<span class="sd">    :param faction: your current faction</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">faction</span> <span class="o">=</span> <span class="n">faction</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">faction</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;tower&#39;</span><span class="p">,</span> <span class="s1">&#39;dungeon&#39;</span><span class="p">,</span> <span class="s1">&#39;conflux&#39;</span><span class="p">}:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Wrong faction name&#39;</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="k">if</span> <span class="n">faction</span> <span class="o">==</span> <span class="s1">&#39;tower&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1260</span><span class="p">,</span> <span class="mi">560</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">faction</span> <span class="o">==</span> <span class="s1">&#39;dungeon&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1330</span><span class="p">,</span> <span class="mi">580</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">faction</span> <span class="o">==</span> <span class="s1">&#39;conflux&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">885</span><span class="p">,</span> <span class="mi">535</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="use_castle_gate"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.TownGUI.use_castle_gate">[docs]</a><span class="k">def</span> <span class="nf">use_castle_gate</span><span class="p">(</span><span class="nb">id</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Use castle gate</span>
+<span class="sd">    Inferno only</span>
+
+<span class="sd">    :param id: number of the town you go to</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">820</span><span class="p">,</span> <span class="mi">424</span><span class="p">)</span>
+    <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">880</span><span class="p">,</span> <span class="mi">436</span> <span class="o">+</span> <span class="mi">32</span><span class="o">*</span><span class="nb">id</span><span class="p">)</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;enter&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="transform_skeleton"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.TownGUI.transform_skeleton">[docs]</a><span class="k">def</span> <span class="nf">transform_skeleton</span><span class="p">(</span><span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Transform skeletons</span>
+<span class="sd">    Necropolis only. id=&#39;all&#39; for every unit, write id as id=&#39;1+3+5+...&#39; otherwise</span>
+
+<span class="sd">    :param id: id of units to change from left to right</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">850</span><span class="p">,</span> <span class="mi">530</span><span class="p">)</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="nb">id</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>  <span class="c1"># Remove all accidental whitespaces</span>
+    <span class="n">id_split</span> <span class="o">=</span> <span class="nb">id</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;+&#39;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">id_split</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="s1">&#39;all&#39;</span><span class="p">:</span>
+            <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">830</span><span class="p">,</span> <span class="mi">740</span><span class="p">)</span>
+            <span class="k">break</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">temp</span> <span class="o">==</span> <span class="mi">7</span><span class="p">:</span>
+            <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">815</span><span class="p">,</span> <span class="mi">645</span><span class="p">)</span>
+            <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">815</span> <span class="o">+</span> <span class="mi">290</span><span class="p">,</span> <span class="mi">645</span><span class="p">)</span>
+            <span class="k">continue</span>
+
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">732</span> <span class="o">+</span> <span class="mi">85</span><span class="o">*</span><span class="p">(</span><span class="n">temp</span> <span class="o">%</span> <span class="mi">3</span><span class="p">),</span> <span class="mi">448</span> <span class="o">+</span> <span class="mi">100</span><span class="o">*</span><span class="nb">int</span><span class="p">(</span><span class="n">temp</span><span class="o">/</span><span class="mi">3</span><span class="p">))</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">732</span> <span class="o">+</span> <span class="mi">290</span><span class="p">,</span> <span class="mi">448</span><span class="p">)</span>
+    <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">960</span><span class="p">,</span> <span class="mi">740</span><span class="p">)</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;esc&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="buy_ballista_from_yard"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.TownGUI.buy_ballista_from_yard">[docs]</a><span class="k">def</span> <span class="nf">buy_ballista_from_yard</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Stronghold only</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1210</span><span class="p">,</span> <span class="mi">585</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="use_freelancers_guild"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.TownGUI.use_freelancers_guild">[docs]</a><span class="k">def</span> <span class="nf">use_freelancers_guild</span><span class="p">(</span><span class="n">unit_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">amount</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Stronghold only</span>
+
+<span class="sd">    :param unit_id: unit id left to right 1-7</span>
+<span class="sd">    :param resource_id: left to right and top to bottom</span>
+<span class="sd">    :param amount: amount of units to sell</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1870</span><span class="p">,</span> <span class="mi">560</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">unit_id</span> <span class="o">==</span> <span class="mi">7</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">815</span><span class="p">,</span> <span class="mi">600</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">730</span> <span class="o">+</span> <span class="mi">85</span><span class="o">*</span><span class="p">(</span><span class="n">unit_id</span> <span class="o">%</span> <span class="mi">3</span><span class="p">),</span> <span class="mi">400</span> <span class="o">+</span> <span class="mi">95</span><span class="o">*</span><span class="nb">int</span><span class="p">(</span><span class="n">unit_id</span><span class="o">/</span><span class="mi">3</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">resource_id</span> <span class="o">==</span> <span class="mi">7</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1100</span><span class="p">,</span> <span class="mi">600</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1020</span> <span class="o">+</span> <span class="mi">80</span><span class="o">*</span><span class="p">(</span><span class="n">resource_id</span> <span class="o">%</span> <span class="mi">3</span><span class="p">),</span> <span class="mi">450</span> <span class="o">+</span> <span class="mi">80</span><span class="o">*</span><span class="nb">int</span><span class="p">(</span><span class="n">resource_id</span><span class="o">/</span><span class="mi">3</span><span class="p">))</span>
+    <span class="n">mouse</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="mi">1020</span><span class="p">,</span> <span class="mi">740</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+    <span class="k">while</span> <span class="n">amount</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">mouse</span><span class="o">.</span><span class="n">click</span><span class="p">()</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="n">amount</span> <span class="o">-=</span> <span class="mi">1</span>
+    <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">780</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="learn_elemental_magic_town"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.TownGUI.learn_elemental_magic_town">[docs]</a><span class="k">def</span> <span class="nf">learn_elemental_magic_town</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Conflux only. Can chain buy by using + name=&#39;air+water+...</span>
+<span class="sd">    Learn elemental magic conflux only</span>
+
+<span class="sd">    :param name: one of &#39;fire&#39;, &#39;water&#39;, &#39;earth&#39;, &#39;air&#39; or added together with a +</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;fire&#39;</span><span class="p">,</span> <span class="s1">&#39;water&#39;</span><span class="p">,</span> <span class="s1">&#39;earth&#39;</span><span class="p">,</span> <span class="s1">&#39;air&#39;</span><span class="p">}:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Arguments can be: &#39;fire&#39;, &#39;water&#39;, &#39;earth&#39;, &#39;air&#39;&quot;</span><span class="p">)</span>
+    <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">755</span><span class="p">,</span> <span class="mi">470</span><span class="p">)</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>  <span class="c1"># Remove all accidental whitespaces</span>
+    <span class="n">name_split</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;+&#39;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">name_split</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="s1">&#39;fire&#39;</span><span class="p">:</span>
+            <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">800</span><span class="p">,</span> <span class="mi">600</span><span class="p">)</span>
+            <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">900</span><span class="p">,</span> <span class="mi">660</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">n</span> <span class="o">==</span> <span class="s1">&#39;air&#39;</span><span class="p">:</span>
+            <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">900</span><span class="p">,</span> <span class="mi">600</span><span class="p">)</span>
+            <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">900</span><span class="p">,</span> <span class="mi">660</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">n</span> <span class="o">==</span> <span class="s1">&#39;water&#39;</span><span class="p">:</span>
+            <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">600</span><span class="p">)</span>
+            <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">900</span><span class="p">,</span> <span class="mi">660</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">1100</span><span class="p">,</span> <span class="mi">600</span><span class="p">)</span>
+            <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">900</span><span class="p">,</span> <span class="mi">660</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="hire_hero"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.TownGUI.hire_hero">[docs]</a><span class="k">def</span> <span class="nf">hire_hero</span><span class="p">(</span><span class="nb">id</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Hires a hero in a tavern,</span>
+
+<span class="sd">    :param id: id=0 hires the left one, id=1 hires the right one</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">id</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">865</span><span class="p">,</span> <span class="mi">620</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">id</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click</span><span class="p">(</span><span class="mi">950</span><span class="p">,</span> <span class="mi">620</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Id can be either 0 or 1.&quot;</span><span class="p">)</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;enter&#39;</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Fryderyk Róg, Kacper Plesiak, Michał Gruba, Tymoteusz Skrzyński, Mateusz Comblik, Bartosz Szczepanek, Alan Konopko, Mateusz Mikszewicz, Daniel Bil, Piotr Łyczko.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

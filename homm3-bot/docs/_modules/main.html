@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>main &mdash; HoMM3 Bot 2.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> HoMM3 Bot
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">homm3-bot</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">HoMM3 Bot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">main</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for main</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">colorama</span> <span class="kn">import</span> <span class="n">Fore</span>
+
+<span class="kn">from</span> <span class="nn">colorama</span> <span class="kn">import</span> <span class="n">Fore</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">count_nonzero</span>
+
+<span class="kn">from</span> <span class="nn">Adventure_AI.AdventureAI_Map_Init</span> <span class="kn">import</span> <span class="n">read_map</span><span class="p">,</span> <span class="n">read_map_from_php_file</span>
+<span class="kn">from</span> <span class="nn">image_processing</span> <span class="kn">import</span> <span class="n">screen_slicing</span>
+<span class="kn">from</span> <span class="nn">image_processing.adventure_image_processing</span> <span class="kn">import</span> <span class="n">remove_lost_cities</span><span class="p">,</span> <span class="n">find_heroes</span><span class="p">,</span> <span class="n">get_cursor_type</span>
+<span class="kn">import</span> <span class="nn">GUI_handling.AdventureGUI</span>
+<span class="kn">import</span> <span class="nn">image_processing.hero_filling</span>
+<span class="kn">import</span> <span class="nn">Adventure_AI.AdventureAI</span> <span class="k">as</span> <span class="nn">adv</span>
+<span class="kn">from</span> <span class="nn">GUI_handling.TownGUI</span> <span class="kn">import</span> <span class="n">hire_hero</span>
+<span class="kn">from</span> <span class="nn">image_processing.blue_hero</span> <span class="kn">import</span> <span class="n">check_if_blue_hero_exists</span><span class="p">,</span> <span class="n">fill_enemy_hero</span>
+<span class="kn">from</span> <span class="nn">image_processing.screen_slicing</span> <span class="kn">import</span> <span class="n">check_resources</span>
+<span class="kn">from</span> <span class="nn">town_upgrading.castle_upgrade</span> <span class="kn">import</span> <span class="n">castleUpgrade</span>
+<span class="kn">from</span> <span class="nn">town_upgrading.conflux_upgrade</span> <span class="kn">import</span> <span class="n">confluxUpgrade</span>
+<span class="kn">from</span> <span class="nn">town_upgrading.cove_upgrade</span> <span class="kn">import</span> <span class="n">coveUpgrade</span>
+<span class="kn">from</span> <span class="nn">town_upgrading.dungeon_upgrade</span> <span class="kn">import</span> <span class="n">dungeonUpgrade</span>
+<span class="kn">from</span> <span class="nn">town_upgrading.fortress_upgrade</span> <span class="kn">import</span> <span class="n">fortressUpgrade</span>
+<span class="kn">from</span> <span class="nn">town_upgrading.inferno_upgrade</span> <span class="kn">import</span> <span class="n">infernoUpgrade</span>
+<span class="kn">from</span> <span class="nn">town_upgrading.necropolis_upgrade</span> <span class="kn">import</span> <span class="n">necropolisUpgrade</span>
+<span class="kn">from</span> <span class="nn">town_upgrading.rampart_upgrade</span> <span class="kn">import</span> <span class="n">rampartUpgrade</span>
+<span class="kn">from</span> <span class="nn">town_upgrading.stronghold_upgrade</span> <span class="kn">import</span> <span class="n">strongholdUpgrade</span>
+<span class="kn">from</span> <span class="nn">town_upgrading.tower_upgrade</span> <span class="kn">import</span> <span class="n">towerUpgrade</span>
+<span class="kn">from</span> <span class="nn">data.player_data</span> <span class="kn">import</span> <span class="n">Player</span>
+<span class="kn">from</span> <span class="nn">data.hero</span> <span class="kn">import</span> <span class="n">Hero</span><span class="p">,</span> <span class="n">Slot</span><span class="p">,</span> <span class="n">Slots</span><span class="p">,</span> <span class="n">SecondarySkills</span><span class="p">,</span> <span class="n">SecondarySkill</span>
+<span class="kn">import</span> <span class="nn">data.classes_const</span> <span class="k">as</span> <span class="nn">creatures</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">GUI_handling.AdventureGUI</span> <span class="kn">import</span> <span class="n">enter_town</span><span class="p">,</span> <span class="n">leave_screen</span><span class="p">,</span> <span class="n">save_in_game</span>
+<span class="kn">from</span> <span class="nn">path_finding_alghoritms.calculate_movments_points_at_start_day</span> <span class="kn">import</span> \
+    <span class="n">calculate_movments_points_at_start_day</span> <span class="k">as</span> <span class="n">movment</span>
+<span class="kn">from</span> <span class="nn">image_processing.detecting_window</span> <span class="kn">import</span> <span class="n">execute_detecting_enemy_turn</span>
+<span class="kn">import</span> <span class="nn">save</span>
+
+<span class="n">MAP_H3M_PATH</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;C:/GOG Games/HoMM 3 Complete/Maps/h3botmap.h3m&quot;</span>
+
+<span class="c1">#     &quot;&quot;&quot;</span>
+<span class="c1">#</span>
+<span class="c1">#     :param map_obj:</span>
+<span class="c1">#     :param map_fog:</span>
+<span class="c1">#     :return:</span>
+<span class="c1">#     &quot;&quot;&quot;</span>
+<span class="c1">#     for y, row in enumerate(map_obj):</span>
+<span class="c1">#         for x, tile in enumerate(row):</span>
+<span class="c1">#             value = tile</span>
+<span class="c1">#             if map_fog[y, x] == 0:</span>
+<span class="c1">#                 map_obj[y, x] = terrain.fow</span>
+<span class="c1">#</span>
+<span class="c1">#             elif value == 0:</span>
+<span class="c1">#                 map_obj[y, x] = terrain.Obstacle_terr</span>
+<span class="c1">#             elif value == 1:</span>
+<span class="c1">#                 map_obj[y, x] = terrain.Grass</span>
+<span class="c1">#             elif value == 2:</span>
+<span class="c1">#                 map_obj[y, x] = terrain.Dirt</span>
+<span class="c1">#             elif value == 8:</span>
+<span class="c1">#                 map_obj[y, x] = objects.Treasure_Chest</span>
+
+
+<div class="viewcode-block" id="leave_town"><a class="viewcode-back" href="../main.html#main.leave_town">[docs]</a><span class="k">def</span> <span class="nf">leave_town</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    someone wanted to have better name for function</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">leave_screen</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="read_hero"><a class="viewcode-back" href="../main.html#main.read_hero">[docs]</a><span class="k">def</span> <span class="nf">read_hero</span><span class="p">(</span><span class="n">heroreader</span><span class="p">,</span> <span class="n">player</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    function for reading all available information about our hero</span>
+
+<span class="sd">    :param heroreader: heroreader object</span>
+<span class="sd">    :param player: player object</span>
+<span class="sd">    :param n: number of hero on list</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">GUI_handling</span><span class="o">.</span><span class="n">AdventureGUI</span><span class="o">.</span><span class="n">press_hero</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.04</span><span class="p">)</span>
+    <span class="n">heroreader</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">heroes</span><span class="p">[</span><span class="n">n</span><span class="p">])</span>  <span class="c1"># find values of our first hero</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.04</span><span class="p">)</span>
+    <span class="n">leave_town</span><span class="p">()</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.04</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="read_army"><a class="viewcode-back" href="../main.html#main.read_army">[docs]</a><span class="k">def</span> <span class="nf">read_army</span><span class="p">(</span><span class="n">heroreader</span><span class="p">,</span> <span class="n">hero</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    function to read army of our hero</span>
+
+<span class="sd">    :param heroreader: heroreader object</span>
+<span class="sd">    :param hero: hero to read</span>
+<span class="sd">    :param i: number of hero on list</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">GUI_handling</span><span class="o">.</span><span class="n">AdventureGUI</span><span class="o">.</span><span class="n">press_hero</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.04</span><span class="p">)</span>
+    <span class="n">heroreader</span><span class="o">.</span><span class="n">find_units</span><span class="p">(</span><span class="n">hero</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.04</span><span class="p">)</span>
+    <span class="n">leave_town</span><span class="p">()</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.04</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="build_building_in_town"><a class="viewcode-back" href="../main.html#main.build_building_in_town">[docs]</a><span class="k">def</span> <span class="nf">build_building_in_town</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">city</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    function checks what is the type of our city</span>
+
+<span class="sd">    :param player: class Player</span>
+<span class="sd">    :param city:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">city</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Castle&quot;</span><span class="p">:</span>
+        <span class="n">castleUpgrade</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">city</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">city</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Rampart&quot;</span><span class="p">:</span>
+        <span class="n">rampartUpgrade</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">city</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">city</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Tower&quot;</span><span class="p">:</span>
+        <span class="n">towerUpgrade</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">city</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">city</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Inferno&quot;</span><span class="p">:</span>
+        <span class="n">infernoUpgrade</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">city</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">city</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Necropolis&quot;</span><span class="p">:</span>
+        <span class="n">necropolisUpgrade</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">city</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">city</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Dungeon&quot;</span><span class="p">:</span>
+        <span class="n">dungeonUpgrade</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">city</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">city</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Stronghold&quot;</span><span class="p">:</span>
+        <span class="n">strongholdUpgrade</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">city</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">city</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Fortress&quot;</span><span class="p">:</span>
+        <span class="n">fortressUpgrade</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">city</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">city</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Conflux&quot;</span><span class="p">:</span>
+        <span class="n">confluxUpgrade</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">city</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">city</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Cove&quot;</span><span class="p">:</span>
+        <span class="n">coveUpgrade</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">city</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="buy_hero"><a class="viewcode-back" href="../main.html#main.buy_hero">[docs]</a><span class="k">def</span> <span class="nf">buy_hero</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">reader</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span><span class="n">advAI</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    function to buy new hero</span>
+
+<span class="sd">    :param player: player object</span>
+<span class="sd">    :param reader: heroreader object</span>
+<span class="sd">    :param type: type of hero main/not main</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">enter_town</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+    <span class="n">GUI_handling</span><span class="o">.</span><span class="n">TownGUI</span><span class="o">.</span><span class="n">click_tavern</span><span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">cities</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+    <span class="n">GUI_handling</span><span class="o">.</span><span class="n">TownGUI</span><span class="o">.</span><span class="n">hire_hero</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">hero</span> <span class="o">=</span> <span class="n">Hero</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="s1">&#39;Jenova&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">Slots</span><span class="p">(</span><span class="n">Slot</span><span class="p">(</span><span class="n">creatures</span><span class="o">.</span><span class="n">Centaur</span><span class="p">,</span> <span class="mi">21</span><span class="p">),</span> <span class="n">Slot</span><span class="p">(</span><span class="n">creatures</span><span class="o">.</span><span class="n">Dwarf</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+                                                     <span class="n">Slot</span><span class="p">(</span><span class="n">creatures</span><span class="o">.</span><span class="n">Wood_Elf</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span>
+                <span class="n">skills</span><span class="o">=</span><span class="n">SecondarySkills</span><span class="p">(</span><span class="n">SecondarySkill</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;Archery&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">)),</span>
+                <span class="n">heroclass</span><span class="o">=</span><span class="s1">&#39;might&#39;</span><span class="p">)</span>
+    <span class="n">hero</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">cities</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">position</span><span class="p">)</span>
+    <span class="n">advAI</span><span class="o">.</span><span class="n">screen</span><span class="o">.</span><span class="n">hero_positions</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">hero</span><span class="o">.</span><span class="n">position</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">hero</span><span class="o">.</span><span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="s2">&quot;Red&quot;</span><span class="p">))</span>
+    <span class="n">player</span><span class="o">.</span><span class="n">heroes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">hero</span><span class="p">)</span>
+    <span class="n">player</span><span class="o">.</span><span class="n">gold</span> <span class="o">=</span> <span class="n">player</span><span class="o">.</span><span class="n">gold</span> <span class="o">-</span> <span class="mi">2500</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+    <span class="n">leave_town</span><span class="p">()</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+    <span class="n">read_hero</span><span class="p">(</span><span class="n">reader</span><span class="p">,</span> <span class="n">player</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">heroes</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;New Hero&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">heroes</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">heroes</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="check_if_we_need_new_hero"><a class="viewcode-back" href="../main.html#main.check_if_we_need_new_hero">[docs]</a><span class="k">def</span> <span class="nf">check_if_we_need_new_hero</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">mapa</span><span class="p">,</span> <span class="n">heroreader</span><span class="p">,</span> <span class="n">advai</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    adaptive function to buy new heroes</span>
+
+<span class="sd">    :param player: player object</span>
+<span class="sd">    :param mapa: map from adventure ai object</span>
+<span class="sd">    :param heroreader: object containing methods to read all values of hero in game</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">after_third_day</span> <span class="o">=</span> <span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">month</span> <span class="o">&gt;=</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">player</span><span class="o">.</span><span class="n">week</span> <span class="o">&gt;=</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">player</span><span class="o">.</span><span class="n">day</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="n">percent_of_map</span> <span class="o">=</span> <span class="n">count_nonzero</span><span class="p">(</span><span class="n">mapa</span><span class="o">.</span><span class="n">fog</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">72</span><span class="o">*</span><span class="mi">72</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.25</span>
+    <span class="n">three_heroes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">heroes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span>
+    <span class="n">four_heroes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">heroes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span>
+    <span class="c1"># buy new hero: if we have less than 2 heroes, if we have less than 3 heroes and is 3 day or later, if we discover</span>
+    <span class="c1"># 25% on map and we have less than 4 heroes</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">heroes</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span> <span class="ow">or</span> <span class="p">(</span><span class="n">after_third_day</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">three_heroes</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">percent_of_map</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">four_heroes</span><span class="p">):</span>
+        <span class="c1"># Actualize camera to the city position when we need to buy another hero</span>
+        <span class="n">player</span><span class="o">.</span><span class="n">camera</span> <span class="o">=</span> <span class="n">player</span><span class="o">.</span><span class="n">cities</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">position</span>
+        <span class="k">if</span> <span class="n">player</span><span class="o">.</span><span class="n">heroes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">herotype</span> <span class="o">==</span> <span class="s2">&quot;main&quot;</span><span class="p">:</span>
+            <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;not main&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;main&quot;</span>
+        <span class="n">buy_hero</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">heroreader</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span><span class="n">advai</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="main_loop"><a class="viewcode-back" href="../main.html#main.main_loop">[docs]</a><span class="k">def</span> <span class="nf">main_loop</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">advAI</span><span class="p">,</span> <span class="n">read_cities</span><span class="p">,</span> <span class="n">heroreader</span><span class="p">,</span> <span class="n">after</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    function representing one day in game</span>
+
+<span class="sd">    :param player: our player object</span>
+<span class="sd">    :param advAI: adventure ai object</span>
+<span class="sd">    :param read_cities: number representing amunt of cities that are read by our ai</span>
+<span class="sd">    :param heroreader: object containing methods to read all values of hero in game</span>
+<span class="sd">    :param after: image of hero list after previous turn</span>
+<span class="sd">    :return: all objects that are changed during turn</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">Fore</span><span class="o">.</span><span class="n">YELLOW</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;########## DAY:</span><span class="si">{</span><span class="n">player</span><span class="o">.</span><span class="n">day</span><span class="si">}</span><span class="s2">,WEEK:</span><span class="si">{</span><span class="n">player</span><span class="o">.</span><span class="n">week</span><span class="si">}</span><span class="s2">, MONTH: </span><span class="si">{</span><span class="n">player</span><span class="o">.</span><span class="n">month</span><span class="si">}</span><span class="s2">#########&quot;</span><span class="p">,</span> <span class="n">Fore</span><span class="o">.</span><span class="n">RESET</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">cities</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">read_cities</span><span class="p">:</span>
+        <span class="n">player</span><span class="o">.</span><span class="n">logResources</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">read_cities</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">cities</span><span class="p">)):</span>
+            <span class="n">enter_town</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+            <span class="n">GUI_handling</span><span class="o">.</span><span class="n">TownGUI</span><span class="o">.</span><span class="n">click_town_hall</span><span class="p">(</span><span class="n">faction</span><span class="o">=</span><span class="n">player</span><span class="o">.</span><span class="n">cities</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+            <span class="n">player</span><span class="o">.</span><span class="n">cities</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">crop_building_names</span><span class="p">()</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+            <span class="n">leave_town</span><span class="p">()</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+            <span class="n">leave_town</span><span class="p">()</span>
+        <span class="n">read_cities</span> <span class="o">=</span> <span class="n">i</span>
+    <span class="c1"># Finding all the heroes, blue and red ones</span>
+    <span class="n">allTheHeroes</span> <span class="o">=</span> <span class="n">find_heroes</span><span class="p">(</span><span class="n">advAI</span><span class="o">.</span><span class="n">screen</span><span class="p">,</span> <span class="n">advAI</span><span class="o">.</span><span class="n">map</span><span class="o">.</span><span class="n">obj</span><span class="p">)</span>
+    <span class="n">death</span> <span class="o">=</span> <span class="n">image_processing</span><span class="o">.</span><span class="n">adventure_image_processing</span><span class="o">.</span><span class="n">check_if_hero_is_dead_last_without_hero</span><span class="p">(</span><span class="n">after</span><span class="p">,</span> <span class="n">player</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">death</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">hero</span> <span class="ow">in</span> <span class="n">player</span><span class="o">.</span><span class="n">heroes</span><span class="p">:</span>
+            <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">hero</span><span class="o">.</span><span class="n">position</span>
+            <span class="n">pos</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="s2">&quot;Red&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">pos</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">allTheHeroes</span><span class="p">:</span>
+                <span class="n">player</span><span class="o">.</span><span class="n">heroes</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">hero</span><span class="p">)</span>
+    <span class="n">remove_lost_cities</span><span class="p">(</span><span class="n">player</span><span class="p">)</span>
+    <span class="c1"># Actualize camera to the first hero at the start of the turn</span>
+    <span class="n">player</span><span class="o">.</span><span class="n">camera</span> <span class="o">=</span> <span class="n">player</span><span class="o">.</span><span class="n">heroes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">position</span>
+    <span class="n">check_if_we_need_new_hero</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">advAI</span><span class="o">.</span><span class="n">map</span><span class="p">,</span> <span class="n">heroreader</span><span class="p">,</span><span class="n">advAI</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+    <span class="n">image_processing</span><span class="o">.</span><span class="n">adventure_image_processing</span><span class="o">.</span><span class="n">remove_dead_heroes</span><span class="p">(</span><span class="n">player</span><span class="p">)</span>
+
+    <span class="c1"># Testing whether detected blue heroes exists at their position</span>
+    <span class="n">player</span><span class="o">.</span><span class="n">enemies</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">color</span> <span class="ow">in</span> <span class="n">allTheHeroes</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">color</span> <span class="o">==</span> <span class="s2">&quot;Blue&quot;</span><span class="p">:</span>
+            <span class="n">fill_enemy_hero</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+
+    <span class="n">ranges</span> <span class="o">=</span> <span class="p">((</span><span class="n">player</span><span class="o">.</span><span class="n">wood</span> <span class="o">-</span> <span class="mi">5</span><span class="p">,</span> <span class="n">player</span><span class="o">.</span><span class="n">wood</span> <span class="o">+</span> <span class="mi">10</span><span class="p">),</span>
+              <span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">mercury</span> <span class="o">-</span> <span class="mi">5</span><span class="p">,</span> <span class="n">player</span><span class="o">.</span><span class="n">mercury</span> <span class="o">+</span> <span class="mi">10</span><span class="p">),</span> <span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">ore</span> <span class="o">-</span> <span class="mi">5</span><span class="p">,</span> <span class="n">player</span><span class="o">.</span><span class="n">ore</span> <span class="o">+</span> <span class="mi">10</span><span class="p">),</span>
+              <span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">sulfur</span> <span class="o">-</span> <span class="mi">5</span><span class="p">,</span> <span class="n">player</span><span class="o">.</span><span class="n">sulfur</span> <span class="o">+</span> <span class="mi">10</span><span class="p">),</span>
+              <span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">crystal</span> <span class="o">-</span> <span class="mi">5</span><span class="p">,</span> <span class="n">player</span><span class="o">.</span><span class="n">crystal</span> <span class="o">+</span> <span class="mi">10</span><span class="p">),</span> <span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">gems</span> <span class="o">-</span> <span class="mi">5</span><span class="p">,</span> <span class="n">player</span><span class="o">.</span><span class="n">gems</span> <span class="o">+</span> <span class="mi">10</span><span class="p">),</span>
+              <span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">gold</span> <span class="o">-</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">player</span><span class="o">.</span><span class="n">gold</span> <span class="o">+</span> <span class="mi">10000</span><span class="p">))</span>
+    <span class="n">screen_slicing</span><span class="o">.</span><span class="n">check_resources</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">ranges</span><span class="p">)</span>
+    <span class="c1"># Finding whether we lost our mines</span>
+    <span class="k">for</span> <span class="n">mine</span> <span class="ow">in</span> <span class="n">player</span><span class="o">.</span><span class="n">captured_mines</span><span class="p">:</span>
+        <span class="c1"># Checking color of the mine at the global map</span>
+        <span class="c1"># color = image_processing.adventure_image_processing.check_mine_owner_ocr(player, mine.position)[0]</span>
+        <span class="n">color</span> <span class="o">=</span> <span class="p">[</span><span class="n">player</span><span class="o">.</span><span class="n">color</span><span class="p">]</span>  <span class="c1"># temporary</span>
+        <span class="k">if</span> <span class="n">color</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">player</span><span class="o">.</span><span class="n">color</span><span class="p">:</span>
+            <span class="n">player</span><span class="o">.</span><span class="n">captured_mines</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">mine</span><span class="p">)</span>
+
+            <span class="c1"># Adding lost mine to goals</span>
+            <span class="c1"># advAI.addLostMineToGoals(mine)</span>
+
+    <span class="c1"># if player.week == 1 and player.month == 1:</span>
+    <span class="n">player</span><span class="o">.</span><span class="n">logResources</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">city</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">cities</span><span class="p">):</span>
+        <span class="n">player</span><span class="o">.</span><span class="n">camera</span> <span class="o">=</span> <span class="n">city</span><span class="o">.</span><span class="n">position</span>
+        <span class="n">enter_town</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.08</span><span class="p">)</span>
+        <span class="n">build_building_in_town</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">city</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.08</span><span class="p">)</span>
+        <span class="n">leave_town</span><span class="p">()</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.08</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">hero</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">heroes</span><span class="p">):</span>
+        <span class="n">advAI</span><span class="o">.</span><span class="n">heroPointer</span> <span class="o">=</span> <span class="n">i</span>
+        <span class="n">player</span><span class="o">.</span><span class="n">camera</span> <span class="o">=</span> <span class="n">hero</span><span class="o">.</span><span class="n">position</span>
+        <span class="n">GUI_handling</span><span class="o">.</span><span class="n">AdventureGUI</span><span class="o">.</span><span class="n">press_hero</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.08</span><span class="p">)</span>
+        <span class="n">read_army</span><span class="p">(</span><span class="n">heroreader</span><span class="p">,</span> <span class="n">hero</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.08</span><span class="p">)</span>
+        <span class="n">advAI</span><span class="o">.</span><span class="n">playHeroDay</span><span class="p">()</span>
+    <span class="c1"># else:</span>
+    <span class="c1">#     for i, hero in enumerate(player.heroes):</span>
+    <span class="c1">#         GUI_handling.AdventureGUI.press_hero(i)</span>
+    <span class="c1">#         advAI.heroes[0].mspoints = 1500</span>
+    <span class="c1">#         advAI.playHeroDay()</span>
+    <span class="c1">#     for i, city in enumerate(player.cities):</span>
+    <span class="c1">#         enter_town(i)</span>
+    <span class="c1">#         time.sleep(0.04)</span>
+    <span class="c1">#         build_building_in_town(player, city)</span>
+    <span class="c1">#         time.sleep(0.04)</span>
+    <span class="c1">#         leave_town()</span>
+    <span class="n">after</span> <span class="o">=</span> <span class="n">image_processing</span><span class="o">.</span><span class="n">adventure_image_processing</span><span class="o">.</span><span class="n">check_if_hero_is_dead_first</span><span class="p">()</span>
+    <span class="n">GUI_handling</span><span class="o">.</span><span class="n">AdventureGUI</span><span class="o">.</span><span class="n">end_turn</span><span class="p">()</span>
+    <span class="n">player</span><span class="o">.</span><span class="n">day</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">execute_detecting_enemy_turn</span><span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">heroes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">advAI</span><span class="o">.</span><span class="n">map</span><span class="o">.</span><span class="n">obj</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">tile</span> <span class="ow">in</span> <span class="n">row</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tile</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+                <span class="n">tile</span><span class="o">.</span><span class="n">end_day</span><span class="p">(</span><span class="n">player</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">player</span><span class="o">.</span><span class="n">day</span> <span class="o">==</span> <span class="mi">8</span><span class="p">:</span>
+        <span class="n">GUI_handling</span><span class="o">.</span><span class="n">AdventureGUI</span><span class="o">.</span><span class="n">accept_offer</span><span class="p">()</span>
+        <span class="c1"># przelec po wszystkim koniec tygodnia</span>
+
+        <span class="n">player</span><span class="o">.</span><span class="n">day</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">player</span><span class="o">.</span><span class="n">week</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">advAI</span><span class="o">.</span><span class="n">map</span><span class="o">.</span><span class="n">obj</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">tile</span> <span class="ow">in</span> <span class="n">row</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tile</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+                    <span class="n">tile</span><span class="o">.</span><span class="n">end_week</span><span class="p">(</span><span class="n">player</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">player</span><span class="o">.</span><span class="n">week</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>
+            <span class="n">player</span><span class="o">.</span><span class="n">month</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">player</span><span class="o">.</span><span class="n">week</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="c1"># At the end of the week we add all the cities to the adventureAI goals (only if specific castle is not</span>
+        <span class="c1"># already in the goal list) ---- CamaroTheBOSS</span>
+        <span class="n">advAI</span><span class="o">.</span><span class="n">addCastlesToGoals</span><span class="p">()</span>
+
+    <span class="c1"># ACTUALIZE HEROES MOVEMENT</span>
+    <span class="k">for</span> <span class="n">hero</span> <span class="ow">in</span> <span class="n">player</span><span class="o">.</span><span class="n">heroes</span><span class="p">:</span>
+        <span class="n">hero</span><span class="o">.</span><span class="n">mspoints</span> <span class="o">=</span> <span class="n">movment</span><span class="p">(</span><span class="n">hero</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">player</span><span class="p">,</span> <span class="n">advAI</span><span class="p">,</span> <span class="n">read_cities</span><span class="p">,</span> <span class="n">after</span></div>
+
+
+<div class="viewcode-block" id="execute_save"><a class="viewcode-back" href="../main.html#main.execute_save">[docs]</a><span class="k">def</span> <span class="nf">execute_save</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">advai</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    function for executing save in game and saving of our ai state</span>
+
+<span class="sd">    :param name: name of new save</span>
+<span class="sd">    :param advai: adventure ai object</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">save_in_game</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">save</span><span class="o">.</span><span class="n">save_object</span><span class="p">(</span><span class="n">advai</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../main.html#main.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">save_name</span><span class="o">=</span><span class="s2">&quot;saved_game&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    main function reloading saved game or starting new one</span>
+
+<span class="sd">    :param save_name: name of saved game to load</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">game_active</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">heroreader</span> <span class="o">=</span> <span class="n">image_processing</span><span class="o">.</span><span class="n">hero_filling</span><span class="o">.</span><span class="n">Finder</span><span class="p">()</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">advAI</span><span class="p">,</span> <span class="n">player</span> <span class="o">=</span> <span class="n">save</span><span class="o">.</span><span class="n">load_advai</span><span class="p">(</span><span class="n">save_name</span><span class="p">)</span>
+        <span class="n">read_cities</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">after</span> <span class="o">=</span> <span class="n">image_processing</span><span class="o">.</span><span class="n">adventure_image_processing</span><span class="o">.</span><span class="n">check_if_hero_is_dead_first</span><span class="p">()</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">read_cities</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">player</span> <span class="o">=</span> <span class="n">Player</span><span class="p">(</span><span class="s1">&#39;Red&#39;</span><span class="p">,</span> <span class="mi">20000</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+        <span class="n">ranges</span> <span class="o">=</span> <span class="p">((</span><span class="n">player</span><span class="o">.</span><span class="n">wood</span> <span class="o">-</span> <span class="mi">5</span><span class="p">,</span> <span class="n">player</span><span class="o">.</span><span class="n">wood</span> <span class="o">+</span> <span class="mi">10</span><span class="p">),</span>
+                  <span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">mercury</span> <span class="o">-</span> <span class="mi">5</span><span class="p">,</span> <span class="n">player</span><span class="o">.</span><span class="n">mercury</span> <span class="o">+</span> <span class="mi">10</span><span class="p">),</span> <span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">ore</span> <span class="o">-</span> <span class="mi">5</span><span class="p">,</span> <span class="n">player</span><span class="o">.</span><span class="n">ore</span> <span class="o">+</span> <span class="mi">10</span><span class="p">),</span>
+                  <span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">sulfur</span> <span class="o">-</span> <span class="mi">5</span><span class="p">,</span> <span class="n">player</span><span class="o">.</span><span class="n">sulfur</span> <span class="o">+</span> <span class="mi">10</span><span class="p">),</span>
+                  <span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">crystal</span> <span class="o">-</span> <span class="mi">5</span><span class="p">,</span> <span class="n">player</span><span class="o">.</span><span class="n">crystal</span> <span class="o">+</span> <span class="mi">10</span><span class="p">),</span> <span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">gems</span> <span class="o">-</span> <span class="mi">5</span><span class="p">,</span> <span class="n">player</span><span class="o">.</span><span class="n">gems</span> <span class="o">+</span> <span class="mi">10</span><span class="p">),</span>
+                  <span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">gold</span> <span class="o">-</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">player</span><span class="o">.</span><span class="n">gold</span> <span class="o">+</span> <span class="mi">10000</span><span class="p">))</span>
+        <span class="n">screen_slicing</span><span class="o">.</span><span class="n">check_resources</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">ranges</span><span class="p">)</span>
+        <span class="n">hero</span> <span class="o">=</span> <span class="n">Hero</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;main&#39;</span><span class="p">,</span> <span class="s1">&#39;Jenova&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">Slots</span><span class="p">(</span><span class="n">Slot</span><span class="p">(</span><span class="n">creatures</span><span class="o">.</span><span class="n">Centaur</span><span class="p">,</span> <span class="mi">21</span><span class="p">),</span> <span class="n">Slot</span><span class="p">(</span><span class="n">creatures</span><span class="o">.</span><span class="n">Dwarf</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+                                                           <span class="n">Slot</span><span class="p">(</span><span class="n">creatures</span><span class="o">.</span><span class="n">Wood_Elf</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span>
+                    <span class="n">skills</span><span class="o">=</span><span class="n">SecondarySkills</span><span class="p">(</span><span class="n">SecondarySkill</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;Archery&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">)),</span>
+                    <span class="n">heroclass</span><span class="o">=</span><span class="s1">&#39;might&#39;</span><span class="p">)</span>
+        <span class="n">ranges</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">wood</span> <span class="o">-</span> <span class="mi">5</span><span class="p">,</span> <span class="n">player</span><span class="o">.</span><span class="n">wood</span> <span class="o">+</span> <span class="mi">10</span><span class="p">),</span>
+            <span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">mercury</span> <span class="o">-</span> <span class="mi">5</span><span class="p">,</span> <span class="n">player</span><span class="o">.</span><span class="n">mercury</span> <span class="o">+</span> <span class="mi">10</span><span class="p">),</span> <span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">ore</span> <span class="o">-</span> <span class="mi">5</span><span class="p">,</span> <span class="n">player</span><span class="o">.</span><span class="n">ore</span> <span class="o">+</span> <span class="mi">10</span><span class="p">),</span>
+            <span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">sulfur</span> <span class="o">-</span> <span class="mi">5</span><span class="p">,</span> <span class="n">player</span><span class="o">.</span><span class="n">sulfur</span> <span class="o">+</span> <span class="mi">10</span><span class="p">),</span> <span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">crystal</span> <span class="o">-</span> <span class="mi">5</span><span class="p">,</span> <span class="n">player</span><span class="o">.</span><span class="n">crystal</span> <span class="o">+</span> <span class="mi">10</span><span class="p">),</span>
+            <span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">gems</span> <span class="o">-</span> <span class="mi">5</span><span class="p">,</span> <span class="n">player</span><span class="o">.</span><span class="n">gems</span> <span class="o">+</span> <span class="mi">10</span><span class="p">),</span> <span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">gold</span> <span class="o">-</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">player</span><span class="o">.</span><span class="n">gold</span> <span class="o">+</span> <span class="mi">10000</span><span class="p">))</span>
+        <span class="n">screen_slicing</span><span class="o">.</span><span class="n">check_resources</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">ranges</span><span class="p">)</span>
+        <span class="n">player</span><span class="o">.</span><span class="n">heroes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">hero</span><span class="p">)</span>
+        <span class="n">advAI</span> <span class="o">=</span> <span class="n">adv</span><span class="o">.</span><span class="n">AdventureAI</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">MAP_H3M_PATH</span><span class="p">)</span>
+        <span class="n">allTheHeroes</span> <span class="o">=</span> <span class="n">find_heroes</span><span class="p">(</span><span class="n">advAI</span><span class="o">.</span><span class="n">screen</span><span class="p">,</span> <span class="n">advAI</span><span class="o">.</span><span class="n">map</span><span class="o">.</span><span class="n">obj</span><span class="p">)</span>
+        <span class="n">player</span><span class="o">.</span><span class="n">heroes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="p">(</span><span class="n">allTheHeroes</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">allTheHeroes</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="n">advAI</span><span class="o">.</span><span class="n">heroPointer</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">read_hero</span><span class="p">(</span><span class="n">heroreader</span><span class="p">,</span> <span class="n">player</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="c1"># read_hero(heroreader, player, 0)</span>
+        <span class="n">debug</span> <span class="o">=</span> <span class="s1">&#39;a&#39;</span>
+        <span class="n">enter_town</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="n">GUI_handling</span><span class="o">.</span><span class="n">TownGUI</span><span class="o">.</span><span class="n">click_town_hall</span><span class="p">(</span><span class="n">faction</span><span class="o">=</span><span class="n">player</span><span class="o">.</span><span class="n">cities</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="n">player</span><span class="o">.</span><span class="n">cities</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">crop_building_names</span><span class="p">()</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+        <span class="n">leave_town</span><span class="p">()</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+        <span class="n">leave_town</span><span class="p">()</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+        <span class="n">player</span><span class="o">.</span><span class="n">logResources</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">city</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">cities</span><span class="p">):</span>  <span class="c1"># In every city we build building</span>
+            <span class="n">player</span><span class="o">.</span><span class="n">camera</span> <span class="o">=</span> <span class="n">city</span><span class="o">.</span><span class="n">position</span>
+            <span class="n">enter_town</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+            <span class="n">build_building_in_town</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">city</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.08</span><span class="p">)</span>
+            <span class="n">leave_town</span><span class="p">()</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.08</span><span class="p">)</span>
+
+        <span class="n">enter_town</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="n">player</span><span class="o">.</span><span class="n">cities</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">action</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">player</span><span class="o">.</span><span class="n">heroes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="n">enter_town</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="c1"># advAI.heroes[0].mspoints = 1900</span>
+        <span class="c1"># advAI.playHeroDay()</span>
+        <span class="c1"># enter_town(0)</span>
+        <span class="c1"># time.sleep(0.04)</span>
+        <span class="n">GUI_handling</span><span class="o">.</span><span class="n">TownGUI</span><span class="o">.</span><span class="n">hero_garrison_change</span><span class="p">(</span><span class="s1">&#39;bottom&#39;</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="n">GUI_handling</span><span class="o">.</span><span class="n">TownGUI</span><span class="o">.</span><span class="n">click_tavern</span><span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">cities</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="n">hire_hero</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">player</span><span class="o">.</span><span class="n">gold</span> <span class="o">=</span> <span class="n">player</span><span class="o">.</span><span class="n">gold</span> <span class="o">-</span> <span class="mi">2500</span>
+        <span class="c1"># advAI.heroPointer = 1</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="n">GUI_handling</span><span class="o">.</span><span class="n">TownGUI</span><span class="o">.</span><span class="n">hero_garrison_change</span><span class="p">(</span><span class="s1">&#39;top&#39;</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="n">GUI_handling</span><span class="o">.</span><span class="n">TownGUI</span><span class="o">.</span><span class="n">move_all_units_to_other_side</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">16</span><span class="p">):</span>
+            <span class="n">GUI_handling</span><span class="o">.</span><span class="n">TownGUI</span><span class="o">.</span><span class="n">merge_stacks_unit</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="n">leave_town</span><span class="p">()</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="n">advAI</span><span class="o">.</span><span class="n">heroPointer</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">read_hero</span><span class="p">(</span><span class="n">heroreader</span><span class="p">,</span> <span class="n">player</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">advAI</span><span class="o">.</span><span class="n">heroes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">mspoints</span> <span class="o">=</span> <span class="n">movment</span><span class="p">(</span><span class="n">advAI</span><span class="o">.</span><span class="n">heroes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="n">advAI</span><span class="o">.</span><span class="n">playHeroDay</span><span class="p">()</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="n">enter_town</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="n">GUI_handling</span><span class="o">.</span><span class="n">TownGUI</span><span class="o">.</span><span class="n">hero_garrison_change</span><span class="p">(</span><span class="s1">&#39;top&#39;</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="n">leave_town</span><span class="p">()</span>
+        <span class="n">advAI</span><span class="o">.</span><span class="n">heroPointer</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">player</span><span class="o">.</span><span class="n">heroes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Hero</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;not_main&#39;</span><span class="p">,</span> <span class="s1">&#39;Jenova&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">player</span><span class="o">.</span><span class="n">heroes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="p">(</span><span class="n">allTheHeroes</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">allTheHeroes</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">player</span><span class="o">.</span><span class="n">camera</span> <span class="o">=</span> <span class="p">(</span><span class="n">allTheHeroes</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">allTheHeroes</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="n">read_hero</span><span class="p">(</span><span class="n">heroreader</span><span class="p">,</span> <span class="n">player</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">advAI</span><span class="o">.</span><span class="n">screen</span><span class="o">.</span><span class="n">hero_positions</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;Red&quot;</span><span class="p">))</span>
+        <span class="n">advAI</span><span class="o">.</span><span class="n">heroes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">mspoints</span> <span class="o">=</span> <span class="n">movment</span><span class="p">(</span><span class="n">advAI</span><span class="o">.</span><span class="n">heroes</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="n">advAI</span><span class="o">.</span><span class="n">screen</span><span class="o">.</span><span class="n">hero_positions</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;Red&#39;</span><span class="p">))</span>
+        <span class="n">advAI</span><span class="o">.</span><span class="n">playHeroDay</span><span class="p">()</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.04</span><span class="p">)</span>
+        <span class="n">GUI_handling</span><span class="o">.</span><span class="n">AdventureGUI</span><span class="o">.</span><span class="n">end_turn</span><span class="p">()</span>
+        <span class="n">player</span><span class="o">.</span><span class="n">day</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">waiting</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
+        <span class="k">while</span><span class="p">(</span><span class="n">waiting</span><span class="p">):</span>
+            <span class="n">cursor</span> <span class="o">=</span> <span class="n">get_cursor_type</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">cursor</span> <span class="o">==</span> <span class="s2">&quot;wait&quot;</span><span class="p">:</span>
+                <span class="n">waiting</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">waiting</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
+        <span class="n">not_end</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">for</span> <span class="n">hero</span> <span class="ow">in</span> <span class="n">player</span><span class="o">.</span><span class="n">heroes</span><span class="p">:</span>
+            <span class="n">hero</span><span class="o">.</span><span class="n">mspoints</span> <span class="o">=</span> <span class="n">movment</span><span class="p">(</span><span class="n">hero</span><span class="p">)</span>
+        <span class="n">after</span> <span class="o">=</span> <span class="n">image_processing</span><span class="o">.</span><span class="n">adventure_image_processing</span><span class="o">.</span><span class="n">check_if_hero_is_dead_first</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">Fore</span><span class="o">.</span><span class="n">YELLOW</span><span class="p">,</span><span class="sa">f</span><span class="s2">&quot;########## DAY:</span><span class="si">{</span><span class="n">player</span><span class="o">.</span><span class="n">day</span><span class="si">}</span><span class="s2">,WEEK:</span><span class="si">{</span><span class="n">player</span><span class="o">.</span><span class="n">week</span><span class="si">}</span><span class="s2">, MONTH: </span><span class="si">{</span><span class="n">player</span><span class="o">.</span><span class="n">month</span><span class="si">}</span><span class="s2">#########&quot;</span><span class="p">,</span><span class="n">Fore</span><span class="o">.</span><span class="n">RESET</span><span class="p">)</span>
+    <span class="k">while</span> <span class="n">game_active</span><span class="p">:</span>
+        <span class="n">execute_save</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;saved_game</span><span class="si">{</span><span class="n">player</span><span class="o">.</span><span class="n">month</span><span class="si">}{</span><span class="n">player</span><span class="o">.</span><span class="n">week</span><span class="si">}{</span><span class="n">player</span><span class="o">.</span><span class="n">day</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">advAI</span><span class="p">)</span>
+        <span class="n">player</span><span class="p">,</span> <span class="n">advAI</span><span class="p">,</span> <span class="n">read_cities</span><span class="p">,</span> <span class="n">after</span> <span class="o">=</span> <span class="n">main_loop</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">advAI</span><span class="p">,</span> <span class="n">read_cities</span><span class="p">,</span> <span class="n">heroreader</span><span class="p">,</span> <span class="n">after</span><span class="p">)</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">(</span><span class="s2">&quot;saved_game&quot;</span><span class="p">,</span><span class="s2">&quot;Red&quot;</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Fryderyk Róg, Kacper Plesiak, Michał Gruba, Tymoteusz Skrzyński, Mateusz Comblik, Bartosz Szczepanek, Alan Konopko, Mateusz Mikszewicz, Daniel Bil, Piotr Łyczko.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

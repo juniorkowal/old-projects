@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>file_reader.MainMapClass &mdash; HoMM3 Bot 2.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> HoMM3 Bot
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">homm3-bot</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">HoMM3 Bot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">file_reader.MainMapClass</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for file_reader.MainMapClass</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">file_reader.MainMapClassVaraibles</span> <span class="kn">import</span> <span class="n">MapVariables</span>
+<span class="kn">from</span> <span class="nn">file_reader.FileReader</span> <span class="kn">import</span> <span class="n">FileReader</span>
+<span class="kn">from</span> <span class="nn">file_reader.MapConstants</span> <span class="kn">import</span> <span class="n">Version</span><span class="p">,</span> <span class="n">IntGlobals</span><span class="p">,</span> <span class="n">Victory</span><span class="p">,</span> <span class="n">Loss</span><span class="p">,</span> <span class="n">HeroesConstants</span><span class="p">,</span> <span class="n">TileType</span><span class="p">,</span> <span class="n">Objects</span><span class="p">,</span> <span class="n">QuestMission</span><span class="p">,</span>\
+    <span class="n">RewardType</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">file_reader.OtherClasses</span> <span class="kn">import</span> <span class="n">ObjectTemplate</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+
+<div class="viewcode-block" id="Map"><a class="viewcode-back" href="../../file_reader.html#file_reader.MainMapClass.Map">[docs]</a><span class="k">class</span> <span class="nc">Map</span><span class="p">(</span><span class="n">MapVariables</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reader</span> <span class="o">=</span> <span class="n">FileReader</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">terrain_map</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">objects_map</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">road_map</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">object_templates</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">object_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+<div class="viewcode-block" id="Map.read_map"><a class="viewcode-back" href="../../file_reader.html#file_reader.MainMapClass.Map.read_map">[docs]</a>    <span class="k">def</span> <span class="nf">read_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Main function for reading map. Use only this one.</span>
+<span class="sd">        :param filename: Map filename</span>
+<span class="sd">        :return: Map of objects, terrain, road</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reader</span> <span class="o">=</span> <span class="n">FileReader</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Reading header&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">read_header</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Reading player info&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">read_player_info</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Reading victory condition&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">victory_condition</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Reading loss condition&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loss_condition</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Reading teams&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">teams</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Reading free heroes&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">free_heroes</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Reading HOTA map extra&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">skip</span><span class="p">(</span><span class="mi">31</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">HOTA_map_extra</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Reading artifacts&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">artifacts</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Reading allowed spells and artifacts&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allowed_spells_artifacts</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Reading rumours&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rumours</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Reading predefined heroes&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">read_predefined_heroes</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Reading terrain&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">read_terrain</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Reading objects definitions&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">read_def_info</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Reading objects&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">read_objects</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Reading events&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">read_events</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">objects_map</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">terrain_map</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">road_map</span></div>
+
+<div class="viewcode-block" id="Map.read_header"><a class="viewcode-back" href="../../file_reader.html#file_reader.MainMapClass.Map.read_header">[docs]</a>    <span class="k">def</span> <span class="nf">read_header</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read the map header</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">=</span> <span class="n">Version</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">())</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">==</span> <span class="n">Version</span><span class="o">.</span><span class="n">HOTA</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">hota_subversion</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hota_subversion</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">sprite_mirror</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+                <span class="n">hota_arena</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hota_subversion</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">terrain_count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">hota_subversion</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="n">hero_any_on_map</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_bool</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">map_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_size</span><span class="o">!=</span><span class="mi">72</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Wrong map size!&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">underground</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">underground</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Underground not implemented!&#39;</span><span class="p">)</span>        
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">terrain_map</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">underground</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_size</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">road_map</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">underground</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_size</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">objects_map</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">underground</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_size</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
+
+        <span class="n">map_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_string</span><span class="p">()</span>
+        <span class="n">description</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_string</span><span class="p">()</span>
+        <span class="n">difficulty</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">!=</span> <span class="n">Version</span><span class="o">.</span><span class="n">ROE</span><span class="p">:</span>
+            <span class="n">hero_lvl_cap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Map.read_player_info"><a class="viewcode-back" href="../../file_reader.html#file_reader.MainMapClass.Map.read_player_info">[docs]</a>    <span class="k">def</span> <span class="nf">read_player_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read player info</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">IntGlobals</span><span class="o">.</span><span class="n">PLAYER_SUM</span><span class="p">):</span>
+            <span class="n">human</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_bool</span><span class="p">()</span>
+            <span class="n">ai</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_bool</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">human</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">ai</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">==</span> <span class="n">Version</span><span class="o">.</span><span class="n">ROE</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">skip</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">==</span> <span class="n">Version</span><span class="o">.</span><span class="n">AB</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">skip</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">skip</span><span class="p">(</span><span class="mi">13</span><span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="n">behaviour</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">&gt;=</span> <span class="n">Version</span><span class="o">.</span><span class="n">SOD</span><span class="p">:</span>
+                <span class="n">town_owned_is_set</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">!=</span> <span class="n">Version</span><span class="o">.</span><span class="n">ROE</span><span class="p">:</span>
+                <span class="n">towns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint16</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">towns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+
+            <span class="n">is_random_town</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+            <span class="n">has_main_town</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="n">has_main_town</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">!=</span> <span class="n">Version</span><span class="o">.</span><span class="n">ROE</span><span class="p">:</span>
+                    <span class="n">hero_at_main</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+                    <span class="n">generate_hero</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+
+                <span class="n">town_pos</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()]</span>
+
+            <span class="n">random_hero</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+            <span class="n">main_hero_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">main_hero_type</span> <span class="o">!=</span> <span class="n">IntGlobals</span><span class="o">.</span><span class="n">HNONE</span><span class="p">:</span>
+                <span class="n">hero_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+                <span class="n">hero_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_string</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">!=</span> <span class="n">Version</span><span class="o">.</span><span class="n">ROE</span><span class="p">:</span>
+                <span class="n">placeholder</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+                <span class="n">hero_count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">skip</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">hero_count</span><span class="p">):</span>
+                    <span class="n">hero_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+                    <span class="n">hero_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_string</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Map.free_heroes"><a class="viewcode-back" href="../../file_reader.html#file_reader.MainMapClass.Map.free_heroes">[docs]</a>    <span class="k">def</span> <span class="nf">free_heroes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read disabled heroes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">==</span> <span class="n">Version</span><span class="o">.</span><span class="n">ROE</span><span class="p">:</span>
+            <span class="n">heroes</span> <span class="o">=</span> <span class="mi">16</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Version</span><span class="o">.</span><span class="n">AB</span><span class="p">,</span> <span class="n">Version</span><span class="o">.</span><span class="n">SOD</span><span class="p">,</span> <span class="n">Version</span><span class="o">.</span><span class="n">WOG</span><span class="p">):</span>
+            <span class="n">heroes</span> <span class="o">=</span> <span class="mi">20</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">heroes</span> <span class="o">=</span> <span class="mi">23</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">==</span> <span class="n">Version</span><span class="o">.</span><span class="n">HOTA</span><span class="p">:</span>
+            <span class="n">limit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">skip</span><span class="p">(</span><span class="n">heroes</span><span class="p">)</span>  <span class="c1"># Heroes mask</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">!=</span> <span class="n">Version</span><span class="o">.</span><span class="n">ROE</span><span class="p">:</span>
+            <span class="n">placeholder</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">placeholder</span><span class="p">):</span>
+                <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">&gt;=</span> <span class="n">Version</span><span class="o">.</span><span class="n">SOD</span><span class="p">:</span>
+            <span class="n">hero_custom_count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">hero_custom_count</span><span class="p">):</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+                <span class="n">face</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_string</span><span class="p">()</span>
+                <span class="n">mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Map.HOTA_map_extra"><a class="viewcode-back" href="../../file_reader.html#file_reader.MainMapClass.Map.HOTA_map_extra">[docs]</a>    <span class="k">def</span> <span class="nf">HOTA_map_extra</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read extra things that HOTA adds</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">!=</span> <span class="n">Version</span><span class="o">.</span><span class="n">HOTA</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">mon_plague_week</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hota_subversion</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">art_combined</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">art_combined</span><span class="p">:</span>
+                <span class="n">art_comb_num</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">art_combined</span> <span class="o">/</span> <span class="mi">8</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">skip</span><span class="p">(</span><span class="n">art_comb_num</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hota_subversion</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="n">combat_count_limit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Map.artifacts"><a class="viewcode-back" href="../../file_reader.html#file_reader.MainMapClass.Map.artifacts">[docs]</a>    <span class="k">def</span> <span class="nf">artifacts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read artifacts</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">!=</span> <span class="n">Version</span><span class="o">.</span><span class="n">ROE</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">==</span> <span class="n">Version</span><span class="o">.</span><span class="n">AB</span><span class="p">:</span>
+                <span class="nb">bytes</span> <span class="o">=</span> <span class="mi">17</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">!=</span> <span class="n">Version</span><span class="o">.</span><span class="n">HOTA</span><span class="p">:</span>
+                <span class="nb">bytes</span> <span class="o">=</span> <span class="mi">18</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">art_count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span>
+                <span class="nb">bytes</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">art_count</span> <span class="o">/</span> <span class="mi">8</span><span class="p">))</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">skip</span><span class="p">(</span><span class="nb">bytes</span><span class="p">)</span>  <span class="c1"># Idx of artifacts</span></div>
+
+<div class="viewcode-block" id="Map.allowed_spells_artifacts"><a class="viewcode-back" href="../../file_reader.html#file_reader.MainMapClass.Map.allowed_spells_artifacts">[docs]</a>    <span class="k">def</span> <span class="nf">allowed_spells_artifacts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read allowed spells and artifacts</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">&gt;=</span> <span class="n">Version</span><span class="o">.</span><span class="n">SOD</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">skip</span><span class="p">(</span><span class="mi">9</span><span class="p">)</span>  <span class="c1"># Ids of spells</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">skip</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>  <span class="c1"># Ids of skills</span></div>
+
+<div class="viewcode-block" id="Map.rumours"><a class="viewcode-back" href="../../file_reader.html#file_reader.MainMapClass.Map.rumours">[docs]</a>    <span class="k">def</span> <span class="nf">rumours</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read rumours</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">rumours_count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">rumours_count</span><span class="p">):</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_string</span><span class="p">()</span>
+            <span class="n">desc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_string</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Map.victory_condition"><a class="viewcode-back" href="../../file_reader.html#file_reader.MainMapClass.Map.victory_condition">[docs]</a>    <span class="k">def</span> <span class="nf">victory_condition</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read victory condition</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">vic_cond</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">vic_cond</span> <span class="o">!=</span> <span class="n">Victory</span><span class="o">.</span><span class="n">NONE</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span> <span class="c1"># allow normal victory</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span> <span class="c1"># applies to AI</span>
+
+        <span class="k">if</span> <span class="n">vic_cond</span> <span class="o">==</span> <span class="n">Victory</span><span class="o">.</span><span class="n">NONE</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">elif</span> <span class="n">vic_cond</span> <span class="o">==</span> <span class="n">Victory</span><span class="o">.</span><span class="n">ARTIFACT</span><span class="p">:</span>
+            <span class="n">art</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">!=</span> <span class="n">Version</span><span class="o">.</span><span class="n">ROE</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">skip</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">vic_cond</span> <span class="o">==</span> <span class="n">Victory</span><span class="o">.</span><span class="n">ACCUMULATE_CREATURES</span><span class="p">:</span>
+            <span class="n">mon_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">!=</span> <span class="n">Version</span><span class="o">.</span><span class="n">ROE</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">skip</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">unit_count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">vic_cond</span> <span class="o">==</span> <span class="n">Victory</span><span class="o">.</span><span class="n">ACCUMULATE_RESOURCES</span><span class="p">:</span>
+            <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+            <span class="n">resource_count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">vic_cond</span> <span class="o">==</span> <span class="n">Victory</span><span class="o">.</span><span class="n">UPGRADE_TOWN</span><span class="p">:</span>
+            <span class="n">coords</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()]</span>
+            <span class="n">hall_lvl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+            <span class="n">castle_lvl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">vic_cond</span> <span class="o">==</span> <span class="n">Victory</span><span class="o">.</span><span class="n">BUILD_GRAIL</span><span class="p">:</span>
+            <span class="n">coord</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()]</span>
+        <span class="k">elif</span> <span class="n">vic_cond</span> <span class="o">==</span> <span class="n">Victory</span><span class="o">.</span><span class="n">DEFEAT_HERO</span><span class="p">:</span>
+            <span class="n">coord</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()]</span>
+        <span class="k">elif</span> <span class="n">vic_cond</span> <span class="o">==</span> <span class="n">Victory</span><span class="o">.</span><span class="n">CAPTURE_TOWN</span><span class="p">:</span>
+            <span class="n">coord</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()]</span>
+        <span class="k">elif</span> <span class="n">vic_cond</span> <span class="o">==</span> <span class="n">Victory</span><span class="o">.</span><span class="n">KILL_MONSTER</span><span class="p">:</span>
+            <span class="n">coord</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()]</span>
+        <span class="k">elif</span> <span class="n">vic_cond</span> <span class="o">==</span> <span class="n">Victory</span><span class="o">.</span><span class="n">FLAG_DWELLINGS</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">elif</span> <span class="n">vic_cond</span> <span class="o">==</span> <span class="n">Victory</span><span class="o">.</span><span class="n">FLAG_MINES</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">elif</span> <span class="n">vic_cond</span> <span class="o">==</span> <span class="n">Victory</span><span class="o">.</span><span class="n">TRANSPORT_ARTIFACT</span><span class="p">:</span>
+            <span class="n">art</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+            <span class="n">coord</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()]</span>
+        <span class="k">elif</span> <span class="n">vic_cond</span> <span class="o">==</span> <span class="n">Victory</span><span class="o">.</span><span class="n">ELIMINATE_MONSTERS</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">elif</span> <span class="n">vic_cond</span> <span class="o">==</span> <span class="n">Victory</span><span class="o">.</span><span class="n">SURVIVE_TIME</span><span class="p">:</span>
+            <span class="n">time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Map.loss_condition"><a class="viewcode-back" href="../../file_reader.html#file_reader.MainMapClass.Map.loss_condition">[docs]</a>    <span class="k">def</span> <span class="nf">loss_condition</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read loss condition</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">loss_condition</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">loss_condition</span> <span class="o">==</span> <span class="n">Loss</span><span class="o">.</span><span class="n">NONE</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">elif</span> <span class="n">loss_condition</span> <span class="o">==</span> <span class="n">Loss</span><span class="o">.</span><span class="n">TOWN</span><span class="p">:</span>
+            <span class="n">coords</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()]</span>
+        <span class="k">elif</span> <span class="n">loss_condition</span> <span class="o">==</span> <span class="n">Loss</span><span class="o">.</span><span class="n">HERO</span><span class="p">:</span>
+            <span class="n">coords</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()]</span>
+        <span class="k">elif</span> <span class="n">loss_condition</span> <span class="o">==</span> <span class="n">Loss</span><span class="o">.</span><span class="n">TIME</span><span class="p">:</span>
+            <span class="n">time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint16</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Map.teams"><a class="viewcode-back" href="../../file_reader.html#file_reader.MainMapClass.Map.teams">[docs]</a>    <span class="k">def</span> <span class="nf">teams</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read teams of each player</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">IntGlobals</span><span class="o">.</span><span class="n">PLAYER_SUM</span><span class="p">):</span>
+            <span class="n">teams</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span> <span class="k">if</span> <span class="n">count</span> <span class="o">!=</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span></div>
+
+<div class="viewcode-block" id="Map.load_artifacts_of_hero"><a class="viewcode-back" href="../../file_reader.html#file_reader.MainMapClass.Map.load_artifacts_of_hero">[docs]</a>    <span class="k">def</span> <span class="nf">load_artifacts_of_hero</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load artifacts of a hero</span>
+<span class="sd">        :return: Artifacts of a hero</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">art_set</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+        <span class="n">artifacts</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">art_set</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">16</span><span class="p">):</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">==</span> <span class="n">Version</span><span class="o">.</span><span class="n">ROE</span><span class="p">:</span>
+                    <span class="n">artid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">artid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint16</span><span class="p">()</span>
+                <span class="n">artifacts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">artid</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">&gt;=</span> <span class="n">Version</span><span class="o">.</span><span class="n">SOD</span><span class="p">:</span>  <span class="c1"># machine 4</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">==</span> <span class="n">Version</span><span class="o">.</span><span class="n">ROE</span><span class="p">:</span>
+                    <span class="n">artid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">artid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint16</span><span class="p">()</span>
+                <span class="n">artifacts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">artid</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">==</span> <span class="n">Version</span><span class="o">.</span><span class="n">ROE</span><span class="p">:</span>  <span class="c1"># Spellbook</span>
+                <span class="n">artid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">artid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint16</span><span class="p">()</span>
+            <span class="n">artifacts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">artid</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">==</span> <span class="n">Version</span><span class="o">.</span><span class="n">ROE</span><span class="p">:</span>  <span class="c1"># misc5</span>
+                <span class="n">artid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">artid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint16</span><span class="p">()</span>
+            <span class="n">artifacts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">artid</span><span class="p">)</span>
+
+            <span class="n">amount</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint16</span><span class="p">()</span>  <span class="c1"># Bag artifacts</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">amount</span><span class="p">):</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">==</span> <span class="n">Version</span><span class="o">.</span><span class="n">ROE</span><span class="p">:</span>
+                    <span class="n">artid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">artid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint16</span><span class="p">()</span>
+                <span class="n">artifacts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">artid</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">artifacts</span></div>
+
+<div class="viewcode-block" id="Map.read_predefined_heroes"><a class="viewcode-back" href="../../file_reader.html#file_reader.MainMapClass.Map.read_predefined_heroes">[docs]</a>    <span class="k">def</span> <span class="nf">read_predefined_heroes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read predefined heroes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">limit</span> <span class="o">=</span> <span class="mi">156</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">==</span> <span class="n">Version</span><span class="o">.</span><span class="n">HOTA</span><span class="p">:</span>
+            <span class="n">limit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Version</span><span class="o">.</span><span class="n">SOD</span><span class="p">,</span> <span class="n">Version</span><span class="o">.</span><span class="n">WOG</span><span class="p">,</span> <span class="n">Version</span><span class="o">.</span><span class="n">HOTA</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">limit</span><span class="p">):</span>
+                <span class="n">custom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">custom</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+                <span class="n">has_exp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">has_exp</span><span class="p">:</span>
+                    <span class="n">exp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span>
+
+                <span class="n">has_sec_skills</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">has_sec_skills</span><span class="p">:</span>
+                    <span class="n">count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span>
+                    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">count</span><span class="p">):</span>
+                        <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+                        <span class="n">lvl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">load_artifacts_of_hero</span><span class="p">()</span>
+
+                <span class="n">has_custom_bio</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">has_custom_bio</span><span class="p">:</span>
+                    <span class="n">bio</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_string</span><span class="p">()</span>
+
+                <span class="n">sex</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+                <span class="n">custom_spells</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">custom_spells</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">skip</span><span class="p">(</span><span class="mi">9</span><span class="p">)</span>
+
+                <span class="n">custom_pri_skills</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">custom_pri_skills</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">skip</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Map.read_terrain"><a class="viewcode-back" href="../../file_reader.html#file_reader.MainMapClass.Map.read_terrain">[docs]</a>    <span class="k">def</span> <span class="nf">read_terrain</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read terrain</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">underground</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">map_size</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">map_size</span><span class="p">):</span>
+                    <span class="n">surface</span> <span class="o">=</span> <span class="n">HeroesConstants</span><span class="o">.</span><span class="n">TerrainType</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">skip</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+                    <span class="n">road</span> <span class="o">=</span> <span class="n">HeroesConstants</span><span class="o">.</span><span class="n">RoadType</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">skip</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">terrain_map</span><span class="p">[</span><span class="n">z</span><span class="p">][</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="n">surface</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">road_map</span><span class="p">[</span><span class="n">z</span><span class="p">][</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="n">road</span></div>
+
+<div class="viewcode-block" id="Map.read_def_info"><a class="viewcode-back" href="../../file_reader.html#file_reader.MainMapClass.Map.read_def_info">[docs]</a>    <span class="k">def</span> <span class="nf">read_def_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read definitions info. That is read every object that exists in the map and define its available</span>
+<span class="sd">        and blocked spaces and save them as ObjectTemplate objects to an array</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">object_templates_number</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">object_templates_number</span><span class="p">):</span>
+            <span class="n">animation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_string</span><span class="p">()</span>
+            <span class="n">block_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+            <span class="n">visit_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+            <span class="n">used_tiles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="n">TileType</span><span class="o">.</span><span class="n">FREE</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">):</span>
+                <span class="n">block_mask</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">):</span>
+                <span class="n">visit_mask</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">):</span>  <span class="c1"># rows (x-axis)</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">):</span>  <span class="c1"># columns (y-axis)</span>
+                    <span class="n">tile</span> <span class="o">=</span> <span class="n">TileType</span><span class="o">.</span><span class="n">FREE</span>
+                    <span class="k">if</span> <span class="p">((</span><span class="n">visit_mask</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;&gt;</span> <span class="n">j</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">tile</span> <span class="o">=</span> <span class="n">TileType</span><span class="o">.</span><span class="n">ACCESSIBLE</span>
+                    <span class="k">elif</span> <span class="p">((</span><span class="n">block_mask</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;&gt;</span> <span class="n">j</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">tile</span> <span class="o">=</span> <span class="n">TileType</span><span class="o">.</span><span class="n">BLOCKED</span>
+                    <span class="k">if</span> <span class="n">tile</span> <span class="o">!=</span> <span class="n">TileType</span><span class="o">.</span><span class="n">FREE</span><span class="p">:</span>
+                        <span class="n">used_tiles</span><span class="p">[</span><span class="mi">5</span><span class="o">-</span><span class="n">i</span><span class="p">][</span><span class="mi">7</span><span class="o">-</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">tile</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">skip</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># landscape</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">skip</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># allowed terrain for object</span>
+
+            <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">idx</span> <span class="o">==</span> <span class="mi">140</span><span class="p">:</span>
+                <span class="n">a</span><span class="o">=</span><span class="mi">0</span>
+            <span class="n">subidx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">skip</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># type and print</span>
+
+            <span class="n">obj_template</span> <span class="o">=</span> <span class="n">ObjectTemplate</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">subidx</span><span class="p">,</span> <span class="n">used_tiles</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">skip</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">object_templates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj_template</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Map.read_resources"><a class="viewcode-back" href="../../file_reader.html#file_reader.MainMapClass.Map.read_resources">[docs]</a>    <span class="k">def</span> <span class="nf">read_resources</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Inside function for reading resources</span>
+<span class="sd">        :return: Resources</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">resources</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">7</span><span class="p">):</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span>
+            <span class="n">resources</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">resources</span></div>
+
+<div class="viewcode-block" id="Map.read_creature_set"><a class="viewcode-back" href="../../file_reader.html#file_reader.MainMapClass.Map.read_creature_set">[docs]</a>    <span class="k">def</span> <span class="nf">read_creature_set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Inside function for reading garrisons</span>
+<span class="sd">        :param number: Number of creature sets</span>
+<span class="sd">        :return: Creatures</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">version</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">&gt;</span> <span class="n">Version</span><span class="o">.</span><span class="n">ROE</span>
+        <span class="n">max_id</span> <span class="o">=</span> <span class="mh">0xFFFF</span> <span class="k">if</span> <span class="n">version</span> <span class="k">else</span> <span class="mh">0xFF</span>
+        <span class="n">units</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">number</span><span class="p">):</span>
+            <span class="n">creature_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint16</span><span class="p">()</span> <span class="k">if</span> <span class="n">version</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+            <span class="n">count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint16</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">creature_id</span> <span class="o">==</span> <span class="n">max_id</span><span class="p">:</span>  <span class="c1"># Empty slot</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">creature_id</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">max_id</span> <span class="o">-</span> <span class="mh">0x0F</span><span class="p">):</span>
+                <span class="c1"># This will happen when random object has random army</span>
+                <span class="n">creature_id</span> <span class="o">=</span> <span class="p">(</span><span class="n">max_id</span> <span class="o">-</span> <span class="n">creature_id</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1000</span>  <span class="c1"># arbitrary 1000 for extension of monster ids</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">units</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="n">HeroesConstants</span><span class="o">.</span><span class="n">Monster</span><span class="p">[</span><span class="n">creature_id</span><span class="p">]:</span> <span class="n">count</span><span class="p">})</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">units</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="n">HeroesConstants</span><span class="o">.</span><span class="n">MonsterWOG</span><span class="p">[</span><span class="n">creature_id</span><span class="p">]:</span> <span class="n">count</span><span class="p">})</span>
+        <span class="k">return</span> <span class="n">units</span></div>
+
+<div class="viewcode-block" id="Map.read_message_and_guards"><a class="viewcode-back" href="../../file_reader.html#file_reader.MainMapClass.Map.read_message_and_guards">[docs]</a>    <span class="k">def</span> <span class="nf">read_message_and_guards</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read message and guards of an objects</span>
+<span class="sd">        :return: that message and guards</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">has_message</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+        <span class="n">mag</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">has_message</span><span class="p">:</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_string</span><span class="p">()</span>
+            <span class="n">mag</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+            <span class="n">has_guards</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">has_guards</span><span class="p">:</span>
+                <span class="n">stack</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_creature_set</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
+                <span class="n">mag</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">stack</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">skip</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">mag</span></div>
+
+<div class="viewcode-block" id="Map.read_spells"><a class="viewcode-back" href="../../file_reader.html#file_reader.MainMapClass.Map.read_spells">[docs]</a>    <span class="k">def</span> <span class="nf">read_spells</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read spells</span>
+<span class="sd">        :return: Spells</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">spells</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">9</span><span class="p">):</span>
+            <span class="n">byte</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">):</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">byte</span> <span class="o">&amp;</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">n</span><span class="p">))</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">spells</span> <span class="o">=</span> <span class="n">HeroesConstants</span><span class="o">.</span><span class="n">SpellID</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="mi">8</span> <span class="o">+</span> <span class="n">n</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">spells</span></div>
+
+<div class="viewcode-block" id="Map.read_hero"><a class="viewcode-back" href="../../file_reader.html#file_reader.MainMapClass.Map.read_hero">[docs]</a>    <span class="k">def</span> <span class="nf">read_hero</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read hero</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">&gt;</span> <span class="n">Version</span><span class="o">.</span><span class="n">ROE</span><span class="p">:</span>
+            <span class="n">uid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span>
+
+        <span class="n">player_color</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+        <span class="n">sub_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+        <span class="n">has_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">has_name</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_string</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">HeroesConstants</span><span class="o">.</span><span class="n">Heroes</span><span class="p">[</span><span class="n">sub_id</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">&gt;</span> <span class="n">Version</span><span class="o">.</span><span class="n">AB</span><span class="p">:</span>
+            <span class="n">has_exp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">has_exp</span><span class="p">:</span>
+                <span class="n">exp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">exp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span>
+        <span class="n">has_portrait</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">has_portrait</span><span class="p">:</span>
+            <span class="n">portrait</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+        <span class="n">has_sec_skills</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+        <span class="n">skills</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">has_sec_skills</span><span class="p">:</span>
+            <span class="n">how_many</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">how_many</span><span class="p">):</span>
+                <span class="n">skill</span> <span class="o">=</span> <span class="n">HeroesConstants</span><span class="o">.</span><span class="n">SecondarySkill</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()]</span>
+                <span class="n">lvl</span> <span class="o">=</span> <span class="n">HeroesConstants</span><span class="o">.</span><span class="n">SecSkillLevel</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()]</span>
+                <span class="n">skills</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lvl</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="n">skill</span><span class="p">)</span>
+
+        <span class="n">has_garrison</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">has_garrison</span><span class="p">:</span>
+            <span class="n">army</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_creature_set</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
+
+        <span class="n">formation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+        <span class="n">artifacts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_artifacts_of_hero</span><span class="p">()</span>
+        <span class="n">patrol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">&gt;</span> <span class="n">Version</span><span class="o">.</span><span class="n">ROE</span><span class="p">:</span>
+            <span class="n">has_custom_biography</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">has_custom_biography</span><span class="p">:</span>
+                <span class="n">bio</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_string</span><span class="p">()</span>
+            <span class="n">sex</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">&gt;</span> <span class="n">Version</span><span class="o">.</span><span class="n">AB</span><span class="p">:</span>
+            <span class="n">has_custom_spells</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">has_custom_spells</span><span class="p">:</span>
+                <span class="n">spells</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_spells</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">==</span> <span class="n">Version</span><span class="o">.</span><span class="n">AB</span><span class="p">:</span>
+            <span class="n">buff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+
+        <span class="n">primary_skills</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">&gt;</span> <span class="n">Version</span><span class="o">.</span><span class="n">AB</span><span class="p">:</span>
+            <span class="n">has_custom_prim_skills</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">has_custom_prim_skills</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+                    <span class="n">primary_skills</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">skip</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Map.read_quest"><a class="viewcode-back" href="../../file_reader.html#file_reader.MainMapClass.Map.read_quest">[docs]</a>    <span class="k">def</span> <span class="nf">read_quest</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read quests</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">task_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">task_id</span> <span class="o">==</span> <span class="n">QuestMission</span><span class="o">.</span><span class="n">NONE</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">elif</span> <span class="n">task_id</span> <span class="o">==</span> <span class="n">QuestMission</span><span class="o">.</span><span class="n">PRIMARY_STAT</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">task_id</span> <span class="o">==</span> <span class="n">QuestMission</span><span class="o">.</span><span class="n">LEVEL</span><span class="p">:</span>
+            <span class="n">level</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">task_id</span> <span class="o">==</span> <span class="n">QuestMission</span><span class="o">.</span><span class="n">KILL_HERO</span><span class="p">:</span>
+            <span class="n">hero</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">task_id</span> <span class="o">==</span> <span class="n">QuestMission</span><span class="o">.</span><span class="n">KILL_CREATURE</span><span class="p">:</span>
+            <span class="n">creature</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">task_id</span> <span class="o">==</span> <span class="n">QuestMission</span><span class="o">.</span><span class="n">ART</span><span class="p">:</span>
+            <span class="n">art_number</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">art_number</span><span class="p">):</span>
+                <span class="n">artifact</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint16</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">task_id</span> <span class="o">==</span> <span class="n">QuestMission</span><span class="o">.</span><span class="n">ARMY</span><span class="p">:</span>
+            <span class="n">type_no</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">type_no</span><span class="p">):</span>
+                <span class="n">monster</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint16</span><span class="p">()</span>
+                <span class="n">count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint16</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">task_id</span> <span class="o">==</span> <span class="n">QuestMission</span><span class="o">.</span><span class="n">RESOURCES</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">7</span><span class="p">):</span>
+                <span class="n">count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span>
+
+        <span class="k">elif</span> <span class="n">task_id</span> <span class="o">==</span> <span class="n">QuestMission</span><span class="o">.</span><span class="n">HERO</span><span class="p">:</span>
+            <span class="n">hero</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">task_id</span> <span class="o">==</span> <span class="n">QuestMission</span><span class="o">.</span><span class="n">PLAYER</span><span class="p">:</span>
+            <span class="n">player</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">task_id</span> <span class="o">==</span> <span class="n">QuestMission</span><span class="o">.</span><span class="n">HOTA_EXTRA</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hota_subversion</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="n">hota_quest_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">hota_quest_id</span> <span class="o">==</span> <span class="n">QuestMission</span><span class="o">.</span><span class="n">HOTA_CLASS</span><span class="p">:</span>
+                    <span class="n">class_count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">class_count</span><span class="p">:</span>
+                        <span class="n">class_avail</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">class_count</span><span class="o">/</span><span class="mi">8</span><span class="p">))</span>
+                        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">class_avail</span><span class="p">):</span>
+                            <span class="n">class_mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+
+                <span class="k">elif</span> <span class="n">hota_quest_id</span> <span class="o">==</span> <span class="n">QuestMission</span><span class="o">.</span><span class="n">HOTA_NOTBEFORE</span><span class="p">:</span>
+                    <span class="n">return_after</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span>
+
+        <span class="n">limit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span>
+        <span class="n">text_first</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_string</span><span class="p">()</span>
+        <span class="n">text_after</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_string</span><span class="p">()</span>
+        <span class="n">text_done</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_string</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Map.read_reward"><a class="viewcode-back" href="../../file_reader.html#file_reader.MainMapClass.Map.read_reward">[docs]</a>    <span class="k">def</span> <span class="nf">read_reward</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read rewards</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">reward_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">reward_id</span> <span class="o">==</span> <span class="n">RewardType</span><span class="o">.</span><span class="n">EXPERIENCE</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">reward_id</span> <span class="o">==</span> <span class="n">RewardType</span><span class="o">.</span><span class="n">MANA_POINTS</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">reward_id</span> <span class="o">==</span> <span class="n">RewardType</span><span class="o">.</span><span class="n">MORALE_BONUS</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">reward_id</span> <span class="o">==</span> <span class="n">RewardType</span><span class="o">.</span><span class="n">LUCK_BONUS</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">reward_id</span> <span class="o">==</span> <span class="n">RewardType</span><span class="o">.</span><span class="n">RESOURCES</span><span class="p">:</span>
+            <span class="nb">id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+            <span class="n">count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">reward_id</span> <span class="o">==</span> <span class="n">RewardType</span><span class="o">.</span><span class="n">PRIMARY_SKILL</span><span class="p">:</span>
+            <span class="nb">id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">reward_id</span> <span class="o">==</span> <span class="n">RewardType</span><span class="o">.</span><span class="n">SECONDARY_SKILL</span><span class="p">:</span>
+            <span class="nb">id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">reward_id</span> <span class="o">==</span> <span class="n">RewardType</span><span class="o">.</span><span class="n">ARTIFACT</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">==</span> <span class="n">Version</span><span class="o">.</span><span class="n">ROE</span><span class="p">:</span>
+                <span class="n">artifact</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">artifact</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint16</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">reward_id</span> <span class="o">==</span> <span class="n">RewardType</span><span class="o">.</span><span class="n">SPELL</span><span class="p">:</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">reward_id</span> <span class="o">==</span> <span class="n">RewardType</span><span class="o">.</span><span class="n">CREATURE</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">==</span> <span class="n">Version</span><span class="o">.</span><span class="n">ROE</span><span class="p">:</span>
+                <span class="n">artifact</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">artifact</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint16</span><span class="p">()</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint16</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Map.read_seer_hut"><a class="viewcode-back" href="../../file_reader.html#file_reader.MainMapClass.Map.read_seer_hut">[docs]</a>    <span class="k">def</span> <span class="nf">read_seer_hut</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read quests and rewards of the seer hut</span>
+<span class="sd">        :return: Just a message for everyone to absolutely not enter this building</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">&gt;</span> <span class="n">Version</span><span class="o">.</span><span class="n">ROE</span><span class="p">:</span>
+            <span class="n">num_quest</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hota_subversion</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="n">num_quest</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_quest</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">read_quest</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">read_reward</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">art_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">read_reward</span><span class="p">()</span>
+
+        <span class="c1"># HOTA extra - multiple/cycled quests</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hota_subversion</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="n">num_quest</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_quest</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">read_quest</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">read_reward</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">skip</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s2">&quot;Quests - don&#39;t touch&quot;</span></div>
+
+<div class="viewcode-block" id="Map.read_town"><a class="viewcode-back" href="../../file_reader.html#file_reader.MainMapClass.Map.read_town">[docs]</a>    <span class="k">def</span> <span class="nf">read_town</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read town</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">&gt;</span> <span class="n">Version</span><span class="o">.</span><span class="n">ROE</span><span class="p">:</span>
+            <span class="n">uid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span>
+
+        <span class="n">owner</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+        <span class="n">player</span> <span class="o">=</span> <span class="n">HeroesConstants</span><span class="o">.</span><span class="n">PlayersColors</span><span class="p">[</span><span class="n">owner</span><span class="p">]</span>
+
+        <span class="n">has_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Random&#39;</span>
+        <span class="k">if</span> <span class="n">has_name</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_string</span><span class="p">()</span>
+        <span class="n">stack</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">has_garrison</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">has_garrison</span><span class="p">:</span>
+            <span class="n">stack</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_creature_set</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
+        <span class="n">formation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+
+        <span class="n">has_custom_buildings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">has_custom_buildings</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">skip</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">has_fort</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+
+        <span class="n">spells_always</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># Not implemented</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">&gt;</span> <span class="n">Version</span><span class="o">.</span><span class="n">ROE</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">9</span><span class="p">):</span>
+                <span class="n">spell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+
+        <span class="n">spells_random</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># Not implemented</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">9</span><span class="p">):</span>
+            <span class="n">spell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hota_subversion</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">skip</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># spell research</span>
+
+        <span class="n">events_num</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">events_num</span><span class="p">):</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_string</span><span class="p">()</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_string</span><span class="p">()</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_resources</span><span class="p">()</span>
+            <span class="n">players</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">&gt;</span> <span class="n">Version</span><span class="o">.</span><span class="n">AB</span><span class="p">:</span>
+                <span class="n">human</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+            <span class="n">computer_affected</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+            <span class="n">first_occurrence</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint16</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="n">next_occurrence</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">skip</span><span class="p">(</span><span class="mi">17</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">):</span>  <span class="c1"># buildings</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">7</span><span class="p">):</span>  <span class="c1"># monsters</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint16</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">skip</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">&gt;</span> <span class="n">Version</span><span class="o">.</span><span class="n">AB</span><span class="p">:</span>
+            <span class="n">alignment</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">skip</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Map.read_objects"><a class="viewcode-back" href="../../file_reader.html#file_reader.MainMapClass.Map.read_objects">[docs]</a>    <span class="k">def</span> <span class="nf">read_objects</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read every object in the game, check it in the definitions and save to the object map as its string name, its id</span>
+<span class="sd">        and some additional information (for example number of resources or guards or messages)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">object_num</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">object_num</span><span class="p">):</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+            <span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+
+            <span class="n">defnum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span>
+            <span class="n">curr_object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">object_templates</span><span class="p">[</span><span class="n">defnum</span><span class="p">]</span>
+            <span class="n">object_idx</span> <span class="o">=</span> <span class="n">curr_object</span><span class="o">.</span><span class="n">id</span>
+
+            <span class="n">object_more_info</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">skip</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">object_idx</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Objects</span><span class="o">.</span><span class="n">EVENT</span><span class="p">,</span> <span class="n">Objects</span><span class="o">.</span><span class="n">PANDORAS_BOX</span><span class="p">):</span>
+                <span class="n">message_stack</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_message_and_guards</span><span class="p">()</span>
+                <span class="n">gained_exp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span>
+                <span class="n">mana_diff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span>
+                <span class="n">morale_diff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+                <span class="n">luck_diff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+                <span class="n">resources</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_resources</span><span class="p">()</span>
+
+                <span class="n">primary_skills</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+                    <span class="n">primary_skills</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">())</span>
+
+                <span class="n">secondary_skills</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">secondary_skills_num</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">secondary_skills_num</span><span class="p">):</span>
+                    <span class="n">skill</span> <span class="o">=</span> <span class="n">HeroesConstants</span><span class="o">.</span><span class="n">SecondarySkill</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()]</span>
+                    <span class="n">lvl</span> <span class="o">=</span> <span class="n">HeroesConstants</span><span class="o">.</span><span class="n">SecSkillLevel</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()]</span>
+                    <span class="n">secondary_skills</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lvl</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="n">skill</span><span class="p">)</span>
+
+                <span class="n">artifacts</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">artifact_number</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">artifact_number</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">==</span> <span class="n">Version</span><span class="o">.</span><span class="n">ROE</span><span class="p">:</span>
+                        <span class="n">art_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">art_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint16</span><span class="p">()</span>
+                    <span class="n">artifact</span> <span class="o">=</span> <span class="n">HeroesConstants</span><span class="o">.</span><span class="n">Artifacts</span><span class="p">[</span><span class="n">art_id</span><span class="p">]</span>
+                    <span class="n">artifacts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">artifact</span><span class="p">)</span>
+
+                <span class="n">spells</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">spell_num</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">spell_num</span><span class="p">):</span>
+                    <span class="n">spells</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">HeroesConstants</span><span class="o">.</span><span class="n">SpellID</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()])</span>
+
+                <span class="n">cr_num</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+                <span class="n">creatures</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_creature_set</span><span class="p">(</span><span class="n">cr_num</span><span class="p">)</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">skip</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">object_idx</span> <span class="o">==</span> <span class="n">Objects</span><span class="o">.</span><span class="n">EVENT</span><span class="p">:</span>
+                    <span class="n">available_for</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+                    <span class="n">computer_activate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+                    <span class="n">remove_after_visit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hota_subversion</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">:</span>
+                        <span class="n">human_activate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">human_activate</span> <span class="o">=</span> <span class="mi">1</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">skip</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+                    <span class="n">object_more_info</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">message_stack</span><span class="p">,</span> <span class="n">gained_exp</span><span class="p">,</span> <span class="n">mana_diff</span><span class="p">,</span> <span class="n">morale_diff</span><span class="p">,</span> <span class="n">luck_diff</span><span class="p">,</span> <span class="n">resources</span><span class="p">,</span>
+                                             <span class="n">primary_skills</span><span class="p">,</span> <span class="n">secondary_skills</span><span class="p">,</span> <span class="n">artifacts</span><span class="p">,</span> <span class="n">spells</span><span class="p">,</span> <span class="n">creatures</span><span class="p">,</span>
+                                             <span class="n">available_for</span><span class="p">,</span> <span class="n">computer_activate</span><span class="p">,</span> <span class="n">remove_after_visit</span><span class="p">,</span> <span class="n">human_activate</span><span class="p">))</span>
+                    <span class="k">continue</span>
+
+                <span class="n">object_more_info</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">message_stack</span><span class="p">,</span> <span class="n">gained_exp</span><span class="p">,</span> <span class="n">mana_diff</span><span class="p">,</span> <span class="n">morale_diff</span><span class="p">,</span> <span class="n">luck_diff</span><span class="p">,</span> <span class="n">resources</span><span class="p">,</span>
+                                         <span class="n">primary_skills</span><span class="p">,</span> <span class="n">secondary_skills</span><span class="p">,</span> <span class="n">artifacts</span><span class="p">,</span> <span class="n">spells</span><span class="p">,</span> <span class="n">creatures</span><span class="p">))</span>
+
+            <span class="k">elif</span> <span class="n">object_idx</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Objects</span><span class="o">.</span><span class="n">HERO</span><span class="p">,</span> <span class="n">Objects</span><span class="o">.</span><span class="n">RANDOM_HERO</span><span class="p">,</span> <span class="n">Objects</span><span class="o">.</span><span class="n">PRISON</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">read_hero</span><span class="p">()</span>  <span class="c1"># May cause errors if there is hero in town gate</span>
+
+            <span class="k">elif</span> <span class="n">object_idx</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Objects</span><span class="o">.</span><span class="n">MONSTER</span><span class="p">,</span> <span class="n">Objects</span><span class="o">.</span><span class="n">RANDOM_MONSTER</span><span class="p">,</span> <span class="n">Objects</span><span class="o">.</span><span class="n">RANDOM_MONSTER_L1</span><span class="p">,</span>
+                                <span class="n">Objects</span><span class="o">.</span><span class="n">RANDOM_MONSTER_L2</span><span class="p">,</span> <span class="n">Objects</span><span class="o">.</span><span class="n">RANDOM_MONSTER_L3</span><span class="p">,</span> <span class="n">Objects</span><span class="o">.</span><span class="n">RANDOM_MONSTER_L4</span><span class="p">,</span>
+                                <span class="n">Objects</span><span class="o">.</span><span class="n">RANDOM_MONSTER_L5</span><span class="p">,</span> <span class="n">Objects</span><span class="o">.</span><span class="n">RANDOM_MONSTER_L6</span><span class="p">,</span> <span class="n">Objects</span><span class="o">.</span><span class="n">RANDOM_MONSTER_L7</span><span class="p">):</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">&gt;</span> <span class="n">Version</span><span class="o">.</span><span class="n">ROE</span><span class="p">:</span>
+                    <span class="n">uid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span>
+
+                <span class="k">if</span> <span class="n">object_idx</span> <span class="o">==</span> <span class="n">Objects</span><span class="o">.</span><span class="n">MONSTER</span><span class="p">:</span>
+                    <span class="n">name</span> <span class="o">=</span> <span class="n">HeroesConstants</span><span class="o">.</span><span class="n">Monster</span><span class="p">[</span><span class="n">curr_object</span><span class="o">.</span><span class="n">subid</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;random&#39;</span>
+                <span class="n">count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint16</span><span class="p">()</span>
+                <span class="n">character</span> <span class="o">=</span> <span class="n">HeroesConstants</span><span class="o">.</span><span class="n">MonChar</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()]</span>  <span class="c1"># Will join or not</span>
+
+                <span class="n">has_message</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">has_message</span><span class="p">:</span>
+                    <span class="n">message</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_string</span><span class="p">()</span>
+                    <span class="n">resources</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_resources</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">==</span> <span class="n">Version</span><span class="o">.</span><span class="n">ROE</span><span class="p">:</span>
+                        <span class="n">artid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">artid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint16</span><span class="p">()</span>  <span class="c1"># It could give some artifacts but not implementing that</span>
+
+                <span class="n">never_flees</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+                <span class="n">not_growing_team</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">skip</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hota_subversion</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">:</span>
+                    <span class="n">character_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span>
+                    <span class="n">money_join</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+                    <span class="n">percent_join</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span>
+                    <span class="n">upgraded_stack</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span>  <span class="c1"># upgraded stack in not upgraded monster 0/1/ffffffff</span>
+                    <span class="n">stacks_count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span>  <span class="c1"># 00=one more, ffffffff=def,</span>
+                                                             <span class="c1"># fdffffff=avg, fdffffff=on less or num</span>
+
+                <span class="n">object_more_info</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">name</span><span class="p">,</span> <span class="n">count</span><span class="p">))</span>
+
+            <span class="k">elif</span> <span class="n">object_idx</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Objects</span><span class="o">.</span><span class="n">OCEAN_BOTTLE</span><span class="p">,</span> <span class="n">Objects</span><span class="o">.</span><span class="n">SIGN</span><span class="p">):</span>
+                <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_string</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">skip</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+                <span class="n">object_more_info</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+
+            <span class="k">elif</span> <span class="n">object_idx</span> <span class="o">==</span> <span class="n">Objects</span><span class="o">.</span><span class="n">SEER_HUT</span><span class="p">:</span>
+                <span class="n">object_more_info</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">read_seer_hut</span><span class="p">())</span>
+
+            <span class="k">elif</span> <span class="n">object_idx</span> <span class="o">==</span> <span class="n">Objects</span><span class="o">.</span><span class="n">WITCH_HUT</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">&gt;</span> <span class="n">Version</span><span class="o">.</span><span class="n">ROE</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+                        <span class="n">allowed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+
+            <span class="k">elif</span> <span class="n">object_idx</span> <span class="o">==</span> <span class="n">Objects</span><span class="o">.</span><span class="n">SCHOLAR</span><span class="p">:</span>
+                <span class="n">bonus_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+                <span class="n">bonus_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">skip</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+                <span class="n">object_more_info</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">bonus_type</span><span class="p">,</span> <span class="n">bonus_id</span><span class="p">))</span>
+
+            <span class="k">elif</span> <span class="n">object_idx</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Objects</span><span class="o">.</span><span class="n">GARRISON</span><span class="p">,</span> <span class="n">Objects</span><span class="o">.</span><span class="n">GARRISON2</span><span class="p">):</span>
+                <span class="n">owner</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">skip</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+                <span class="n">monsters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_creature_set</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">&gt;</span> <span class="n">Version</span><span class="o">.</span><span class="n">ROE</span><span class="p">:</span>
+                    <span class="n">removable_units</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">removable_units</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">skip</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+                <span class="n">object_more_info</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">monsters</span><span class="p">)</span>
+
+            <span class="k">elif</span> <span class="n">object_idx</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Objects</span><span class="o">.</span><span class="n">ARTIFACT</span><span class="p">,</span> <span class="n">Objects</span><span class="o">.</span><span class="n">RANDOM_ART</span><span class="p">,</span> <span class="n">Objects</span><span class="o">.</span><span class="n">RANDOM_TREASURE_ART</span><span class="p">,</span>
+                                <span class="n">Objects</span><span class="o">.</span><span class="n">RANDOM_MINOR_ART</span><span class="p">,</span> <span class="n">Objects</span><span class="o">.</span><span class="n">RANDOM_MAJOR_ART</span><span class="p">,</span> <span class="n">Objects</span><span class="o">.</span><span class="n">RANDOM_RELIC_ART</span><span class="p">,</span>
+                                <span class="n">Objects</span><span class="o">.</span><span class="n">SPELL_SCROLL</span><span class="p">):</span>
+
+                <span class="n">stack</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_message_and_guards</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">object_idx</span> <span class="o">==</span> <span class="n">Objects</span><span class="o">.</span><span class="n">SPELL_SCROLL</span><span class="p">:</span>
+                    <span class="n">spell_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span>
+                    <span class="n">artifact</span> <span class="o">=</span> <span class="n">curr_object</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;: &#39;</span> <span class="o">+</span> <span class="n">HeroesConstants</span><span class="o">.</span><span class="n">SpellID</span><span class="p">[</span><span class="n">spell_id</span><span class="p">]</span>
+                <span class="k">elif</span> <span class="n">object_idx</span> <span class="o">==</span> <span class="n">Objects</span><span class="o">.</span><span class="n">ARTIFACT</span><span class="p">:</span>
+                    <span class="n">artifact</span> <span class="o">=</span> <span class="n">HeroesConstants</span><span class="o">.</span><span class="n">Artifacts</span><span class="p">[</span><span class="n">curr_object</span><span class="o">.</span><span class="n">subid</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">artifact</span> <span class="o">=</span> <span class="n">curr_object</span><span class="o">.</span><span class="n">name</span>
+                <span class="n">object_more_info</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">artifact</span><span class="p">,</span> <span class="n">stack</span><span class="p">))</span>
+
+            <span class="k">elif</span> <span class="n">object_idx</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Objects</span><span class="o">.</span><span class="n">RANDOM_RESOURCE</span><span class="p">,</span> <span class="n">Objects</span><span class="o">.</span><span class="n">RESOURCE</span><span class="p">):</span>
+                <span class="n">stack</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_message_and_guards</span><span class="p">()</span>
+                <span class="n">amount</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">skip</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+                <span class="n">object_more_info</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">amount</span><span class="p">,</span> <span class="n">stack</span><span class="p">))</span>
+
+            <span class="k">elif</span> <span class="n">object_idx</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Objects</span><span class="o">.</span><span class="n">TOWN</span><span class="p">,</span> <span class="n">Objects</span><span class="o">.</span><span class="n">RANDOM_TOWN</span><span class="p">):</span>  <span class="c1"># Not sure where the town coords will be</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">read_town</span><span class="p">()</span>
+
+            <span class="k">elif</span> <span class="n">object_idx</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Objects</span><span class="o">.</span><span class="n">MINE</span><span class="p">,</span> <span class="n">Objects</span><span class="o">.</span><span class="n">ABANDONED_MINE</span><span class="p">):</span>
+                <span class="n">owner</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>  <span class="c1"># resource mask for abandoned mine, not implemented</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">skip</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+
+            <span class="k">elif</span> <span class="n">object_idx</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Objects</span><span class="o">.</span><span class="n">CREATURE_GENERATOR1</span><span class="p">,</span> <span class="n">Objects</span><span class="o">.</span><span class="n">CREATURE_GENERATOR2</span><span class="p">,</span>
+                                <span class="n">Objects</span><span class="o">.</span><span class="n">CREATURE_GENERATOR3</span><span class="p">,</span> <span class="n">Objects</span><span class="o">.</span><span class="n">CREATURE_GENERATOR4</span><span class="p">):</span>
+                <span class="n">owner</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">skip</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">object_idx</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Objects</span><span class="o">.</span><span class="n">SHRINE_OF_MAGIC_GESTURE</span><span class="p">,</span> <span class="n">Objects</span><span class="o">.</span><span class="n">SHRINE_OF_MAGIC_THOUGHT</span><span class="p">,</span>
+                                <span class="n">Objects</span><span class="o">.</span><span class="n">SHRINE_OF_MAGIC_INCANTATION</span><span class="p">):</span>
+                <span class="n">spell_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">skip</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+                <span class="n">object_more_info</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;Spell id&#39;</span><span class="p">,</span> <span class="n">spell_id</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">object_idx</span> <span class="o">==</span> <span class="n">Objects</span><span class="o">.</span><span class="n">GRAIL</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hota_subversion</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="mi">1000</span> <span class="o">&lt;=</span> <span class="n">curr_object</span><span class="o">.</span><span class="n">subid</span> <span class="o">&lt;=</span> <span class="mi">1003</span><span class="p">:</span>  <span class="c1"># Grail not allowed</span>
+                        <span class="k">continue</span>
+                <span class="n">radius</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">object_idx</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Objects</span><span class="o">.</span><span class="n">RANDOM_DWELLING</span><span class="p">,</span> <span class="n">Objects</span><span class="o">.</span><span class="n">RANDOM_DWELLING_LVL</span><span class="p">,</span>
+                                <span class="n">Objects</span><span class="o">.</span><span class="n">RANDOM_DWELLING_FACTION</span><span class="p">):</span>
+                <span class="n">player</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">object_idx</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Objects</span><span class="o">.</span><span class="n">RANDOM_DWELLING</span><span class="p">,</span> <span class="n">Objects</span><span class="o">.</span><span class="n">RANDOM_DWELLING_LVL</span><span class="p">):</span>
+                    <span class="n">uid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">uid</span><span class="p">:</span>
+                        <span class="n">castles_1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+                        <span class="n">castles_2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">object_idx</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Objects</span><span class="o">.</span><span class="n">RANDOM_DWELLING</span><span class="p">,</span> <span class="n">Objects</span><span class="o">.</span><span class="n">RANDOM_DWELLING_FACTION</span><span class="p">):</span>
+                    <span class="n">min_lvl</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">(),</span> <span class="mi">1</span><span class="p">)</span>
+                    <span class="n">max_lvl</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">(),</span> <span class="mi">7</span><span class="p">)</span>
+
+            <span class="k">elif</span> <span class="n">object_idx</span> <span class="o">==</span> <span class="n">Objects</span><span class="o">.</span><span class="n">QUEST_GUARD</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">read_quest</span><span class="p">()</span>
+
+            <span class="k">elif</span> <span class="n">object_idx</span> <span class="o">==</span> <span class="n">Objects</span><span class="o">.</span><span class="n">SHIPYARD</span><span class="p">:</span>
+                <span class="n">owner</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span>
+
+            <span class="k">elif</span> <span class="n">object_idx</span> <span class="o">==</span> <span class="n">Objects</span><span class="o">.</span><span class="n">HERO_PLACEHOLDER</span><span class="p">:</span>
+                <span class="n">tile_owner</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+                <span class="n">hero_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">hero_id</span> <span class="o">==</span> <span class="n">IntGlobals</span><span class="o">.</span><span class="n">HNONE</span><span class="p">:</span>
+                    <span class="n">power</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+
+            <span class="k">elif</span> <span class="n">object_idx</span> <span class="o">==</span> <span class="n">Objects</span><span class="o">.</span><span class="n">BORDER_GATE</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hota_subversion</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">curr_object</span><span class="o">.</span><span class="n">subid</span> <span class="o">==</span> <span class="mi">1000</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">read_quest</span><span class="p">()</span>
+
+            <span class="k">elif</span> <span class="n">object_idx</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Objects</span><span class="o">.</span><span class="n">BORDER_GUARD</span><span class="p">,</span> <span class="n">Objects</span><span class="o">.</span><span class="n">KEY_MASTER</span><span class="p">,</span> <span class="n">Objects</span><span class="o">.</span><span class="n">PYRAMID</span><span class="p">):</span>
+                <span class="k">pass</span>
+
+            <span class="k">elif</span> <span class="n">object_idx</span> <span class="o">==</span> <span class="n">Objects</span><span class="o">.</span><span class="n">LIGHTHOUSE</span><span class="p">:</span>
+                <span class="n">owner</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span>
+
+            <span class="k">elif</span> <span class="n">object_idx</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Objects</span><span class="o">.</span><span class="n">CREATURE_BANK</span><span class="p">,</span> <span class="n">Objects</span><span class="o">.</span><span class="n">DERELICT_SHIP</span><span class="p">,</span> <span class="n">Objects</span><span class="o">.</span><span class="n">DRAGON_UTOPIA</span><span class="p">,</span>
+                                <span class="n">Objects</span><span class="o">.</span><span class="n">CRYPT</span><span class="p">,</span> <span class="n">Objects</span><span class="o">.</span><span class="n">SHIPWRECK</span><span class="p">):</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hota_subversion</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">:</span>
+                    <span class="n">variant</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span>
+                    <span class="n">upgraded</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+                    <span class="n">artnum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span>
+                    <span class="n">artifacts</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">artnum</span><span class="p">):</span>
+                        <span class="n">art_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span>
+                        <span class="k">if</span> <span class="n">art_id</span> <span class="o">==</span> <span class="mh">0xffffffff</span><span class="p">:</span>
+                            <span class="n">artifacts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Random&#39;</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">artifacts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">HeroesConstants</span><span class="o">.</span><span class="n">Artifacts</span><span class="p">[</span><span class="n">art_id</span><span class="p">])</span>
+                    <span class="n">object_more_info</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;variant&#39;</span><span class="p">:</span> <span class="n">variant</span><span class="p">,</span> <span class="s1">&#39;upgraded&#39;</span><span class="p">:</span> <span class="n">upgraded</span><span class="p">,</span> <span class="s1">&#39;artifacts&#39;</span><span class="p">:</span> <span class="n">artifacts</span><span class="p">})</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">object_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">curr_object</span><span class="p">,</span> <span class="n">object_more_info</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">objects_map</span><span class="p">[</span><span class="n">z</span><span class="p">][</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">curr_object</span><span class="p">,</span> <span class="n">object_more_info</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">a</span><span class="o">=</span><span class="mi">0</span></div>
+
+<div class="viewcode-block" id="Map.read_events"><a class="viewcode-back" href="../../file_reader.html#file_reader.MainMapClass.Map.read_events">[docs]</a>    <span class="k">def</span> <span class="nf">read_events</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read events</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">number_of_events</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint32</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">number_of_events</span><span class="p">):</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_string</span><span class="p">()</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_string</span><span class="p">()</span>
+            <span class="n">resources</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_resources</span><span class="p">()</span>
+            <span class="n">players</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">&gt;</span> <span class="n">Version</span><span class="o">.</span><span class="n">AB</span><span class="p">:</span>
+                <span class="n">human_able</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+            <span class="n">ai_able</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint8</span><span class="p">()</span>
+            <span class="n">first</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint16</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="n">interval</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">read_uint16</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">skip</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Map.write_objects_to_file"><a class="viewcode-back" href="../../file_reader.html#file_reader.MainMapClass.Map.write_objects_to_file">[docs]</a>    <span class="k">def</span> <span class="nf">write_objects_to_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">content</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">object_list</span><span class="p">:</span>
+                <span class="n">json_dict</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">to_json</span><span class="p">()</span>
+                <span class="n">json_dict</span><span class="p">[</span><span class="s2">&quot;more&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">json_dict</span><span class="p">[</span><span class="s2">&quot;pos&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+                <span class="n">content</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">json_dict</span><span class="p">)</span>
+            <span class="n">to_write</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">to_write</span><span class="p">)</span></div></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">Map</span><span class="p">()</span>
+    <span class="n">m</span><span class="o">.</span><span class="n">read_map</span><span class="p">(</span><span class="s2">&quot;test_files/Map_test.h3m&quot;</span><span class="p">)</span>
+
+    <span class="n">a</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">objects_map</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">terrain_map</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">road_map</span>
+
+    <span class="n">test</span> <span class="o">=</span> <span class="mi">0</span>
+
+
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Fryderyk Róg, Kacper Plesiak, Michał Gruba, Tymoteusz Skrzyński, Mateusz Comblik, Bartosz Szczepanek, Alan Konopko, Mateusz Mikszewicz, Daniel Bil, Piotr Łyczko.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

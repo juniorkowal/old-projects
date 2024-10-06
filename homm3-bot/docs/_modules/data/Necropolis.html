@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>data.Necropolis &mdash; HoMM3 Bot 2.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> HoMM3 Bot
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">homm3-bot</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">HoMM3 Bot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">data.Necropolis</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for data.Necropolis</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Script containing Necropolis city class&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">data.city</span> <span class="kn">import</span> <span class="n">City</span>
+<span class="kn">from</span> <span class="nn">data.habitats_cities</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">data.city_buildings</span> <span class="kn">import</span> <span class="n">city_mage_guild</span><span class="p">,</span> <span class="n">city_city_hall</span><span class="p">,</span> <span class="n">city_fort</span><span class="p">,</span> <span class="n">city_marketplace</span><span class="p">,</span> <span class="n">city_rescource_silo</span><span class="p">,</span> \
+    <span class="n">city_tavern</span><span class="p">,</span> <span class="n">city_blacksmith</span><span class="p">,</span> <span class="n">Cover_of_Darkness</span><span class="p">,</span> <span class="n">Necromancy_Amplifier</span><span class="p">,</span> <span class="n">Skeleton_Transformer</span><span class="p">,</span> <span class="n">Unearthed_Graves</span>
+<span class="kn">from</span> <span class="nn">data.building</span> <span class="kn">import</span> <span class="n">MageGuild</span><span class="p">,</span> <span class="n">Fort</span><span class="p">,</span> <span class="n">Marketplace</span><span class="p">,</span> <span class="n">Tavern</span><span class="p">,</span> <span class="n">ResourceSilo</span><span class="p">,</span> <span class="n">Building</span><span class="p">,</span> <span class="n">CityHall</span>
+<span class="kn">from</span> <span class="nn">data.hero</span> <span class="kn">import</span> <span class="n">Hero</span>
+
+
+<div class="viewcode-block" id="Necropolis"><a class="viewcode-back" href="../../data.html#data.Necropolis.Necropolis">[docs]</a><span class="k">class</span> <span class="nc">Necropolis</span><span class="p">(</span><span class="n">City</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Necropolis&quot;</span><span class="p">,</span>
+                 <span class="n">mage_guild</span><span class="p">:</span> <span class="n">MageGuild</span> <span class="o">=</span> <span class="n">city_mage_guild</span><span class="p">,</span>
+                 <span class="n">city_hall</span><span class="p">:</span> <span class="n">CityHall</span> <span class="o">=</span> <span class="n">city_city_hall</span><span class="p">,</span>
+                 <span class="n">fort</span><span class="p">:</span> <span class="n">Fort</span> <span class="o">=</span> <span class="n">city_fort</span><span class="p">,</span>
+                 <span class="n">marketplace</span><span class="p">:</span> <span class="n">Marketplace</span> <span class="o">=</span> <span class="n">city_marketplace</span><span class="p">,</span>
+                 <span class="n">tavern</span><span class="p">:</span> <span class="n">Tavern</span> <span class="o">=</span> <span class="n">city_tavern</span><span class="p">,</span>
+                 <span class="n">resource_silo</span><span class="p">:</span> <span class="n">ResourceSilo</span> <span class="o">=</span> <span class="n">city_rescource_silo</span><span class="p">,</span>
+                 <span class="n">blacksmith</span><span class="p">:</span> <span class="n">Building</span> <span class="o">=</span> <span class="n">city_blacksmith</span><span class="p">,</span>
+                 <span class="n">t1</span><span class="p">:</span> <span class="n">Habitat</span> <span class="o">=</span> <span class="n">Cursed_Temple</span><span class="p">,</span>
+                 <span class="n">t2</span><span class="p">:</span> <span class="n">Habitat</span> <span class="o">=</span> <span class="n">Graveyard</span><span class="p">,</span>
+                 <span class="n">t3</span><span class="p">:</span> <span class="n">Habitat</span> <span class="o">=</span> <span class="n">Tomb_of_Souls</span><span class="p">,</span>
+                 <span class="n">t4</span><span class="p">:</span> <span class="n">Habitat</span> <span class="o">=</span> <span class="n">Estate</span><span class="p">,</span>
+                 <span class="n">t5</span><span class="p">:</span> <span class="n">Habitat</span> <span class="o">=</span> <span class="n">Mausoleum</span><span class="p">,</span>
+                 <span class="n">t6</span><span class="p">:</span> <span class="n">Habitat</span> <span class="o">=</span> <span class="n">Hall_of_Darkness</span><span class="p">,</span>
+                 <span class="n">t7</span><span class="p">:</span> <span class="n">Habitat</span> <span class="o">=</span> <span class="n">Dragon_Vault</span><span class="p">,</span>
+                 <span class="n">cover</span><span class="p">:</span> <span class="n">Building</span> <span class="o">=</span> <span class="n">Cover_of_Darkness</span><span class="p">,</span>
+                 <span class="n">amp</span><span class="p">:</span> <span class="n">Building</span> <span class="o">=</span> <span class="n">Necromancy_Amplifier</span><span class="p">,</span>
+                 <span class="n">transformer</span><span class="p">:</span> <span class="n">Building</span> <span class="o">=</span> <span class="n">Skeleton_Transformer</span><span class="p">,</span>
+                 <span class="n">graves</span><span class="p">:</span> <span class="n">Building</span> <span class="o">=</span> <span class="n">Unearthed_Graves</span><span class="p">,</span>
+                 <span class="n">graal</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                 <span class="n">upper_hero</span><span class="p">:</span> <span class="n">Hero</span> <span class="o">=</span> <span class="n">Hero</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                 <span class="n">lower_hero</span><span class="p">:</span> <span class="n">Hero</span> <span class="o">=</span> <span class="n">Hero</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                 <span class="n">owned_by</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;neutral&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A class representing Necropolis city</span>
+
+<span class="sd">        :param name: Name of the given city</span>
+<span class="sd">        :param mage_guild: Mage guild object</span>
+<span class="sd">        :param city_hall: City hall object</span>
+<span class="sd">        :param fort: Fort object</span>
+<span class="sd">        :param marketplace: Marketplace object</span>
+<span class="sd">        :param tavern: Tavern object</span>
+<span class="sd">        :param resource_silo: Resource silo object</span>
+<span class="sd">        :param blacksmith: Blacksmith object</span>
+<span class="sd">        :param t1: 1st level habitat - Cursed temple</span>
+<span class="sd">        :param t2: 2nd level habitat - Graveyard</span>
+<span class="sd">        :param t3: 3rd level habitat - Tomb of souls</span>
+<span class="sd">        :param t4: 4th level habitat - Estate</span>
+<span class="sd">        :param t5: 5th level habitat - Mausaleum</span>
+<span class="sd">        :param t6: 6th level habitat - Hall of Darkness</span>
+<span class="sd">        :param t7: 7th level habitat - Dragon Vault</span>
+<span class="sd">        :param cover: Cover of darness object</span>
+<span class="sd">        :param amp: Necromancy amplifier object</span>
+<span class="sd">        :param transformer: Skeleton transformer object</span>
+<span class="sd">        :param graves: Unearthed graves object</span>
+<span class="sd">        :param graal: Boolean True - graal, False - no graal</span>
+<span class="sd">        :param upper_hero: Hero object that is present in the higher row of the city slot bar</span>
+<span class="sd">        :param lower_hero: Hero object that is present in the lower row of the city slot bar</span>
+<span class="sd">        :param owned_by: Which player owns the building</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">mage_guild</span><span class="p">,</span> <span class="n">fort</span><span class="p">,</span> <span class="n">city_hall</span><span class="p">,</span> <span class="n">tavern</span><span class="p">,</span> <span class="n">marketplace</span><span class="p">,</span> <span class="n">resource_silo</span><span class="p">,</span> <span class="n">blacksmith</span><span class="p">,</span> <span class="n">graal</span><span class="p">,</span> <span class="n">upper_hero</span><span class="p">,</span>
+                         <span class="n">lower_hero</span><span class="p">,</span> <span class="n">owned_by</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">t3</span><span class="p">,</span> <span class="n">t4</span><span class="p">,</span> <span class="n">t5</span><span class="p">,</span> <span class="n">t6</span><span class="p">,</span> <span class="n">t7</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cover_of_darkness</span> <span class="o">=</span> <span class="n">cover</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">necromancy_amplifier</span> <span class="o">=</span> <span class="n">amp</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">skeleton_transformer</span> <span class="o">=</span> <span class="n">transformer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unearthed_graves</span> <span class="o">=</span> <span class="n">graves</span>
+
+<div class="viewcode-block" id="Necropolis.end_week"><a class="viewcode-back" href="../../data.html#data.Necropolis.Necropolis.end_week">[docs]</a>    <span class="k">def</span> <span class="nf">end_week</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">player</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checking lvl of fort building to estimate growth multiplier for given unit generator</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># we are checking lvl of fort building to estimate growth multiplier (we are ignoring habitat influence (at least for now)) TODO: castle specyfic buildings</span>
+        <span class="n">multiplier</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fort</span><span class="o">.</span><span class="n">lvl</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">multiplier</span> <span class="o">=</span> <span class="mf">1.5</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">fort</span><span class="o">.</span><span class="n">lvl</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="n">multiplier</span> <span class="o">=</span> <span class="mi">2</span>
+
+        <span class="k">for</span> <span class="n">habitat</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">habitat</span><span class="o">.</span><span class="n">lvl</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">habitat</span><span class="o">.</span><span class="n">unit_ready</span> <span class="o">+=</span> <span class="n">habitat</span><span class="o">.</span><span class="n">growth</span> <span class="o">*</span> <span class="n">multiplier</span></div>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39; value: (</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span><span class="si">}</span><span class="s1">)&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39; value: (</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span><span class="si">}</span><span class="s1">)&#39;</span>
+
+<div class="viewcode-block" id="Necropolis.crop_building_names"><a class="viewcode-back" href="../../data.html#data.Necropolis.Necropolis.crop_building_names">[docs]</a>    <span class="k">def</span> <span class="nf">crop_building_names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">img</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">take_screenshot</span><span class="p">()</span>
+        <span class="n">result_array</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">textbox_width</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">textbox_height</span>
+        <span class="n">textbox_width</span> <span class="o">=</span> <span class="mi">150</span>
+        <span class="n">textbox_height</span> <span class="o">=</span> <span class="mi">16</span>
+        <span class="c1"># City hall</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;city hall&#39;</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">crop_city_hall</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+        <span class="n">result_array</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Town Hall&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">city_hall</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">elif</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;City Hall&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">city_hall</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;yellow&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">city_hall</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">city_hall</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">3</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">city_hall</span><span class="o">.</span><span class="n">built</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># Citadel</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;citadel&#39;</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">crop_citadel</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+        <span class="n">result_array</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Fort&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fort</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">elif</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Citadel&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fort</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Castle&#39;</span> <span class="ow">and</span> <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;yellow&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fort</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fort</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">3</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fort</span><span class="o">.</span><span class="n">built</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># Tavern</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;tavern&#39;</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">crop_tavern</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+        <span class="n">result_array</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;yellow&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tavern</span><span class="o">.</span><span class="n">built</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># Blacksmith</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Blacksmith&#39;</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">crop_blacksmith</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+        <span class="n">result_array</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;yellow&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">blacksmith</span><span class="o">.</span><span class="n">built</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># Marketplace</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Marketplace&#39;</span><span class="p">)</span>
+        <span class="n">img_copy</span> <span class="o">=</span> <span class="n">img</span><span class="p">[</span><span class="mi">453</span><span class="p">:</span><span class="mi">453</span> <span class="o">+</span> <span class="n">h</span><span class="p">,</span> <span class="mi">594</span><span class="p">:</span><span class="mi">594</span> <span class="o">+</span> <span class="n">w</span><span class="p">]</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">give_text_and_color</span><span class="p">(</span><span class="n">img_copy</span><span class="p">)</span>
+        <span class="n">result_array</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Marketplace&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">marketplace</span><span class="o">.</span><span class="n">built</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">elif</span> <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;yellow&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">marketplace</span><span class="o">.</span><span class="n">built</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">resource_silo</span><span class="o">.</span><span class="n">built</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">marketplace</span><span class="o">.</span><span class="n">built</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># Mage guild</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Mage guild&#39;</span><span class="p">)</span>
+        <span class="n">img_copy</span> <span class="o">=</span> <span class="n">img</span><span class="p">[</span><span class="mi">453</span><span class="p">:</span><span class="mi">453</span> <span class="o">+</span> <span class="n">h</span><span class="p">,</span> <span class="mi">788</span><span class="p">:</span><span class="mi">788</span> <span class="o">+</span> <span class="n">w</span><span class="p">]</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">give_text_and_color</span><span class="p">(</span><span class="n">img_copy</span><span class="p">)</span>
+        <span class="n">result_array</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Mage Guild Level 1&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mage_guild</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">elif</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Mage Guild Level 2&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mage_guild</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Mage Guild Level 3&#39;</span> <span class="ow">and</span> <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;yellow&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mage_guild</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="k">elif</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Mage Guild Level 3&#39;</span> <span class="ow">and</span> <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;yellow&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mage_guild</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">3</span>
+        <span class="k">elif</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Mage Guild Level 4&#39;</span> <span class="ow">and</span> <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;yellow&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mage_guild</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">3</span>
+        <span class="k">elif</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Mage Guild Level 4&#39;</span> <span class="ow">and</span> <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;yellow&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mage_guild</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">4</span>
+        <span class="k">elif</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Mage Guild Level 5&#39;</span> <span class="ow">and</span> <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;yellow&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mage_guild</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">4</span>
+        <span class="k">elif</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Mage Guild Level 5&#39;</span> <span class="ow">and</span> <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;yellow&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mage_guild</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">5</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mage_guild</span><span class="o">.</span><span class="n">built</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># Necromancy Amplifier</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Necromancy Amplifier&#39;</span><span class="p">)</span>
+        <span class="n">img_copy</span> <span class="o">=</span> <span class="n">img</span><span class="p">[</span><span class="mi">453</span><span class="p">:</span><span class="mi">453</span> <span class="o">+</span> <span class="n">h</span><span class="p">,</span> <span class="mi">982</span><span class="p">:</span><span class="mi">982</span> <span class="o">+</span> <span class="n">w</span><span class="p">]</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="s1">&#39;Necromancy Amplifier&#39;</span><span class="p">,</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">check_color</span><span class="p">(</span><span class="n">img_copy</span><span class="p">)</span>
+        <span class="n">result_array</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;yellow&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">necromancy_amplifier</span><span class="o">.</span><span class="n">built</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># Cover of Darkness</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Cover of Darkness&#39;</span><span class="p">)</span>
+        <span class="n">img_copy</span> <span class="o">=</span> <span class="n">img</span><span class="p">[</span><span class="mi">557</span><span class="p">:</span><span class="mi">557</span> <span class="o">+</span> <span class="n">h</span><span class="p">,</span> <span class="mi">691</span><span class="p">:</span><span class="mi">691</span> <span class="o">+</span> <span class="n">w</span><span class="p">]</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="s1">&#39;Cover of Darkness&#39;</span><span class="p">,</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">check_color</span><span class="p">(</span><span class="n">img_copy</span><span class="p">)</span>
+        <span class="n">result_array</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;yellow&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cover_of_darkness</span><span class="o">.</span><span class="n">built</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># Skeleton Transformer</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Skeleton Transformer&#39;</span><span class="p">)</span>
+        <span class="n">img_copy</span> <span class="o">=</span> <span class="n">img</span><span class="p">[</span><span class="mi">557</span><span class="p">:</span><span class="mi">557</span> <span class="o">+</span> <span class="n">h</span><span class="p">,</span> <span class="mi">885</span><span class="p">:</span><span class="mi">885</span> <span class="o">+</span> <span class="n">w</span><span class="p">]</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="s1">&#39;Skeleton Transformer&#39;</span><span class="p">,</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">check_color</span><span class="p">(</span><span class="n">img_copy</span><span class="p">)</span>
+        <span class="n">result_array</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;yellow&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">skeleton_transformer</span><span class="o">.</span><span class="n">built</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># Unearthed Graves</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Unearthed Graves&quot;</span><span class="p">)</span>
+        <span class="n">img_copy</span> <span class="o">=</span> <span class="n">img</span><span class="p">[</span><span class="mi">557</span><span class="p">:</span><span class="mi">557</span> <span class="o">+</span> <span class="n">h</span><span class="p">,</span> <span class="mi">1079</span><span class="p">:</span><span class="mi">1079</span> <span class="o">+</span> <span class="n">w</span><span class="p">]</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="s2">&quot;Unearthed Graves&quot;</span><span class="p">,</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">check_color</span><span class="p">(</span><span class="n">img_copy</span><span class="p">)</span>
+        <span class="n">result_array</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;yellow&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">unearthed_graves</span><span class="o">.</span><span class="n">built</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># t1</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;t1&#39;</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">crop_t1</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+        <span class="n">result_array</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;cursed temple&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">1</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">elif</span> <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;yellow&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">1</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">1</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">2</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">1</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">built</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># t2</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;t2&#39;</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">crop_t2</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+        <span class="n">result_array</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;graveyard&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">2</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">elif</span> <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;yellow&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">2</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">2</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">2</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">2</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">built</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># t3</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;t3&#39;</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">crop_t3</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+        <span class="n">result_array</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;tomb of souls&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">3</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">elif</span> <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;yellow&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">3</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">3</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">2</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">3</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">built</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># t4</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;t4&#39;</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">crop_t4</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+        <span class="n">result_array</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;estate&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">4</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">elif</span> <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;yellow&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">4</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">4</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">2</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">4</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">built</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># t5</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;t5&#39;</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">crop_t5</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+        <span class="n">result_array</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;mausoleum&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">5</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">elif</span> <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;yellow&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">5</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">5</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">2</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">5</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">built</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># t6</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;t6&#39;</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">crop_t6</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+        <span class="n">result_array</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;hall of darkness&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">6</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">elif</span> <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;yellow&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">6</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">6</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">2</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">6</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">built</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># t7</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;t7&#39;</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">crop_t7</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+        <span class="n">result_array</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;dragon vault&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">7</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">elif</span> <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;yellow&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">7</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">7</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">2</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">7</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">built</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">return</span> <span class="n">result_array</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Fryderyk Róg, Kacper Plesiak, Michał Gruba, Tymoteusz Skrzyński, Mateusz Comblik, Bartosz Szczepanek, Alan Konopko, Mateusz Mikszewicz, Daniel Bil, Piotr Łyczko.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

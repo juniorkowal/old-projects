@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>hierarchyFunctions.miscFunc &mdash; HoMM3 Bot 2.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> HoMM3 Bot
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">homm3-bot</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">HoMM3 Bot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">hierarchyFunctions.miscFunc</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for hierarchyFunctions.miscFunc</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Script containing algorithms stating values for other factors in the game e.g. campfire&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">data.hero</span> <span class="kn">import</span> <span class="n">Hero</span>
+<span class="kn">import</span> <span class="nn">data.classes_const</span> <span class="k">as</span> <span class="nn">units</span>
+<span class="kn">from</span> <span class="nn">data.player_data</span> <span class="kn">import</span> <span class="n">Player</span>
+
+
+<div class="viewcode-block" id="resource_on_click"><a class="viewcode-back" href="../../hierarchyFunctions.html#hierarchyFunctions.miscFunc.resource_on_click">[docs]</a><span class="k">def</span> <span class="nf">resource_on_click</span><span class="p">(</span><span class="n">tile</span><span class="p">,</span> <span class="n">hero</span><span class="p">:</span> <span class="n">Hero</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Give value to building that give resources on click</span>
+
+<span class="sd">    :param tile:</span>
+<span class="sd">    :param hero:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">tile</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">!=</span> <span class="s2">&quot;RescourcesOnClick&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">hero</span><span class="o">.</span><span class="n">herotype</span> <span class="o">==</span> <span class="s1">&#39;main&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">200</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">700</span></div>
+
+
+<div class="viewcode-block" id="increase_skills"><a class="viewcode-back" href="../../hierarchyFunctions.html#hierarchyFunctions.miscFunc.increase_skills">[docs]</a><span class="k">def</span> <span class="nf">increase_skills</span><span class="p">(</span><span class="n">tile</span><span class="p">,</span> <span class="n">hero</span><span class="p">:</span> <span class="n">Hero</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Give value to buildings that increase skills</span>
+
+<span class="sd">    :param tile: Given tile</span>
+<span class="sd">    :param hero: Current hero</span>
+<span class="sd">    :return: value to be added to overall value</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">tile</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">!=</span> <span class="s2">&quot;Increase_Skill&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span>
+    <span class="n">hero_type</span> <span class="o">=</span> <span class="n">hero</span><span class="o">.</span><span class="n">herotype</span>
+    <span class="n">hero_class</span> <span class="o">=</span> <span class="n">hero</span><span class="o">.</span><span class="n">heroclass</span>
+    <span class="n">scaling</span> <span class="o">=</span> <span class="mi">100</span>
+    <span class="k">if</span> <span class="n">hero_class</span> <span class="o">==</span> <span class="s2">&quot;might&quot;</span><span class="p">:</span>
+        <span class="n">might_scalar</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="n">magic_scalar</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">might_scalar</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">magic_scalar</span> <span class="o">=</span> <span class="mi">2</span>
+
+    <span class="k">if</span> <span class="n">hero_type</span> <span class="o">==</span> <span class="s1">&#39;main&#39;</span><span class="p">:</span>
+        <span class="n">skill_want</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">skill_want</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">tile</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Arena&#39;</span><span class="p">,</span> <span class="s1">&#39;Library_of_Enlightenment&#39;</span><span class="p">,</span> <span class="s1">&#39;Marletto_Tower&#39;</span><span class="p">,</span> <span class="s1">&#39;Mercenary_Camp&#39;</span><span class="p">,</span> <span class="s1">&#39;School_of_War&#39;</span><span class="p">]:</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">scaling</span> <span class="o">*</span> <span class="n">might_scalar</span> <span class="o">*</span> <span class="n">skill_want</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">scaling</span> <span class="o">*</span> <span class="n">magic_scalar</span> <span class="o">*</span> <span class="n">skill_want</span>
+
+    <span class="k">if</span> <span class="n">tile</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;Library_of_Enlightenment&#39;</span> <span class="ow">and</span> <span class="n">hero</span><span class="o">.</span><span class="n">lvl</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">:</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">10000</span>
+
+    <span class="k">return</span> <span class="n">value</span></div>
+
+
+<div class="viewcode-block" id="luck_morale"><a class="viewcode-back" href="../../hierarchyFunctions.html#hierarchyFunctions.miscFunc.luck_morale">[docs]</a><span class="k">def</span> <span class="nf">luck_morale</span><span class="p">(</span><span class="n">tile</span><span class="p">,</span> <span class="n">hero</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Add value to objects that give luck and morale</span>
+
+<span class="sd">    :param tile: Given tile</span>
+<span class="sd">    :param hero: Current hero</span>
+<span class="sd">    :return: value to be added to overall value</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">tile</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">!=</span> <span class="s2">&quot;LuckMorale&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span>
+    <span class="n">scaling</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="k">if</span> <span class="n">hero</span><span class="o">.</span><span class="n">lvl</span> <span class="o">&gt;</span> <span class="mi">15</span><span class="p">:</span>
+        <span class="n">scaling</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="k">if</span> <span class="n">hero</span><span class="o">.</span><span class="n">lvl</span> <span class="o">&gt;</span> <span class="mi">20</span><span class="p">:</span>
+        <span class="n">scaling</span> <span class="o">=</span> <span class="mi">20</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">hero</span><span class="o">.</span><span class="n">herotype</span> <span class="o">==</span> <span class="s1">&#39;main&#39;</span><span class="p">:</span>
+        <span class="n">value</span> <span class="o">+=</span> <span class="mi">10</span><span class="o">*</span><span class="n">scaling</span>
+
+    <span class="k">return</span> <span class="n">value</span></div>
+
+
+<div class="viewcode-block" id="mp"><a class="viewcode-back" href="../../hierarchyFunctions.html#hierarchyFunctions.miscFunc.mp">[docs]</a><span class="k">def</span> <span class="nf">mp</span><span class="p">(</span><span class="n">tile</span><span class="p">,</span> <span class="n">hero</span><span class="p">:</span> <span class="n">Hero</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Add value to objects that give movement points</span>
+
+<span class="sd">    :param tile: Given tile</span>
+<span class="sd">    :param hero: Current hero</span>
+<span class="sd">    :return: value to be added to overall value</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">tile</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">!=</span> <span class="s2">&quot;Mp&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">scale</span> <span class="o">=</span> <span class="mi">20</span>
+    <span class="n">slots</span> <span class="o">=</span> <span class="n">hero</span><span class="o">.</span><span class="n">slots</span><span class="o">.</span><span class="n">slots</span>
+    <span class="n">are_cavaliers</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">for</span> <span class="n">slot</span> <span class="ow">in</span> <span class="n">slots</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">slot</span><span class="o">.</span><span class="n">unit</span> <span class="o">==</span> <span class="n">units</span><span class="o">.</span><span class="n">Cavalier</span><span class="p">:</span>
+            <span class="n">are_cavaliers</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">if</span> <span class="n">tile</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Stables&quot;</span> <span class="ow">and</span> <span class="n">are_cavaliers</span><span class="p">:</span>  <span class="c1"># Cavaliers are upgraded for free to a better unit</span>
+        <span class="n">value</span> <span class="o">+=</span> <span class="mi">1000</span>
+    <span class="k">elif</span> <span class="n">tile</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Stables&quot;</span><span class="p">:</span>
+        <span class="n">value</span> <span class="o">+=</span> <span class="mi">500</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">scale</span><span class="o">*</span><span class="mi">10</span>
+    <span class="k">return</span> <span class="n">value</span></div>
+
+
+<div class="viewcode-block" id="disappear_on_click"><a class="viewcode-back" href="../../hierarchyFunctions.html#hierarchyFunctions.miscFunc.disappear_on_click">[docs]</a><span class="k">def</span> <span class="nf">disappear_on_click</span><span class="p">(</span><span class="n">tile</span><span class="p">,</span> <span class="n">hero</span><span class="p">:</span> <span class="n">Hero</span><span class="p">,</span> <span class="n">player</span><span class="p">:</span> <span class="n">Player</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Add value to objects that disappear on click</span>
+
+<span class="sd">    :param tile: Given tile</span>
+<span class="sd">    :param hero: Current hero</span>
+<span class="sd">    :param player: Player instance</span>
+<span class="sd">    :return: value to be added to overall value</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">tile</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">!=</span> <span class="s2">&quot;DissapearOnClick&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">tile</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Campfire&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">player</span><span class="o">.</span><span class="n">gold</span> <span class="o">&lt;</span> <span class="mi">2000</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">+=</span> <span class="mi">200</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">+=</span> <span class="mi">100</span>
+    <span class="k">if</span> <span class="n">tile</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Scholar&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">hero</span><span class="o">.</span><span class="n">herotype</span> <span class="o">==</span> <span class="s1">&#39;main&#39;</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">+=</span> <span class="mi">1000</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">+=</span> <span class="mi">500</span>
+    <span class="k">if</span> <span class="n">tile</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Treasure_Chest&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">hero</span><span class="o">.</span><span class="n">herotype</span> <span class="o">==</span> <span class="s1">&#39;main&#39;</span> <span class="ow">and</span> <span class="n">hero</span><span class="o">.</span><span class="n">lvl</span> <span class="o">&lt;</span> <span class="mi">15</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">+=</span> <span class="mi">2000</span>
+        <span class="k">elif</span> <span class="n">hero</span><span class="o">.</span><span class="n">herotype</span> <span class="o">==</span> <span class="s1">&#39;main&#39;</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">+=</span> <span class="mi">500</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">+=</span> <span class="mi">1000</span>
+    <span class="k">if</span> <span class="n">tile</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Wagon&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">hero</span><span class="o">.</span><span class="n">herotype</span> <span class="o">==</span> <span class="s1">&#39;main&#39;</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">-=</span> <span class="mi">200</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">+=</span> <span class="mi">300</span>
+    <span class="k">return</span> <span class="n">value</span></div>
+
+
+<div class="viewcode-block" id="the_rest"><a class="viewcode-back" href="../../hierarchyFunctions.html#hierarchyFunctions.miscFunc.the_rest">[docs]</a><span class="k">def</span> <span class="nf">the_rest</span><span class="p">(</span><span class="n">tile</span><span class="p">,</span> <span class="n">hero</span><span class="p">:</span> <span class="n">Hero</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Add value to all the objects that don&#39;t fit in other descriptions</span>
+
+<span class="sd">    :param tile: Given tile</span>
+<span class="sd">    :param hero: Current hero</span>
+<span class="sd">    :return: value to be added to overall value</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">tile</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">!=</span> <span class="s2">&quot;ObjectOnMap&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">tile</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Black_Market&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">10000</span>
+    <span class="k">elif</span> <span class="n">tile</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Freelancers_Guild&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">10000</span>
+
+    <span class="k">elif</span> <span class="n">tile</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;Learning_Stone&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">hero</span><span class="o">.</span><span class="n">lvl</span> <span class="o">&gt;</span> <span class="mi">20</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">+=</span> <span class="mi">100</span>
+        <span class="k">elif</span> <span class="n">hero</span><span class="o">.</span><span class="n">lvl</span> <span class="o">&gt;</span> <span class="mi">15</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">+=</span> <span class="mi">300</span>
+        <span class="k">elif</span> <span class="n">hero</span><span class="o">.</span><span class="n">lvl</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">+=</span> <span class="mi">500</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">+=</span> <span class="mi">1000</span>
+
+    <span class="k">elif</span> <span class="n">tile</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;Magic_Well&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">hero</span><span class="o">.</span><span class="n">herotype</span> <span class="o">!=</span> <span class="s1">&#39;main&#39;</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">+=</span> <span class="mi">0</span>
+        <span class="k">elif</span> <span class="n">hero</span><span class="o">.</span><span class="n">manapoint</span> <span class="o">&lt;</span> <span class="n">hero</span><span class="o">.</span><span class="n">knowledge</span> <span class="o">*</span> <span class="mi">5</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">+=</span> <span class="mi">500</span>
+        <span class="k">elif</span> <span class="n">hero</span><span class="o">.</span><span class="n">manapoint</span> <span class="o">==</span> <span class="n">hero</span><span class="o">.</span><span class="n">knowledge</span> <span class="o">*</span> <span class="mi">10</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">+=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">+=</span> <span class="mi">100</span>
+
+    <span class="k">elif</span> <span class="n">tile</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;Redwood_Observatory&#39;</span><span class="p">:</span>
+        <span class="k">pass</span>  <span class="c1"># implement later</span>
+
+    <span class="k">elif</span> <span class="n">tile</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;Shrine_Of_Magic_Incantation&#39;</span> <span class="ow">or</span> <span class="n">tile</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;Shrine_Of_Magic_Gesture&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">hero</span><span class="o">.</span><span class="n">spellbook</span><span class="o">.</span><span class="n">spells</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">+=</span> <span class="mi">500</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">-=</span> <span class="mi">1000</span>
+
+    <span class="k">elif</span> <span class="n">tile</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;Shrine_Of_Magic_Thought&#39;</span><span class="p">:</span>
+        <span class="n">has_wisdom</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">for</span> <span class="n">skill</span> <span class="ow">in</span> <span class="n">hero</span><span class="o">.</span><span class="n">skills</span><span class="o">.</span><span class="n">secondary_skills</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">skill</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;Wisdom&#39;</span> <span class="ow">and</span> <span class="n">skill</span><span class="o">.</span><span class="n">lvl</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">has_wisdom</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="n">has_wisdom</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">+=</span> <span class="mi">1000</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">-=</span> <span class="mi">100000</span>
+
+    <span class="k">elif</span> <span class="n">tile</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;Shrine_Of_Magic_Mystery&#39;</span><span class="p">:</span>
+        <span class="n">has_wisdom</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">for</span> <span class="n">skill</span> <span class="ow">in</span> <span class="n">hero</span><span class="o">.</span><span class="n">skills</span><span class="o">.</span><span class="n">secondary_skills</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">skill</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;Wisdom&#39;</span> <span class="ow">and</span> <span class="n">skill</span><span class="o">.</span><span class="n">lvl</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">has_wisdom</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="n">has_wisdom</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">+=</span> <span class="mi">1000</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">-=</span> <span class="mi">100000</span>
+
+    <span class="k">elif</span> <span class="n">tile</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;Trading_Post&#39;</span><span class="p">:</span>
+        <span class="n">value</span> <span class="o">-=</span> <span class="mi">10000</span>
+
+    <span class="k">elif</span> <span class="n">tile</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;Tree_Of_Knowledge&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">hero</span><span class="o">.</span><span class="n">herotype</span> <span class="o">==</span> <span class="s1">&#39;main&#39;</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">+=</span> <span class="mi">2000</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">-=</span> <span class="mi">2500</span>
+
+    <span class="k">elif</span> <span class="n">tile</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;Witch_Hut&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">hero</span><span class="o">.</span><span class="n">herotype</span> <span class="o">!=</span> <span class="s1">&#39;main&#39;</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">+=</span> <span class="mi">500</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">-=</span> <span class="mi">500</span>
+
+    <span class="k">elif</span> <span class="n">tile</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;Windmill&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">hero</span><span class="o">.</span><span class="n">herotype</span> <span class="o">!=</span> <span class="s1">&#39;main&#39;</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">+=</span> <span class="mi">500</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">-=</span> <span class="mi">500</span>
+
+    <span class="k">elif</span> <span class="n">tile</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;Den_of_thieves&#39;</span><span class="p">:</span>
+        <span class="n">value</span> <span class="o">-=</span> <span class="mi">100000</span>
+
+    <span class="k">elif</span> <span class="n">tile</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;War_Machine_Factory&#39;</span><span class="p">:</span>
+        <span class="n">value</span> <span class="o">-=</span> <span class="mi">10000</span>
+
+    <span class="k">elif</span> <span class="n">tile</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Portal_Two_Way&#39;</span><span class="p">,</span><span class="s2">&quot;Portal_One_Way_Exit&quot;</span><span class="p">,</span><span class="s2">&quot;Portal_One_Way_Entrance&quot;</span><span class="p">,</span><span class="s2">&quot;Monolith_Two_Way&quot;</span>
+                       <span class="s2">&quot;Monolith_One_Way_Exit&quot;</span><span class="p">,</span><span class="s2">&quot;Monolith_One_Way_Entrance&quot;</span><span class="p">]:</span>
+        <span class="n">value</span> <span class="o">-=</span> <span class="mi">10000</span>
+
+    <span class="k">return</span> <span class="n">value</span></div>
+
+
+<span class="c1"># def fog_of_war_null(tile):</span>
+<span class="c1">#     &quot;&quot;&quot;</span>
+<span class="c1">#     Make it so that fog of war has very small value</span>
+<span class="c1">#</span>
+<span class="c1">#     :param tile:</span>
+<span class="c1">#     :return:</span>
+<span class="c1">#     &quot;&quot;&quot;</span>
+<span class="c1">#     value = 0</span>
+<span class="c1">#     if type(tile) == FogOfWar:</span>
+<span class="c1">#         value = -1000000</span>
+<span class="c1">#     return value</span>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Fryderyk Róg, Kacper Plesiak, Michał Gruba, Tymoteusz Skrzyński, Mateusz Comblik, Bartosz Szczepanek, Alan Konopko, Mateusz Mikszewicz, Daniel Bil, Piotr Łyczko.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

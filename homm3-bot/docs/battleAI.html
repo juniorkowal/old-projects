@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>battleAI package &mdash; HoMM3 Bot 2.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="data package" href="data.html" />
+    <link rel="prev" title="GUI_handling package" href="GUI_handling.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> HoMM3 Bot
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">homm3-bot</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Adventure_AI.html">Adventure_AI package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GUI_handling.html">GUI_handling package</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">battleAI package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-battleAI.BattleAI">battleAI.BattleAI module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#battleAI.BattleAI.BattleAI"><code class="docutils literal notranslate"><span class="pre">BattleAI</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#battleAI.BattleAI.CreatureMove"><code class="docutils literal notranslate"><span class="pre">CreatureMove</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#battleAI.BattleAI.arePicturesSimilar"><code class="docutils literal notranslate"><span class="pre">arePicturesSimilar()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#battleAI.BattleAI.arePicturesTheSame"><code class="docutils literal notranslate"><span class="pre">arePicturesTheSame()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#battleAI.BattleAI.bookAvailable"><code class="docutils literal notranslate"><span class="pre">bookAvailable()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#battleAI.BattleAI.checkIfEnd"><code class="docutils literal notranslate"><span class="pre">checkIfEnd()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#battleAI.BattleAI.checkTerrainType"><code class="docutils literal notranslate"><span class="pre">checkTerrainType()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#battleAI.BattleAI.colorDistance"><code class="docutils literal notranslate"><span class="pre">colorDistance()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#battleAI.BattleAI.fitted"><code class="docutils literal notranslate"><span class="pre">fitted()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#battleAI.BattleAI.take_side_window"><code class="docutils literal notranslate"><span class="pre">take_side_window()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#battleAI.BattleAI.take_whole_queue"><code class="docutils literal notranslate"><span class="pre">take_whole_queue()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-battleAI.damage">battleAI.damage module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#battleAI.damage.archeryOffense"><code class="docutils literal notranslate"><span class="pre">archeryOffense()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#battleAI.damage.armorerVariables"><code class="docutils literal notranslate"><span class="pre">armorerVariables()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#battleAI.damage.attackDefenseDifference"><code class="docutils literal notranslate"><span class="pre">attackDefenseDifference()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#battleAI.damage.baseDamage"><code class="docutils literal notranslate"><span class="pre">baseDamage()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#battleAI.damage.creatureAbilities"><code class="docutils literal notranslate"><span class="pre">creatureAbilities()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#battleAI.damage.creatureSpecialties"><code class="docutils literal notranslate"><span class="pre">creatureSpecialties()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#battleAI.damage.creatureStackDmg"><code class="docutils literal notranslate"><span class="pre">creatureStackDmg()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#battleAI.damage.heroSpecialization"><code class="docutils literal notranslate"><span class="pre">heroSpecialization()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#battleAI.damage.luck"><code class="docutils literal notranslate"><span class="pre">luck()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#battleAI.damage.magicShields"><code class="docutils literal notranslate"><span class="pre">magicShields()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#battleAI.damage.mindSpells"><code class="docutils literal notranslate"><span class="pre">mindSpells()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#battleAI.damage.obstaclePenalty"><code class="docutils literal notranslate"><span class="pre">obstaclePenalty()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#battleAI.damage.rangeMeleePenalty"><code class="docutils literal notranslate"><span class="pre">rangeMeleePenalty()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-battleAI.deepQlearning">battleAI.deepQlearning module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#battleAI.deepQlearning.DQNAgent"><code class="docutils literal notranslate"><span class="pre">DQNAgent</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#battleAI.deepQlearning.createObstacle"><code class="docutils literal notranslate"><span class="pre">createObstacle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#battleAI.deepQlearning.createTeams"><code class="docutils literal notranslate"><span class="pre">createTeams()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#battleAI.deepQlearning.exclude_moat"><code class="docutils literal notranslate"><span class="pre">exclude_moat()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#battleAI.deepQlearning.learningProccess"><code class="docutils literal notranslate"><span class="pre">learningProccess()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#battleAI.deepQlearning.loadBuffer"><code class="docutils literal notranslate"><span class="pre">loadBuffer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#battleAI.deepQlearning.loadWeights"><code class="docutils literal notranslate"><span class="pre">loadWeights()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#battleAI.deepQlearning.normalize"><code class="docutils literal notranslate"><span class="pre">normalize()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#battleAI.deepQlearning.policy"><code class="docutils literal notranslate"><span class="pre">policy()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#battleAI.deepQlearning.resetEnv"><code class="docutils literal notranslate"><span class="pre">resetEnv()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#battleAI.deepQlearning.saveBuffer"><code class="docutils literal notranslate"><span class="pre">saveBuffer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#battleAI.deepQlearning.saveWeights"><code class="docutils literal notranslate"><span class="pre">saveWeights()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-battleAI.queue_test">battleAI.queue_test module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#battleAI.queue_test.BattleQueue"><code class="docutils literal notranslate"><span class="pre">BattleQueue</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-battleAI.reinforcmentLearningTest">battleAI.reinforcmentLearningTest module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#battleAI.reinforcmentLearningTest.Colors"><code class="docutils literal notranslate"><span class="pre">Colors</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#battleAI.reinforcmentLearningTest.Environment"><code class="docutils literal notranslate"><span class="pre">Environment</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#battleAI.reinforcmentLearningTest.divideIntoAllyAndEnemy"><code class="docutils literal notranslate"><span class="pre">divideIntoAllyAndEnemy()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#battleAI.reinforcmentLearningTest.even"><code class="docutils literal notranslate"><span class="pre">even()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#battleAI.reinforcmentLearningTest.getNeighbours"><code class="docutils literal notranslate"><span class="pre">getNeighbours()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#battleAI.reinforcmentLearningTest.odd"><code class="docutils literal notranslate"><span class="pre">odd()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-battleAI.reward">battleAI.reward module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#battleAI.reward.Reward"><code class="docutils literal notranslate"><span class="pre">Reward</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#battleAI.reward.Tile"><code class="docutils literal notranslate"><span class="pre">Tile</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#battleAI.reward.contains"><code class="docutils literal notranslate"><span class="pre">contains()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#battleAI.reward.cubeDistance"><code class="docutils literal notranslate"><span class="pre">cubeDistance()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#battleAI.reward.hexDist"><code class="docutils literal notranslate"><span class="pre">hexDist()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#battleAI.reward.offsetToCube"><code class="docutils literal notranslate"><span class="pre">offsetToCube()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-battleAI">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="data.html">data package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_reader.html">file_reader package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hierarchyFunctions.html">hierarchyFunctions package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="image_processing.html">image_processing package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="main.html">main module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="map.html">map package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="path_finding_alghoritms.html">path_finding_alghoritms package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="save.html">save module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="town_upgrading.html">town_upgrading package</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">HoMM3 Bot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">homm3-bot</a></li>
+      <li class="breadcrumb-item active">battleAI package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/battleAI.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="battleai-package">
+<h1>battleAI package<a class="headerlink" href="#battleai-package" title="Permalink to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-battleAI.BattleAI">
+<span id="battleai-battleai-module"></span><h2>battleAI.BattleAI module<a class="headerlink" href="#module-battleAI.BattleAI" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="battleAI.BattleAI.BattleAI">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">battleAI.BattleAI.</span></span><span class="sig-name descname"><span class="pre">BattleAI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Red'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/BattleAI.html#BattleAI"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.BattleAI.BattleAI" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="battleAI.BattleAI.BattleAI.actualizeQueue">
+<span class="sig-name descname"><span class="pre">actualizeQueue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">setOfCreatures</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/BattleAI.html#BattleAI.actualizeQueue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.BattleAI.BattleAI.actualizeQueue" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="battleAI.BattleAI.BattleAI.checkPossibility">
+<span class="sig-name descname"><span class="pre">checkPossibility</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mob</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/BattleAI.html#BattleAI.checkPossibility"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.BattleAI.BattleAI.checkPossibility" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="battleAI.BattleAI.BattleAI.check_if_still_alive">
+<span class="sig-name descname"><span class="pre">check_if_still_alive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/BattleAI.html#BattleAI.check_if_still_alive"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.BattleAI.BattleAI.check_if_still_alive" title="Permalink to this definition"></a></dt>
+<dd><p>Checks if unit we attacked is still alive</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="battleAI.BattleAI.BattleAI.debunk_obstacles">
+<span class="sig-name descname"><span class="pre">debunk_obstacles</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/BattleAI.html#BattleAI.debunk_obstacles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.BattleAI.BattleAI.debunk_obstacles" title="Permalink to this definition"></a></dt>
+<dd><p>Removes false positives from detected obstacles</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="battleAI.BattleAI.BattleAI.fight">
+<span class="sig-name descname"><span class="pre">fight</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hero_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skills</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spell_power</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/BattleAI.html#BattleAI.fight"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.BattleAI.BattleAI.fight" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="battleAI.BattleAI.BattleAI.findObstacles">
+<span class="sig-name descname"><span class="pre">findObstacles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">units</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/BattleAI.html#BattleAI.findObstacles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.BattleAI.BattleAI.findObstacles" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="battleAI.BattleAI.BattleAI.findUnits">
+<span class="sig-name descname"><span class="pre">findUnits</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/BattleAI.html#BattleAI.findUnits"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.BattleAI.BattleAI.findUnits" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="battleAI.BattleAI.BattleAI.getAction">
+<span class="sig-name descname"><span class="pre">getAction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/BattleAI.html#BattleAI.getAction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.BattleAI.BattleAI.getAction" title="Permalink to this definition"></a></dt>
+<dd><p>Gets action from our agent</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>state</strong> – 3D array - represents current state of our environment</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>tuple - chosen tile, current unit, actions probabilities calculated by our agent</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="battleAI.BattleAI.BattleAI.getMoveFromNN">
+<span class="sig-name descname"><span class="pre">getMoveFromNN</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/BattleAI.html#BattleAI.getMoveFromNN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.BattleAI.BattleAI.getMoveFromNN" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="battleAI.BattleAI.BattleAI.get_possible_moves">
+<span class="sig-name descname"><span class="pre">get_possible_moves</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">update</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/BattleAI.html#BattleAI.get_possible_moves"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.BattleAI.BattleAI.get_possible_moves" title="Permalink to this definition"></a></dt>
+<dd><p>Get accurate possible moves based on cursor icon</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>update</strong> – bool - update possible moves of the environment</p>
+</dd>
+</dl>
+<p>:return (np.array) 2D - non-zero elements are the tiles the unit can move on</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="battleAI.BattleAI.BattleAI.makeMove">
+<span class="sig-name descname"><span class="pre">makeMove</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/BattleAI.html#BattleAI.makeMove"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.BattleAI.BattleAI.makeMove" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="battleAI.BattleAI.BattleAI.simulateMoves">
+<span class="sig-name descname"><span class="pre">simulateMoves</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">enemyCreatures</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/BattleAI.html#BattleAI.simulateMoves"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.BattleAI.BattleAI.simulateMoves" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="battleAI.BattleAI.BattleAI.skipEnemiesInQueue">
+<span class="sig-name descname"><span class="pre">skipEnemiesInQueue</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/BattleAI.html#BattleAI.skipEnemiesInQueue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.BattleAI.BattleAI.skipEnemiesInQueue" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="battleAI.BattleAI.BattleAI.start">
+<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">setOfCreatures</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">setOfObstacles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/BattleAI.html#BattleAI.start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.BattleAI.BattleAI.start" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="battleAI.BattleAI.CreatureMove">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">battleAI.BattleAI.</span></span><span class="sig-name descname"><span class="pre">CreatureMove</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">detectedMob</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.BattleAI_environment_needs.CreatureBox" title="data.BattleAI_environment_needs.CreatureBox"><span class="pre">CreatureBox</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/BattleAI.html#CreatureMove"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.BattleAI.CreatureMove" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="battleAI.BattleAI.CreatureMove.findCandidates">
+<span class="sig-name descname"><span class="pre">findCandidates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">queue</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/BattleAI.html#CreatureMove.findCandidates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.BattleAI.CreatureMove.findCandidates" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="battleAI.BattleAI.arePicturesSimilar">
+<span class="sig-prename descclassname"><span class="pre">battleAI.BattleAI.</span></span><span class="sig-name descname"><span class="pre">arePicturesSimilar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pictureA</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pictureB</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percent</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/BattleAI.html#arePicturesSimilar"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.BattleAI.arePicturesSimilar" title="Permalink to this definition"></a></dt>
+<dd><p>Checks if pictures are similar</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pictureA</strong> – np.array - image</p></li>
+<li><p><strong>pictureB</strong> – np.array - image</p></li>
+<li><p><strong>percent</strong> – float - acceptable percent of difference between pictures</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>bool - are pictures similiar</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="battleAI.BattleAI.arePicturesTheSame">
+<span class="sig-prename descclassname"><span class="pre">battleAI.BattleAI.</span></span><span class="sig-name descname"><span class="pre">arePicturesTheSame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pictureA</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pictureB</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/BattleAI.html#arePicturesTheSame"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.BattleAI.arePicturesTheSame" title="Permalink to this definition"></a></dt>
+<dd><p>Checks if pictures are exactly the same</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pictureA</strong> – np.array - image</p></li>
+<li><p><strong>pictureB</strong> – np.array - image</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>bool - are pictures the same</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="battleAI.BattleAI.bookAvailable">
+<span class="sig-prename descclassname"><span class="pre">battleAI.BattleAI.</span></span><span class="sig-name descname"><span class="pre">bookAvailable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/BattleAI.html#bookAvailable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.BattleAI.bookAvailable" title="Permalink to this definition"></a></dt>
+<dd><p>Checks if we can use the spell or not</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>bool - True if available, False otherwise</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="battleAI.BattleAI.checkIfEnd">
+<span class="sig-prename descclassname"><span class="pre">battleAI.BattleAI.</span></span><span class="sig-name descname"><span class="pre">checkIfEnd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ok_button_img</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/BattleAI.html#checkIfEnd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.BattleAI.checkIfEnd" title="Permalink to this definition"></a></dt>
+<dd><p>Checks if the battle has ended</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>ok_button_img</strong> – np.array - image of ok button to look for</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>boot - has the battle ended</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="battleAI.BattleAI.checkTerrainType">
+<span class="sig-prename descclassname"><span class="pre">battleAI.BattleAI.</span></span><span class="sig-name descname"><span class="pre">checkTerrainType</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/BattleAI.html#checkTerrainType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.BattleAI.checkTerrainType" title="Permalink to this definition"></a></dt>
+<dd><p>Checks whether the terrain we are fighting on is Grass or Dirt</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>str - terrain we are fighting on</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="battleAI.BattleAI.colorDistance">
+<span class="sig-prename descclassname"><span class="pre">battleAI.BattleAI.</span></span><span class="sig-name descname"><span class="pre">colorDistance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">checked</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/BattleAI.html#colorDistance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.BattleAI.colorDistance" title="Permalink to this definition"></a></dt>
+<dd><p>Calculates the distance in color space between two colors</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>checked</strong> – 3 element list - checked color</p></li>
+<li><p><strong>reference</strong> – 3 element list - reference color</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>distance in color space between two colors</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="battleAI.BattleAI.fitted">
+<span class="sig-prename descclassname"><span class="pre">battleAI.BattleAI.</span></span><span class="sig-name descname"><span class="pre">fitted</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mobs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/BattleAI.html#fitted"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.BattleAI.fitted" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="battleAI.BattleAI.take_side_window">
+<span class="sig-prename descclassname"><span class="pre">battleAI.BattleAI.</span></span><span class="sig-name descname"><span class="pre">take_side_window</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/BattleAI.html#take_side_window"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.BattleAI.take_side_window" title="Permalink to this definition"></a></dt>
+<dd><p>Takes screenshot of the side window that pops up when we hover over enemy</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>np.array - screenshot of the side window</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="battleAI.BattleAI.take_whole_queue">
+<span class="sig-prename descclassname"><span class="pre">battleAI.BattleAI.</span></span><span class="sig-name descname"><span class="pre">take_whole_queue</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/BattleAI.html#take_whole_queue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.BattleAI.take_whole_queue" title="Permalink to this definition"></a></dt>
+<dd><p>Takes screenshot of the entire queue</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>np.array - screenshot of the entire queue</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-battleAI.damage">
+<span id="battleai-damage-module"></span><h2>battleAI.damage module<a class="headerlink" href="#module-battleAI.damage" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="battleAI.damage.archeryOffense">
+<span class="sig-prename descclassname"><span class="pre">battleAI.damage.</span></span><span class="sig-name descname"><span class="pre">archeryOffense</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">archeryLevel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offenseLevel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ranged</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/damage.html#archeryOffense"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.damage.archeryOffense" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="battleAI.damage.armorerVariables">
+<span class="sig-prename descclassname"><span class="pre">battleAI.damage.</span></span><span class="sig-name descname"><span class="pre">armorerVariables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">heroName</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attackingCreature</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">heroLevel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">armorerLevel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/damage.html#armorerVariables"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.damage.armorerVariables" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="battleAI.damage.attackDefenseDifference">
+<span class="sig-prename descclassname"><span class="pre">battleAI.damage.</span></span><span class="sig-name descname"><span class="pre">attackDefenseDifference</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">heroLevel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">creatureLevel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attackHero</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attackCreature</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">defenseHero</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">defenseCreature</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nativeTerrain</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spellAttack</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spellDefense</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">creatureAbilityAttack</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">creatureAbilityDefense</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">creatureSpecialty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/damage.html#attackDefenseDifference"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.damage.attackDefenseDifference" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="battleAI.damage.baseDamage">
+<span class="sig-prename descclassname"><span class="pre">battleAI.damage.</span></span><span class="sig-name descname"><span class="pre">baseDamage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">minDamage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxDamage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numberOfUnits</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/damage.html#baseDamage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.damage.baseDamage" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="battleAI.damage.creatureAbilities">
+<span class="sig-prename descclassname"><span class="pre">battleAI.damage.</span></span><span class="sig-name descname"><span class="pre">creatureAbilities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">creatureName</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attackedCreatureName</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">heroLevel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">squaresTravelled</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/damage.html#creatureAbilities"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.damage.creatureAbilities" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="battleAI.damage.creatureSpecialties">
+<span class="sig-prename descclassname"><span class="pre">battleAI.damage.</span></span><span class="sig-name descname"><span class="pre">creatureSpecialties</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">paralysed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">petrified</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">creatureName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attackedCreature</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/damage.html#creatureSpecialties"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.damage.creatureSpecialties" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="battleAI.damage.creatureStackDmg">
+<span class="sig-prename descclassname"><span class="pre">battleAI.damage.</span></span><span class="sig-name descname"><span class="pre">creatureStackDmg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attackingCreature</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attackingHero</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attackedCreature</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attackedHero</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nativeTerrain</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spellAttack</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spellDefense</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">creatureAbilityAttack</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">creatureAbilityDefense</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">creatureSpecialty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ranged</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">archeryLevel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offenseLevel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">squaresTravelled</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attackedHeroArmorerLevel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attackedShield</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attackedShieldLevel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attackedAirShield</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attackedAirShieldLevel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distanceBetweenAttackingAndAttacked</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">goldenBow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bowOfTheSharpshooter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blind</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">behindWall</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">paralysed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">petrified</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/damage.html#creatureStackDmg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.damage.creatureStackDmg" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="battleAI.damage.heroSpecialization">
+<span class="sig-prename descclassname"><span class="pre">battleAI.damage.</span></span><span class="sig-name descname"><span class="pre">heroSpecialization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">heroLevel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">archeryLevel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offenseLevel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">heroName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ranged</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/damage.html#heroSpecialization"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.damage.heroSpecialization" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="battleAI.damage.luck">
+<span class="sig-prename descclassname"><span class="pre">battleAI.damage.</span></span><span class="sig-name descname"><span class="pre">luck</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">luckSkillLevel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/damage.html#luck"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.damage.luck" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="battleAI.damage.magicShields">
+<span class="sig-prename descclassname"><span class="pre">battleAI.damage.</span></span><span class="sig-name descname"><span class="pre">magicShields</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shield</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shieldLevel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">airShield</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">airShieldLevel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ranged</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/damage.html#magicShields"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.damage.magicShields" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="battleAI.damage.mindSpells">
+<span class="sig-prename descclassname"><span class="pre">battleAI.damage.</span></span><span class="sig-name descname"><span class="pre">mindSpells</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">blind</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/damage.html#mindSpells"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.damage.mindSpells" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="battleAI.damage.obstaclePenalty">
+<span class="sig-prename descclassname"><span class="pre">battleAI.damage.</span></span><span class="sig-name descname"><span class="pre">obstaclePenalty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">creatureName</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">goldenBow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bowOfTheSharpshooter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">behindWall</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/damage.html#obstaclePenalty"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.damage.obstaclePenalty" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="battleAI.damage.rangeMeleePenalty">
+<span class="sig-prename descclassname"><span class="pre">battleAI.damage.</span></span><span class="sig-name descname"><span class="pre">rangeMeleePenalty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">distance</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">goldenBow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bowOfTheSharpshooter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ranged</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">creatureName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/damage.html#rangeMeleePenalty"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.damage.rangeMeleePenalty" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-battleAI.deepQlearning">
+<span id="battleai-deepqlearning-module"></span><h2>battleAI.deepQlearning module<a class="headerlink" href="#module-battleAI.deepQlearning" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="battleAI.deepQlearning.DQNAgent">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">battleAI.deepQlearning.</span></span><span class="sig-name descname"><span class="pre">DQNAgent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buffer_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">60000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_epsilon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.99</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_epsilon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">training</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/deepQlearning.html#DQNAgent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.deepQlearning.DQNAgent" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="battleAI.deepQlearning.DQNAgent.createModel">
+<span class="sig-name descname"><span class="pre">createModel</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/deepQlearning.html#DQNAgent.createModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.deepQlearning.DQNAgent.createModel" title="Permalink to this definition"></a></dt>
+<dd><p>creates the neural network model</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>neural network model</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="battleAI.deepQlearning.DQNAgent.learn">
+<span class="sig-name descname"><span class="pre">learn</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/deepQlearning.html#DQNAgent.learn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.deepQlearning.DQNAgent.learn" title="Permalink to this definition"></a></dt>
+<dd><p>samples random batch of transitions and calls the update method of the agent</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="battleAI.deepQlearning.DQNAgent.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">observation</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/deepQlearning.html#DQNAgent.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.deepQlearning.DQNAgent.save" title="Permalink to this definition"></a></dt>
+<dd><p>Saves current move information to a buffer</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>observation</strong> – list - [state, action, reward, nextState, possible moves, bool: is state terminal?]</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="battleAI.deepQlearning.DQNAgent.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stateBatch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">actionBatch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rewardBatch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nextStateBatch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">possibleIdxsBatch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">terminal_statesBatch</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/deepQlearning.html#DQNAgent.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.deepQlearning.DQNAgent.update" title="Permalink to this definition"></a></dt>
+<dd><p>updates the agent</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>stateBatch</strong> – list - batch of states</p></li>
+<li><p><strong>actionBatch</strong> – list - batch of actions</p></li>
+<li><p><strong>rewardBatch</strong> – list - batch of rewards</p></li>
+<li><p><strong>nextStateBatch</strong> – list - batch of next states</p></li>
+<li><p><strong>possibleIdxsBatch</strong> – list - batch of possible moves</p></li>
+<li><p><strong>terminal_statesBatch</strong> – list - batch of information whether the state is terminal</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="battleAI.deepQlearning.createObstacle">
+<span class="sig-prename descclassname"><span class="pre">battleAI.deepQlearning.</span></span><span class="sig-name descname"><span class="pre">createObstacle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">random_obstacles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/deepQlearning.html#createObstacle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.deepQlearning.createObstacle" title="Permalink to this definition"></a></dt>
+<dd><p>Creates random obstacles</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>list of instances of class Obstacle</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="battleAI.deepQlearning.createTeams">
+<span class="sig-prename descclassname"><span class="pre">battleAI.deepQlearning.</span></span><span class="sig-name descname"><span class="pre">createTeams</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">creaturesList</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_team</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/deepQlearning.html#createTeams"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.deepQlearning.createTeams" title="Permalink to this definition"></a></dt>
+<dd><p>Creates random teams</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>creaturesList</strong> – list of instances of class Creature</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>list of instances of class CreatureBox</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="battleAI.deepQlearning.exclude_moat">
+<span class="sig-prename descclassname"><span class="pre">battleAI.deepQlearning.</span></span><span class="sig-name descname"><span class="pre">exclude_moat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">probabilities</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">moat</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/deepQlearning.html#exclude_moat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.deepQlearning.exclude_moat" title="Permalink to this definition"></a></dt>
+<dd><p>Sets low probabilities to actions including moat</p>
+<p>:param probabilities numpy array of action probabilities
+:param moat list of hexFields containing moat
+:return:    probabilities with filtered actions</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="battleAI.deepQlearning.learningProccess">
+<span class="sig-prename descclassname"><span class="pre">battleAI.deepQlearning.</span></span><span class="sig-name descname"><span class="pre">learningProccess</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/deepQlearning.html#learningProccess"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.deepQlearning.learningProccess" title="Permalink to this definition"></a></dt>
+<dd><p>Starts the learning process of our agents</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="battleAI.deepQlearning.loadBuffer">
+<span class="sig-prename descclassname"><span class="pre">battleAI.deepQlearning.</span></span><span class="sig-name descname"><span class="pre">loadBuffer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">deepQAgent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/deepQlearning.html#loadBuffer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.deepQlearning.loadBuffer" title="Permalink to this definition"></a></dt>
+<dd><p>Loads the buffer from the numpy files if they exist</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>deepQAgent</strong> – DQNAgent class instance</p></li>
+<li><p><strong>path</strong> – path from which the files should be loaded</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="battleAI.deepQlearning.loadWeights">
+<span class="sig-prename descclassname"><span class="pre">battleAI.deepQlearning.</span></span><span class="sig-name descname"><span class="pre">loadWeights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">deepQAgent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/deepQlearning.html#loadWeights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.deepQlearning.loadWeights" title="Permalink to this definition"></a></dt>
+<dd><p>Loads the weights of the agent if they exist</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>deepQAgent</strong> – DQNAgent class instance</p></li>
+<li><p><strong>path</strong> – path from which the weights should be loaded</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="battleAI.deepQlearning.normalize">
+<span class="sig-prename descclassname"><span class="pre">battleAI.deepQlearning.</span></span><span class="sig-name descname"><span class="pre">normalize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/deepQlearning.html#normalize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.deepQlearning.normalize" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="battleAI.deepQlearning.policy">
+<span class="sig-prename descclassname"><span class="pre">battleAI.deepQlearning.</span></span><span class="sig-name descname"><span class="pre">policy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gameState</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deepQAgent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">possibleMoves</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">moat</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/deepQlearning.html#policy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.deepQlearning.policy" title="Permalink to this definition"></a></dt>
+<dd><p>Function choosing action of creature</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gameState</strong> – 4D array - current state of our environment</p></li>
+<li><p><strong>deepQAgent</strong> – current agent</p></li>
+<li><p><strong>possibleMoves</strong> – 2D array specifying on which tiles unit can or can’t move</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>chosen tile coordinates, chosen action index, indexes of possible actions,actions probabilities</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="battleAI.deepQlearning.resetEnv">
+<span class="sig-prename descclassname"><span class="pre">battleAI.deepQlearning.</span></span><span class="sig-name descname"><span class="pre">resetEnv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">creatures</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obstacles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">training</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/deepQlearning.html#resetEnv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.deepQlearning.resetEnv" title="Permalink to this definition"></a></dt>
+<dd><p>Reset environment</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>creatures</strong> – list of instances of class CreatureBox</p></li>
+<li><p><strong>obstacles</strong> – list of instances of class Obstacle</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="battleAI.deepQlearning.saveBuffer">
+<span class="sig-prename descclassname"><span class="pre">battleAI.deepQlearning.</span></span><span class="sig-name descname"><span class="pre">saveBuffer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">deepQAgent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/deepQlearning.html#saveBuffer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.deepQlearning.saveBuffer" title="Permalink to this definition"></a></dt>
+<dd><p>Saves the buffer to numpy files</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>deepQAgent</strong> – DQNAgent class instance</p></li>
+<li><p><strong>path</strong> – path to which the files should be saved</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="battleAI.deepQlearning.saveWeights">
+<span class="sig-prename descclassname"><span class="pre">battleAI.deepQlearning.</span></span><span class="sig-name descname"><span class="pre">saveWeights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">deepQAgent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/deepQlearning.html#saveWeights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.deepQlearning.saveWeights" title="Permalink to this definition"></a></dt>
+<dd><p>Saves the weights of the agent</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>deepQAgent</strong> – DQNAgent class instance</p></li>
+<li><p><strong>path</strong> – path to which the weights should be saved</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-battleAI.queue_test">
+<span id="battleai-queue-test-module"></span><h2>battleAI.queue_test module<a class="headerlink" href="#module-battleAI.queue_test" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="battleAI.queue_test.BattleQueue">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">battleAI.queue_test.</span></span><span class="sig-name descname"><span class="pre">BattleQueue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">allyCreatures</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enemyCreatures</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/queue_test.html#BattleQueue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.queue_test.BattleQueue" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="battleAI.queue_test.BattleQueue.battleStart">
+<span class="sig-name descname"><span class="pre">battleStart</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/queue_test.html#BattleQueue.battleStart"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.queue_test.BattleQueue.battleStart" title="Permalink to this definition"></a></dt>
+<dd><p>This function sorts creatures based on their speed, faction and whether they already made an action.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="battleAI.queue_test.BattleQueue.delete">
+<span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hexPos</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/queue_test.html#BattleQueue.delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.queue_test.BattleQueue.delete" title="Permalink to this definition"></a></dt>
+<dd><p>Simple function which deletes a creature from the Battle queue based on its position.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="battleAI.queue_test.BattleQueue.getQueue">
+<span class="sig-name descname"><span class="pre">getQueue</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/queue_test.html#BattleQueue.getQueue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.queue_test.BattleQueue.getQueue" title="Permalink to this definition"></a></dt>
+<dd><p>Get the Battle queue’s current status and parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>queue’s parameters.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="battleAI.queue_test.BattleQueue.initial">
+<span class="sig-name descname"><span class="pre">initial</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/queue_test.html#BattleQueue.initial"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.queue_test.BattleQueue.initial" title="Permalink to this definition"></a></dt>
+<dd><p>Function that sorts creatures based on their faction and speed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="battleAI.queue_test.BattleQueue.move">
+<span class="sig-name descname"><span class="pre">move</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/queue_test.html#BattleQueue.move"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.queue_test.BattleQueue.move" title="Permalink to this definition"></a></dt>
+<dd><p>This function simulates creature’s move: attacking and moving.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="battleAI.queue_test.BattleQueue.printQueue">
+<span class="sig-name descname"><span class="pre">printQueue</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/queue_test.html#BattleQueue.printQueue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.queue_test.BattleQueue.printQueue" title="Permalink to this definition"></a></dt>
+<dd><p>Show us our beautiful Battle queue.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="battleAI.queue_test.BattleQueue.undoMove">
+<span class="sig-name descname"><span class="pre">undoMove</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/queue_test.html#BattleQueue.undoMove"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.queue_test.BattleQueue.undoMove" title="Permalink to this definition"></a></dt>
+<dd><p>Function reverts creature’s last move.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-battleAI.reinforcmentLearningTest">
+<span id="battleai-reinforcmentlearningtest-module"></span><h2>battleAI.reinforcmentLearningTest module<a class="headerlink" href="#module-battleAI.reinforcmentLearningTest" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="battleAI.reinforcmentLearningTest.Colors">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">battleAI.reinforcmentLearningTest.</span></span><span class="sig-name descname"><span class="pre">Colors</span></span><a class="reference internal" href="_modules/battleAI/reinforcmentLearningTest.html#Colors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.reinforcmentLearningTest.Colors" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Dataclass with defined colors of the text written in console. To use it just write
+print(Colors.&lt;name_of_color&gt; + text + Colors.ENDC). Colors.ENDC is necessary if we want back to the original color</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="battleAI.reinforcmentLearningTest.Colors.BOLD">
+<span class="sig-name descname"><span class="pre">BOLD</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'\x1b[1m'</span></em><a class="headerlink" href="#battleAI.reinforcmentLearningTest.Colors.BOLD" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="battleAI.reinforcmentLearningTest.Colors.ENDC">
+<span class="sig-name descname"><span class="pre">ENDC</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'\x1b[0m'</span></em><a class="headerlink" href="#battleAI.reinforcmentLearningTest.Colors.ENDC" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="battleAI.reinforcmentLearningTest.Colors.FAIL">
+<span class="sig-name descname"><span class="pre">FAIL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'\x1b[91m'</span></em><a class="headerlink" href="#battleAI.reinforcmentLearningTest.Colors.FAIL" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="battleAI.reinforcmentLearningTest.Colors.HEADER">
+<span class="sig-name descname"><span class="pre">HEADER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'\x1b[95m'</span></em><a class="headerlink" href="#battleAI.reinforcmentLearningTest.Colors.HEADER" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="battleAI.reinforcmentLearningTest.Colors.OKBLUE">
+<span class="sig-name descname"><span class="pre">OKBLUE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'\x1b[94m'</span></em><a class="headerlink" href="#battleAI.reinforcmentLearningTest.Colors.OKBLUE" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="battleAI.reinforcmentLearningTest.Colors.OKCYAN">
+<span class="sig-name descname"><span class="pre">OKCYAN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'\x1b[96m'</span></em><a class="headerlink" href="#battleAI.reinforcmentLearningTest.Colors.OKCYAN" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="battleAI.reinforcmentLearningTest.Colors.OKGREEN">
+<span class="sig-name descname"><span class="pre">OKGREEN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'\x1b[92m'</span></em><a class="headerlink" href="#battleAI.reinforcmentLearningTest.Colors.OKGREEN" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="battleAI.reinforcmentLearningTest.Colors.UNDERLINE">
+<span class="sig-name descname"><span class="pre">UNDERLINE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'\x1b[4m'</span></em><a class="headerlink" href="#battleAI.reinforcmentLearningTest.Colors.UNDERLINE" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="battleAI.reinforcmentLearningTest.Colors.WARNING">
+<span class="sig-name descname"><span class="pre">WARNING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'\x1b[93m'</span></em><a class="headerlink" href="#battleAI.reinforcmentLearningTest.Colors.WARNING" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="battleAI.reinforcmentLearningTest.Environment">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">battleAI.reinforcmentLearningTest.</span></span><span class="sig-name descname"><span class="pre">Environment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">setOfCreatures</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">setOfObstacles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">training</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/reinforcmentLearningTest.html#Environment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.reinforcmentLearningTest.Environment" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="battleAI.reinforcmentLearningTest.Environment.choosePossibleMoves">
+<span class="sig-name descname"><span class="pre">choosePossibleMoves</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mob</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.BattleAI_environment_needs.CreatureBox" title="data.BattleAI_environment_needs.CreatureBox"><span class="pre">CreatureBox</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">update</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/reinforcmentLearningTest.html#Environment.choosePossibleMoves"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.reinforcmentLearningTest.Environment.choosePossibleMoves" title="Permalink to this definition"></a></dt>
+<dd><p>Main function to execute appropriate possible moves evaluation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>mob</strong> – (CreatureBox) - currently moving unit</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(np.array) 2D - non-zero elements are the tiles the unit can move on,
+(np.array) 2D - non-zero elements are the tiles the unit can move on limited to only those we allow it to move on</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="battleAI.reinforcmentLearningTest.Environment.filter_possible_moves">
+<span class="sig-name descname"><span class="pre">filter_possible_moves</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mob</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.BattleAI_environment_needs.CreatureBox" title="data.BattleAI_environment_needs.CreatureBox"><span class="pre">CreatureBox</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">possibleMoves</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/reinforcmentLearningTest.html#Environment.filter_possible_moves"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.reinforcmentLearningTest.Environment.filter_possible_moves" title="Permalink to this definition"></a></dt>
+<dd><p>Makes additional limitations to possibleMoves based on our strategy :param mob: (CreatureBox) - currently
+moving</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>possibleMoves</strong> – (np.array) 2D - non-zero elements are the tiles the unit can move on</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(np.array) 2D - non-zero elements are the tiles the unit can move on, (np.array) 2D - non-zero elements
+are the tiles the unit can move on limited to only those we allow it to move on</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="battleAI.reinforcmentLearningTest.Environment.moveCreature">
+<span class="sig-name descname"><span class="pre">moveCreature</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hexField</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_possible_moves</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/reinforcmentLearningTest.html#Environment.moveCreature"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.reinforcmentLearningTest.Environment.moveCreature" title="Permalink to this definition"></a></dt>
+<dd><p>Simulates the move of a unit. Executes proper action depending on chosen tile</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>hexField</strong> – (tuple) - indices of chosen tile to move on</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(tuple) - indices of chosen tile to move on,
+(str) - side of the attack target we attack it from</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="battleAI.reinforcmentLearningTest.Environment.prepareInputForNN">
+<span class="sig-name descname"><span class="pre">prepareInputForNN</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">currUnit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_possible_moves</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/reinforcmentLearningTest.html#Environment.prepareInputForNN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.reinforcmentLearningTest.Environment.prepareInputForNN" title="Permalink to this definition"></a></dt>
+<dd><p>Input for neural network preparation
+Form (x, y, z)
+x, y: coordinates of the hex
+z: features of the hex (current hero/hero/obstacle/empty hex, num of creatures at the hex,
+attack, hp, speed, ammo)
+stats are negative for hostile creatures
+stats are zero for empty hex</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(np.array) 3D - input for neural network</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="battleAI.reinforcmentLearningTest.Environment.printEnvironment">
+<span class="sig-name descname"><span class="pre">printEnvironment</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/reinforcmentLearningTest.html#Environment.printEnvironment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.reinforcmentLearningTest.Environment.printEnvironment" title="Permalink to this definition"></a></dt>
+<dd><p>Prints our environment state in console</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="battleAI.reinforcmentLearningTest.Environment.resetEnv">
+<span class="sig-name descname"><span class="pre">resetEnv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">setOfCreatures</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">setOfObstacles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/reinforcmentLearningTest.html#Environment.resetEnv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.reinforcmentLearningTest.Environment.resetEnv" title="Permalink to this definition"></a></dt>
+<dd><p>Function which resets the environment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>setOfCreatures</strong> – list with all the creatures at the battlefield</p></li>
+<li><p><strong>setOfObstacles</strong> – list with all the obstacles at the battlefield</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="battleAI.reinforcmentLearningTest.Environment.startTurn">
+<span class="sig-name descname"><span class="pre">startTurn</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/reinforcmentLearningTest.html#Environment.startTurn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.reinforcmentLearningTest.Environment.startTurn" title="Permalink to this definition"></a></dt>
+<dd><p>Takes unit from a queue and updates possibleMoves in environment according to it</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="battleAI.reinforcmentLearningTest.divideIntoAllyAndEnemy">
+<span class="sig-prename descclassname"><span class="pre">battleAI.reinforcmentLearningTest.</span></span><span class="sig-name descname"><span class="pre">divideIntoAllyAndEnemy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">setOfCreatures</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/reinforcmentLearningTest.html#divideIntoAllyAndEnemy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.reinforcmentLearningTest.divideIntoAllyAndEnemy" title="Permalink to this definition"></a></dt>
+<dd><p>Function which divides list with all creatures into lists with allied creatures and hostile creatures</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>setOfCreatures</strong> – list with all the creatures</p>
+</dd>
+<dt class="field-even">Return ally</dt>
+<dd class="field-even"><p>list with allied creatures</p>
+</dd>
+<dt class="field-odd">Return enemy</dt>
+<dd class="field-odd"><p>list with hostile creatures</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="battleAI.reinforcmentLearningTest.even">
+<span class="sig-prename descclassname"><span class="pre">battleAI.reinforcmentLearningTest.</span></span><span class="sig-name descname"><span class="pre">even</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/reinforcmentLearningTest.html#even"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.reinforcmentLearningTest.even" title="Permalink to this definition"></a></dt>
+<dd><p>Returns True if value is even, False otherwise</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int value</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="battleAI.reinforcmentLearningTest.getNeighbours">
+<span class="sig-prename descclassname"><span class="pre">battleAI.reinforcmentLearningTest.</span></span><span class="sig-name descname"><span class="pre">getNeighbours</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hexField</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/reinforcmentLearningTest.html#getNeighbours"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.reinforcmentLearningTest.getNeighbours" title="Permalink to this definition"></a></dt>
+<dd><p>Function which gets all the neighbours of specific tile at the hexagonal field</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>hexField</strong> – input position</p>
+</dd>
+<dt class="field-even">Return neighbours</dt>
+<dd class="field-even"><p>dictionary where key is tuple position and value is string which describes direction like
+“right”, “left”, “bottom_right” etc. It is needed for detecting direction when attacking.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="battleAI.reinforcmentLearningTest.odd">
+<span class="sig-prename descclassname"><span class="pre">battleAI.reinforcmentLearningTest.</span></span><span class="sig-name descname"><span class="pre">odd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/reinforcmentLearningTest.html#odd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.reinforcmentLearningTest.odd" title="Permalink to this definition"></a></dt>
+<dd><p>Returns True if value is odd, False otherwise</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int value</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-battleAI.reward">
+<span id="battleai-reward-module"></span><h2>battleAI.reward module<a class="headerlink" href="#module-battleAI.reward" title="Permalink to this heading"></a></h2>
+<p>Script containing classes and functions handling our reward system</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="battleAI.reward.Reward">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">battleAI.reward.</span></span><span class="sig-name descname"><span class="pre">Reward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">BattleEnv</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/reward.html#Reward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.reward.Reward" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="battleAI.reward.Reward.calcPath">
+<span class="sig-name descname"><span class="pre">calcPath</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">startPoint</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endPoint</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/reward.html#Reward.calcPath"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.reward.Reward.calcPath" title="Permalink to this definition"></a></dt>
+<dd><p>Incomplete A* algorithm to compute real cost of a move/ speed required to move</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>startPoint</strong> – Starting point</p></li>
+<li><p><strong>endPoint</strong> – End point</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Length of the path</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="battleAI.reward.Reward.calcReward">
+<span class="sig-name descname"><span class="pre">calcReward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">currUnit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">BattleEnv</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/reward.html#Reward.calcReward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.reward.Reward.calcReward" title="Permalink to this definition"></a></dt>
+<dd><p>Function that calculates the reward</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>currUnit</strong> – Current unit</p></li>
+<li><p><strong>BattleEnv</strong> – Battle enviroment class</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>reward, result of the battle</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="battleAI.reward.Reward.checkRanged">
+<span class="sig-name descname"><span class="pre">checkRanged</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">unitIsAlly</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/reward.html#Reward.checkRanged"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.reward.Reward.checkRanged" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate % of protected ranged allies</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>unitIsAlly</strong> – Boolean whether unit is allied or not</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>% of protected archers, % of blocked archers, % of released archers</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="battleAI.reward.Reward.damageDealt">
+<span class="sig-name descname"><span class="pre">damageDealt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">currUnit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isTeamAlly</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/reward.html#Reward.damageDealt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.reward.Reward.damageDealt" title="Permalink to this definition"></a></dt>
+<dd><p>Calculates damage dealt</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>currUnit</strong> – currentUnit</p></li>
+<li><p><strong>isTeamAlly</strong> – (Boolean) True-&gt; allied, False -&gt; not allied</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>stored HP - current HP</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="battleAI.reward.Reward.getTeamHP">
+<span class="sig-name descname"><span class="pre">getTeamHP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">currUnit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isTeamAlly</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/reward.html#Reward.getTeamHP"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.reward.Reward.getTeamHP" title="Permalink to this definition"></a></dt>
+<dd><p>Summing up all of the hp of the given team.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>currUnit</strong> – Current handled unit</p></li>
+<li><p><strong>isTeamAlly</strong> – Checking whether team is allied or not</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Summed hp of the team.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="battleAI.reward.Reward.opponentDistances">
+<span class="sig-name descname"><span class="pre">opponentDistances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">currUnitPos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">side</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/reward.html#Reward.opponentDistances"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.reward.Reward.opponentDistances" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate distance to opponents
+Temporally using queue since its currently a list of creatures on the battle field</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>currUnitPos</strong> – Position of units</p></li>
+<li><p><strong>side</strong> – “ally” or “enemy”</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>% of our units in range to an opponent</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="battleAI.reward.Reward.retaliationTaken">
+<span class="sig-name descname"><span class="pre">retaliationTaken</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">health</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/reward.html#Reward.retaliationTaken"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.reward.Reward.retaliationTaken" title="Permalink to this definition"></a></dt>
+<dd><p>See if unit suffered from enemy’s retaliation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>health</strong> – health of the unit</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>1 - Taken, 0 - not taken</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="battleAI.reward.Reward.saveUnitHealth">
+<span class="sig-name descname"><span class="pre">saveUnitHealth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">currUnit</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/reward.html#Reward.saveUnitHealth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.reward.Reward.saveUnitHealth" title="Permalink to this definition"></a></dt>
+<dd><p>Updating unit’s health before moving</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>currUnit</strong> – Current handled unit</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="battleAI.reward.Reward.unitsInQueue">
+<span class="sig-name descname"><span class="pre">unitsInQueue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">currQueue</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/reward.html#Reward.unitsInQueue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.reward.Reward.unitsInQueue" title="Permalink to this definition"></a></dt>
+<dd><p>Counting % of allies and enemies still in queue</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>currQueue</strong> – Queue</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>% of allies in queue, % of enemies in queue</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="battleAI.reward.Reward.unitsInRange">
+<span class="sig-name descname"><span class="pre">unitsInRange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">currUnitPos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speed</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unitIsAlly</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checkedSide</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/reward.html#Reward.unitsInRange"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.reward.Reward.unitsInRange" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate % of units our unit is reaching</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>currUnitPos</strong> – tuple - current position of our unit</p></li>
+<li><p><strong>speed</strong> – int - speed of our unit</p></li>
+<li><p><strong>unitIsAlly</strong> – bool - information whether our unit is an ally or enemy</p></li>
+<li><p><strong>checkedSide</strong> – str - information which side of units are we checking</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>float - % of units our unit is reaching</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="battleAI.reward.Reward.unitsReaching">
+<span class="sig-name descname"><span class="pre">unitsReaching</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">currUnitPos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unitIsAlly</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checkedSide</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/reward.html#Reward.unitsReaching"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.reward.Reward.unitsReaching" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate % of units reaching our unit</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>currUnitPos</strong> – Position of units on the battlfield</p></li>
+<li><p><strong>unitIsAlly</strong> – Is a unit an ally</p></li>
+<li><p><strong>checkedSide</strong> – :”ally” or “enemy”</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>% of units reaching our unit</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="battleAI.reward.Reward.updateEnv">
+<span class="sig-name descname"><span class="pre">updateEnv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">BattleEnv</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/reward.html#Reward.updateEnv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.reward.Reward.updateEnv" title="Permalink to this definition"></a></dt>
+<dd><p>Updates battle environment and the queue.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>BattleEnv</strong> – Battle environment class</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="battleAI.reward.Tile">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">battleAI.reward.</span></span><span class="sig-name descname"><span class="pre">Tile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/reward.html#Tile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.reward.Tile" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="battleAI.reward.Tile.createAdjacentTiles">
+<span class="sig-name descname"><span class="pre">createAdjacentTiles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">neighbours</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/reward.html#Tile.createAdjacentTiles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.reward.Tile.createAdjacentTiles" title="Permalink to this definition"></a></dt>
+<dd><p>Creates adjacent tiles.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>neighbours</strong> – neighbour tiles of the tile</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="battleAI.reward.contains">
+<span class="sig-prename descclassname"><span class="pre">battleAI.reward.</span></span><span class="sig-name descname"><span class="pre">contains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">container</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">item</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/reward.html#contains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.reward.contains" title="Permalink to this definition"></a></dt>
+<dd><p>Helper function to check if container contains an item</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>container</strong> – Container</p></li>
+<li><p><strong>item</strong> – An item</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True or False</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="battleAI.reward.cubeDistance">
+<span class="sig-prename descclassname"><span class="pre">battleAI.reward.</span></span><span class="sig-name descname"><span class="pre">cubeDistance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/reward.html#cubeDistance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.reward.cubeDistance" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate distance between points in 3D space.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>point1</strong> – list - coordinates [x,y,z]</p></li>
+<li><p><strong>point2</strong> – list - coordinates [x,y,z]</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>int - distance between 2 points</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="battleAI.reward.hexDist">
+<span class="sig-prename descclassname"><span class="pre">battleAI.reward.</span></span><span class="sig-name descname"><span class="pre">hexDist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/reward.html#hexDist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.reward.hexDist" title="Permalink to this definition"></a></dt>
+<dd><p>Calculates distance between 2 hexes</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>point1</strong> – 2D offset coordinates (x, y)</p></li>
+<li><p><strong>point2</strong> – 2D offset coordinates (x, y)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Cube distance between two hexes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="battleAI.reward.offsetToCube">
+<span class="sig-prename descclassname"><span class="pre">battleAI.reward.</span></span><span class="sig-name descname"><span class="pre">offsetToCube</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/battleAI/reward.html#offsetToCube"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#battleAI.reward.offsetToCube" title="Permalink to this definition"></a></dt>
+<dd><p>Change offset coordinates to cubic coordinates</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>point</strong> – tuple - 2D offset coordinates (x, y)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>list - coordinates [x,y,z]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-battleAI">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-battleAI" title="Permalink to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="GUI_handling.html" class="btn btn-neutral float-left" title="GUI_handling package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="data.html" class="btn btn-neutral float-right" title="data package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Fryderyk Róg, Kacper Plesiak, Michał Gruba, Tymoteusz Skrzyński, Mateusz Comblik, Bartosz Szczepanek, Alan Konopko, Mateusz Mikszewicz, Daniel Bil, Piotr Łyczko.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

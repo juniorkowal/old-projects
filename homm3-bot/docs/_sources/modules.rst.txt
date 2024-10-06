@@ -1,0 +1,18 @@
+homm3-bot
+=========
+
+.. toctree::
+   :maxdepth: 4
+
+   Adventure_AI
+   GUI_handling
+   battleAI
+   data
+   file_reader
+   hierarchyFunctions
+   image_processing
+   main
+   map
+   path_finding_alghoritms
+   save
+   town_upgrading

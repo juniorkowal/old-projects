@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>image_processing.CNN_learning &mdash; HoMM3 Bot 2.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> HoMM3 Bot
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">homm3-bot</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">HoMM3 Bot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">image_processing.CNN_learning</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for image_processing.CNN_learning</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Script containing neural network classes that we use in obstacle/creature in queue recognition&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">random</span>
+
+<span class="kn">import</span> <span class="nn">cv2</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+<span class="kn">from</span> <span class="nn">tensorflow.keras</span> <span class="kn">import</span> <span class="n">layers</span><span class="p">,</span> <span class="n">models</span>
+
+
+<div class="viewcode-block" id="CNN"><a class="viewcode-back" href="../../image_processing.html#image_processing.CNN_learning.CNN">[docs]</a><span class="k">class</span> <span class="nc">CNN</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">=</span> <span class="p">(</span><span class="mi">33</span><span class="p">,</span> <span class="mi">33</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;./model/model/&quot;</span><span class="p">,</span> <span class="n">num_of_classes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">69</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Class representing convolutional neural network that we use to recognize obstacles</span>
+
+<span class="sd">        :param size: size of each image</span>
+<span class="sd">        :param path: path to folder containing weight files</span>
+<span class="sd">        :param num_of_classes: number of neural network outputs</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test_loss</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test_acc</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">learning_images</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">learning_labels</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test_labels</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test_images</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dictionary</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">checkpoint_path</span> <span class="o">=</span> <span class="n">path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Sequential</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">layers</span><span class="o">.</span><span class="n">Rescaling</span><span class="p">(</span><span class="mf">1.</span> <span class="o">/</span> <span class="mi">255</span><span class="p">,</span> <span class="n">input_shape</span><span class="o">=</span><span class="p">(</span><span class="n">size</span><span class="p">)))</span>
+        <span class="c1">#self.model.add(layers.Conv2D(64, (4,4), padding=&#39;same&#39;, activation=&#39;relu&#39;))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">layers</span><span class="o">.</span><span class="n">Conv2D</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">padding</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">layers</span><span class="o">.</span><span class="n">MaxPooling2D</span><span class="p">(</span><span class="n">pool_size</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">padding</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">))</span>
+        <span class="c1">#self.model.add(layers.Dropout(0.1))</span>
+        <span class="c1">#self.model.add(layers.Conv2D(64, (4,4), padding=&#39;same&#39;, activation=&#39;relu&#39;))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">layers</span><span class="o">.</span><span class="n">Conv2D</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">padding</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">))</span>
+        <span class="c1">#self.model.add(layers.MaxPooling2D(pool_size=(2, 2), padding=&#39;same&#39;))</span>
+        <span class="c1">#self.model.add(layers.Dropout(0.1))</span>
+        <span class="c1">#self.model.add(layers.Conv2D(64, (4,4), padding=&#39;same&#39;, activation=&#39;relu&#39;))</span>
+        <span class="c1">#self.model.add(layers.Conv2D(32, (3, 3), padding=&#39;same&#39;, activation=&#39;relu&#39;))</span>
+        <span class="c1">#self.model.add(layers.MaxPooling2D(pool_size=(2, 2), padding=&#39;same&#39;))</span>
+        <span class="c1">#self.model.add(layers.Dropout(0.1))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">layers</span><span class="o">.</span><span class="n">Flatten</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">512</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">layers</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(</span><span class="mf">0.4</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">1024</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">layers</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(</span><span class="mf">0.4</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">256</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="n">num_of_classes</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;softmax&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+
+<div class="viewcode-block" id="CNN.add_learning_images"><a class="viewcode-back" href="../../image_processing.html#image_processing.CNN_learning.CNN.add_learning_images">[docs]</a>    <span class="k">def</span> <span class="nf">add_learning_images</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path_to_directory</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;../structures/&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        function adding learning dataset for neural network</span>
+
+<span class="sd">        :param path_to_directory: path to directory containing dataset for function</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">temp2</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">temp3</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">dirname</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">path_to_directory</span><span class="p">):</span>
+            <span class="n">temp2</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dirname</span><span class="p">)</span>
+            <span class="n">temp3</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path_to_directory</span><span class="p">,</span><span class="n">dirname</span><span class="p">)):</span>
+                <span class="n">img</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path_to_directory</span><span class="p">,</span> <span class="n">dirname</span><span class="p">,</span> <span class="n">filename</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">img</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="c1"># img2 = img.copy()</span>
+                    <span class="c1"># img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)</span>
+                    <span class="c1">#</span>
+                    <span class="c1"># img_blur = cv2.GaussianBlur(img_gray, (3, 3), 0)</span>
+                    <span class="c1">#</span>
+                    <span class="c1"># edges = cv2.Canny(image=img_blur, threshold1=50, threshold2=200)</span>
+                    <span class="c1">#</span>
+                    <span class="c1"># erosion = cv2.erode(edges, (0.7, 0.7), iterations=1)</span>
+                    <span class="c1">#</span>
+                    <span class="c1"># img = cv2.dilate(erosion, (0.7, 0.7), iterations=10)</span>
+                    <span class="c1"># img = cv2.bitwise_and(img2, img2, mask=img)</span>
+                    <span class="n">img</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">img</span><span class="p">,(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">learning_images</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">learning_labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dirname</span><span class="p">)</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">learning_images</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">learning_labels</span><span class="p">))</span>
+        <span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">learning_images</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">learning_labels</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">temp</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">learning_images</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">learning_images</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">learning_labels</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">learning_labels</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dictionary</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">temp2</span><span class="p">,</span><span class="n">temp3</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">learning_labels</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="nb">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dictionary</span><span class="o">.</span><span class="n">get</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">learning_labels</span><span class="p">)]</span></div>
+
+<div class="viewcode-block" id="CNN.add_test_images"><a class="viewcode-back" href="../../image_processing.html#image_processing.CNN_learning.CNN.add_test_images">[docs]</a>    <span class="k">def</span> <span class="nf">add_test_images</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path_to_directory</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;./test/&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        function adding test dataset for neural network</span>
+
+<span class="sd">        :param path_to_directory: path to directory containing dataset for function</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">dirname</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">path_to_directory</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path_to_directory</span><span class="p">,</span><span class="n">dirname</span><span class="p">)):</span>
+                <span class="n">img</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path_to_directory</span><span class="p">,</span> <span class="n">dirname</span><span class="p">,</span> <span class="n">filename</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">img</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="c1"># img2 = img.copy()</span>
+                    <span class="c1"># img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)</span>
+                    <span class="c1">#</span>
+                    <span class="c1"># img_blur = cv2.GaussianBlur(img_gray, (3, 3), 0)</span>
+                    <span class="c1">#</span>
+                    <span class="c1"># edges = cv2.Canny(image=img_blur, threshold1=50, threshold2=200)</span>
+                    <span class="c1">#</span>
+                    <span class="c1"># erosion = cv2.erode(edges, (0.7, 0.7), iterations=1)</span>
+                    <span class="c1">#</span>
+                    <span class="c1"># img = cv2.dilate(erosion, (0.7, 0.7), iterations=10)</span>
+                    <span class="c1"># img = cv2.bitwise_and(img2, img2, mask=img)</span>
+                    <span class="n">img</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">img</span><span class="p">,(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">test_images</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">test_labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dirname</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test_images</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_images</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test_labels</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_labels</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test_labels</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="nb">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dictionary</span><span class="o">.</span><span class="n">get</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">test_labels</span><span class="p">)]</span></div>
+
+<div class="viewcode-block" id="CNN.train_network"><a class="viewcode-back" href="../../image_processing.html#image_processing.CNN_learning.CNN.train_network">[docs]</a>    <span class="k">def</span> <span class="nf">train_network</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        function training and evaluating neural network, needs earlier 2 function to be called before being able to work</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">jsondict</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dictionary</span><span class="p">)</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">checkpoint_path</span> <span class="o">+</span> <span class="s2">&quot;dict.json&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">jsondict</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">close</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span><span class="s1">&#39;adam&#39;</span><span class="p">,</span>
+                           <span class="n">loss</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">losses</span><span class="o">.</span><span class="n">SparseCategoricalCrossentropy</span><span class="p">(</span><span class="n">from_logits</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+                           <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">])</span>
+        <span class="n">tensorboard_callback</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">TensorBoard</span><span class="p">(</span><span class="n">log_dir</span><span class="o">=</span><span class="s2">&quot;./logs&quot;</span><span class="p">)</span>
+        <span class="n">cp_callback</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">ModelCheckpoint</span><span class="p">(</span><span class="n">filepath</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">checkpoint_path</span><span class="o">+</span><span class="s2">&quot;model&quot;</span><span class="p">,</span> <span class="n">save_weights_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">learning_images</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">learning_labels</span><span class="p">),</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">120</span><span class="p">,</span>
+                       <span class="n">validation_split</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                       <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span><span class="n">cp_callback</span><span class="p">],</span><span class="n">batch_size</span><span class="o">=</span><span class="mi">64</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test_loss</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">test_acc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_images</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_labels</span><span class="p">),</span><span class="n">verbose</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CNN.test_network"><a class="viewcode-back" href="../../image_processing.html#image_processing.CNN_learning.CNN.test_network">[docs]</a>    <span class="k">def</span> <span class="nf">test_network</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        function evaluating neural network</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test_loss</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">test_acc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_images</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_labels</span><span class="p">),</span><span class="n">verbose</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CNN.load_model"><a class="viewcode-back" href="../../image_processing.html#image_processing.CNN_learning.CNN.load_model">[docs]</a>    <span class="k">def</span> <span class="nf">load_model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        function loading weightfiles from path specified in init</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">load_weights</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">checkpoint_path</span><span class="o">+</span><span class="s2">&quot;model&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">expect_partial</span><span class="p">()</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">checkpoint_path</span> <span class="o">+</span> <span class="s2">&quot;dict.json&quot;</span> <span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dictionary</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span><span class="s1">&#39;adam&#39;</span><span class="p">,</span>
+                           <span class="n">loss</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">losses</span><span class="o">.</span><span class="n">SparseCategoricalCrossentropy</span><span class="p">(</span><span class="n">from_logits</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+                           <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">])</span></div></div>
+
+
+<div class="viewcode-block" id="DumbNN"><a class="viewcode-back" href="../../image_processing.html#image_processing.CNN_learning.DumbNN">[docs]</a><span class="k">class</span> <span class="nc">DumbNN</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">=</span> <span class="p">(</span><span class="mi">33</span><span class="p">,</span> <span class="mi">33</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;./models/model/&quot;</span><span class="p">,</span> <span class="n">num_of_classes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">165</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Class representing neural network that we use to recognise creatures in the queue</span>
+
+<span class="sd">        :param size: size of each image</span>
+<span class="sd">        :param path: path to folder containing weight files</span>
+<span class="sd">        :param num_of_classes: number of neural network outputs</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test_loss</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test_acc</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">learning_images</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">learning_labels</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test_labels</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test_images</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dictionary</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">checkpoint_path</span> <span class="o">=</span> <span class="n">path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Sequential</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">layers</span><span class="o">.</span><span class="n">Rescaling</span><span class="p">(</span><span class="mf">1.</span> <span class="o">/</span> <span class="mi">255</span><span class="p">,</span> <span class="n">input_shape</span><span class="o">=</span><span class="n">size</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">layers</span><span class="o">.</span><span class="n">Flatten</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="n">num_of_classes</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;softmax&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+
+<div class="viewcode-block" id="DumbNN.add_learning_images"><a class="viewcode-back" href="../../image_processing.html#image_processing.CNN_learning.DumbNN.add_learning_images">[docs]</a>    <span class="k">def</span> <span class="nf">add_learning_images</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path_to_directory</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;../unit_portraits/&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        function adding learning dataset for neural network</span>
+
+<span class="sd">        :param path_to_directory: path to directory containing dataset for function</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">temp2</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">temp3</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">path_to_directory</span><span class="p">):</span>
+            <span class="n">temp2</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">filename</span><span class="p">[:</span><span class="o">-</span><span class="mi">4</span><span class="p">])</span>
+            <span class="n">temp3</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="n">img</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path_to_directory</span><span class="p">,</span> <span class="n">filename</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">img</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">img</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2GRAY</span><span class="p">)</span>
+                <span class="n">img</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">img</span><span class="p">,(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">learning_images</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">learning_labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">filename</span><span class="p">[:</span><span class="o">-</span><span class="mi">4</span><span class="p">])</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">learning_images</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">learning_labels</span><span class="p">))</span>
+        <span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">learning_images</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">learning_labels</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">temp</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">learning_images</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">learning_images</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">learning_labels</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">learning_labels</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dictionary</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">temp2</span><span class="p">,</span><span class="n">temp3</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">learning_labels</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="nb">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dictionary</span><span class="o">.</span><span class="n">get</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">learning_labels</span><span class="p">)]</span></div>
+
+<div class="viewcode-block" id="DumbNN.add_test_images"><a class="viewcode-back" href="../../image_processing.html#image_processing.CNN_learning.DumbNN.add_test_images">[docs]</a>    <span class="k">def</span> <span class="nf">add_test_images</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path_to_directory</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;../queue_test/&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        function adding test dataset for neural network</span>
+
+<span class="sd">        :param path_to_directory: path to directory containing dataset for function</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">path_to_directory</span><span class="p">):</span>
+            <span class="n">img</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path_to_directory</span><span class="p">,</span> <span class="n">filename</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">img</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">img</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_RGBA2GRAY</span><span class="p">)</span>
+                <span class="n">img</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">test_images</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">test_labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">filename</span><span class="p">[:</span><span class="o">-</span><span class="mi">4</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test_images</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_images</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test_labels</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_labels</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test_labels</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="nb">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dictionary</span><span class="o">.</span><span class="n">get</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">test_labels</span><span class="p">)]</span></div>
+
+<div class="viewcode-block" id="DumbNN.train_network"><a class="viewcode-back" href="../../image_processing.html#image_processing.CNN_learning.DumbNN.train_network">[docs]</a>    <span class="k">def</span> <span class="nf">train_network</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        function training and evaluating neural network, needs earlier 2 function to be called before being able to work</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span><span class="s1">&#39;adam&#39;</span><span class="p">,</span>
+                           <span class="n">loss</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">losses</span><span class="o">.</span><span class="n">SparseCategoricalCrossentropy</span><span class="p">(</span><span class="n">from_logits</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+                           <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">])</span>
+        <span class="n">tensorboard_callback</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">TensorBoard</span><span class="p">(</span><span class="n">log_dir</span><span class="o">=</span><span class="s2">&quot;./logs&quot;</span><span class="p">)</span>
+        <span class="n">cp_callback</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">ModelCheckpoint</span><span class="p">(</span><span class="n">filepath</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">checkpoint_path</span><span class="o">+</span><span class="s2">&quot;model&quot;</span><span class="p">,</span> <span class="n">save_weights_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">learning_images</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">learning_labels</span><span class="p">),</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span>
+                       <span class="n">validation_split</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                       <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span><span class="n">cp_callback</span><span class="p">],</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">64</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test_loss</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">test_acc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_images</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_labels</span><span class="p">),</span><span class="n">verbose</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">jsondict</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dictionary</span><span class="p">)</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">checkpoint_path</span> <span class="o">+</span> <span class="s2">&quot;dict.json&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">jsondict</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">close</span></div>
+
+<div class="viewcode-block" id="DumbNN.test_network"><a class="viewcode-back" href="../../image_processing.html#image_processing.CNN_learning.DumbNN.test_network">[docs]</a>    <span class="k">def</span> <span class="nf">test_network</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        function evaluating neural network</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test_loss</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">test_acc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_images</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_labels</span><span class="p">),</span><span class="n">verbose</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DumbNN.load_model"><a class="viewcode-back" href="../../image_processing.html#image_processing.CNN_learning.DumbNN.load_model">[docs]</a>    <span class="k">def</span> <span class="nf">load_model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        function loading weightfiles from path specified in init</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">load_weights</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">checkpoint_path</span><span class="o">+</span><span class="s2">&quot;model&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">expect_partial</span><span class="p">()</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">checkpoint_path</span> <span class="o">+</span> <span class="s2">&quot;dict.json&quot;</span> <span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dictionary</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span><span class="s1">&#39;adam&#39;</span><span class="p">,</span>
+                           <span class="n">loss</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">losses</span><span class="o">.</span><span class="n">SparseCategoricalCrossentropy</span><span class="p">(</span><span class="n">from_logits</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+                           <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">])</span></div></div>
+
+
+<div class="viewcode-block" id="train_queue_NN"><a class="viewcode-back" href="../../image_processing.html#image_processing.CNN_learning.train_queue_NN">[docs]</a><span class="k">def</span> <span class="nf">train_queue_NN</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    helper function for creating and training of specyfic neural network</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">queueNN</span> <span class="o">=</span> <span class="n">DumbNN</span><span class="p">((</span><span class="mi">38</span><span class="p">,</span><span class="mi">36</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span><span class="s2">&quot;./model/queue/&quot;</span><span class="p">,</span> <span class="mi">166</span><span class="p">)</span>
+    <span class="n">queueNN</span><span class="o">.</span><span class="n">add_learning_images</span><span class="p">(</span><span class="s1">&#39;../unit_portraits/&#39;</span><span class="p">)</span>
+    <span class="n">queueNN</span><span class="o">.</span><span class="n">add_test_images</span><span class="p">(</span><span class="s1">&#39;../queue_test/&#39;</span><span class="p">)</span>
+    <span class="n">queueNN</span><span class="o">.</span><span class="n">train_network</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="try_queue_NN"><a class="viewcode-back" href="../../image_processing.html#image_processing.CNN_learning.try_queue_NN">[docs]</a><span class="k">def</span> <span class="nf">try_queue_NN</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    helper function for loading and testing of specyfic neural network</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">queueNN</span> <span class="o">=</span> <span class="n">DumbNN</span><span class="p">((</span><span class="mi">38</span><span class="p">,</span> <span class="mi">36</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="s2">&quot;./model/queue/&quot;</span><span class="p">,</span> <span class="mi">166</span><span class="p">)</span>
+    <span class="n">queueNN</span><span class="o">.</span><span class="n">load_model</span><span class="p">()</span>
+    <span class="n">queueNN</span><span class="o">.</span><span class="n">add_test_images</span><span class="p">(</span><span class="s1">&#39;../queue_test/&#39;</span><span class="p">)</span>
+    <span class="n">queueNN</span><span class="o">.</span><span class="n">test_network</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="train_unit_NN"><a class="viewcode-back" href="../../image_processing.html#image_processing.CNN_learning.train_unit_NN">[docs]</a><span class="k">def</span> <span class="nf">train_unit_NN</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    helper function for creating and training of specyfic neural network</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">queueNN</span> <span class="o">=</span> <span class="n">DumbNN</span><span class="p">((</span><span class="mi">53</span><span class="p">,</span><span class="mi">59</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span><span class="s2">&quot;./model/unit/&quot;</span><span class="p">,</span> <span class="mi">166</span><span class="p">)</span>
+    <span class="n">queueNN</span><span class="o">.</span><span class="n">add_learning_images</span><span class="p">(</span><span class="s1">&#39;./unit_portraits/&#39;</span><span class="p">)</span>
+    <span class="n">queueNN</span><span class="o">.</span><span class="n">add_test_images</span><span class="p">(</span><span class="s1">&#39;./queue_test/&#39;</span><span class="p">)</span>
+    <span class="n">queueNN</span><span class="o">.</span><span class="n">train_network</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="try_unit_NN"><a class="viewcode-back" href="../../image_processing.html#image_processing.CNN_learning.try_unit_NN">[docs]</a><span class="k">def</span> <span class="nf">try_unit_NN</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    helper function for loading and testing of specyfic neural network</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">queueNN</span> <span class="o">=</span> <span class="n">DumbNN</span><span class="p">((</span><span class="mi">53</span><span class="p">,</span> <span class="mi">59</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="s2">&quot;./model/unit/&quot;</span><span class="p">,</span> <span class="mi">166</span><span class="p">)</span>
+    <span class="n">queueNN</span><span class="o">.</span><span class="n">load_model</span><span class="p">()</span>
+    <span class="n">queueNN</span><span class="o">.</span><span class="n">add_test_images</span><span class="p">(</span><span class="s1">&#39;./queue_test/&#39;</span><span class="p">)</span>
+    <span class="n">queueNN</span><span class="o">.</span><span class="n">test_network</span><span class="p">()</span></div>
+<div class="viewcode-block" id="train_artifact_NN"><a class="viewcode-back" href="../../image_processing.html#image_processing.CNN_learning.train_artifact_NN">[docs]</a><span class="k">def</span> <span class="nf">train_artifact_NN</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    helper function for creating and training of specyfic neural network</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">artifactNN</span> <span class="o">=</span> <span class="n">DumbNN</span><span class="p">((</span><span class="mi">40</span><span class="p">,</span><span class="mi">40</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span><span class="s2">&quot;./model/artifact/&quot;</span><span class="p">,</span> <span class="mi">156</span><span class="p">)</span>
+    <span class="n">artifactNN</span><span class="o">.</span><span class="n">add_learning_images</span><span class="p">(</span><span class="s1">&#39;../artifacts/&#39;</span><span class="p">)</span>
+    <span class="n">artifactNN</span><span class="o">.</span><span class="n">add_test_images</span><span class="p">(</span><span class="s1">&#39;../artifact_test/&#39;</span><span class="p">)</span>
+    <span class="n">artifactNN</span><span class="o">.</span><span class="n">train_network</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="try_artifact_NN"><a class="viewcode-back" href="../../image_processing.html#image_processing.CNN_learning.try_artifact_NN">[docs]</a><span class="k">def</span> <span class="nf">try_artifact_NN</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    helper function for loading and testing of specyfic neural network</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">artifactNN</span> <span class="o">=</span> <span class="n">CNN</span><span class="p">((</span><span class="mi">40</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="s2">&quot;./model/artifact/&quot;</span><span class="p">,</span> <span class="mi">156</span><span class="p">)</span>
+    <span class="n">artifactNN</span><span class="o">.</span><span class="n">load_model</span><span class="p">()</span>
+    <span class="n">artifactNN</span><span class="o">.</span><span class="n">add_test_images</span><span class="p">(</span><span class="s1">&#39;../artifact_test/&#39;</span><span class="p">)</span>
+    <span class="n">artifactNN</span><span class="o">.</span><span class="n">test_network</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="train_creatures_NN"><a class="viewcode-back" href="../../image_processing.html#image_processing.CNN_learning.train_creatures_NN">[docs]</a><span class="k">def</span> <span class="nf">train_creatures_NN</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    helper function for creating and training of specyfic neural network</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">CreatureNN</span> <span class="o">=</span> <span class="n">CNN</span><span class="p">((</span><span class="mi">17</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span><span class="s2">&quot;./model/creatures/&quot;</span><span class="p">,</span> <span class="mi">167</span><span class="p">)</span>
+    <span class="n">CreatureNN</span><span class="o">.</span><span class="n">add_learning_images</span><span class="p">(</span><span class="s1">&#39;../ds/&#39;</span><span class="p">)</span>
+    <span class="n">CreatureNN</span><span class="o">.</span><span class="n">add_test_images</span><span class="p">(</span><span class="s1">&#39;../ds_test/&#39;</span><span class="p">)</span>
+    <span class="n">CreatureNN</span><span class="o">.</span><span class="n">train_network</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="try_creatures_NN"><a class="viewcode-back" href="../../image_processing.html#image_processing.CNN_learning.try_creatures_NN">[docs]</a><span class="k">def</span> <span class="nf">try_creatures_NN</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    helper function for loading and testing of specyfic neural network</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">CreatureNN</span> <span class="o">=</span> <span class="n">CNN</span><span class="p">((</span><span class="mi">17</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span><span class="s2">&quot;./model/creatures/&quot;</span><span class="p">,</span> <span class="mi">167</span><span class="p">)</span>
+    <span class="n">CreatureNN</span><span class="o">.</span><span class="n">load_model</span><span class="p">()</span>
+    <span class="n">CreatureNN</span><span class="o">.</span><span class="n">add_test_images</span><span class="p">(</span><span class="s1">&#39;../ds_test/&#39;</span><span class="p">)</span>
+    <span class="n">CreatureNN</span><span class="o">.</span><span class="n">test_network</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="abomination"><a class="viewcode-back" href="../../image_processing.html#image_processing.CNN_learning.abomination">[docs]</a><span class="k">def</span> <span class="nf">abomination</span><span class="p">():</span> <span class="c1">#dont look at that, only for checking what errors from network we are receving</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    just dont</span>
+<span class="sd">    function created for finding which classes of output is giving most errors in first iteration of neural network based image recognition</span>
+
+<span class="sd">    :return: list containing each pair of bad predictions of network</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># CreatureNN = CNN((17, 9, 3), &quot;./model/creatures/&quot;, 167)</span>
+    <span class="c1"># CreatureNN.load_model()</span>
+    <span class="c1"># CreatureNN.add_test_images(&#39;../ds_test/&#39;)</span>
+    <span class="c1"># CreatureNN = DumbNN((38, 36, 1), &quot;./model/queue/&quot;, 166)</span>
+    <span class="c1"># CreatureNN.load_model()</span>
+    <span class="c1"># CreatureNN.add_test_images(&#39;../queue_test/&#39;)</span>
+    <span class="n">CreatureNN</span> <span class="o">=</span> <span class="n">CNN</span><span class="p">((</span><span class="mi">17</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="s2">&quot;./model/battle1/&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">CreatureNN</span><span class="o">.</span><span class="n">load_model</span><span class="p">()</span>
+    <span class="n">CreatureNN</span><span class="o">.</span><span class="n">add_test_images</span><span class="p">(</span><span class="s1">&#39;../battle1_test/&#39;</span><span class="p">)</span>
+
+    <span class="n">inv_map</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="p">:</span> <span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">CreatureNN</span><span class="o">.</span><span class="n">dictionary</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">154</span><span class="p">):</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">CreatureNN</span><span class="o">.</span><span class="n">test_images</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">CreatureNN</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">result2</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">154</span><span class="p">):</span>
+        <span class="n">result2</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="n">i</span><span class="p">])))</span>
+    <span class="n">result3</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">154</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">result2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">result3</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="n">result2</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="nb">map</span><span class="p">(</span><span class="n">inv_map</span><span class="o">.</span><span class="n">get</span><span class="p">,</span> <span class="n">result3</span><span class="p">)]</span>
+    <span class="n">real</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="nb">map</span><span class="p">(</span><span class="n">inv_map</span><span class="o">.</span><span class="n">get</span><span class="p">,</span> <span class="n">CreatureNN</span><span class="o">.</span><span class="n">test_labels</span><span class="p">)]</span>
+    <span class="n">errors</span> <span class="o">=</span> <span class="p">[[],</span> <span class="p">[]]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">154</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">result2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="n">real</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+            <span class="n">errors</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result2</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="n">errors</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">real</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">errors</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">a</span></div>
+
+
+<div class="viewcode-block" id="train_map_NN"><a class="viewcode-back" href="../../image_processing.html#image_processing.CNN_learning.train_map_NN">[docs]</a><span class="k">def</span> <span class="nf">train_map_NN</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    helper function for creating and training of specyfic neural network</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">mapNN</span> <span class="o">=</span> <span class="n">CNN</span><span class="p">((</span><span class="mi">11</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span><span class="s2">&quot;./model/map/&quot;</span><span class="p">,</span> <span class="mi">519</span><span class="p">)</span>
+    <span class="n">mapNN</span><span class="o">.</span><span class="n">add_learning_images</span><span class="p">(</span><span class="s1">&#39;../structures/&#39;</span><span class="p">)</span>
+    <span class="n">mapNN</span><span class="o">.</span><span class="n">add_test_images</span><span class="p">(</span><span class="s1">&#39;../structures_test/&#39;</span><span class="p">)</span>
+    <span class="n">mapNN</span><span class="o">.</span><span class="n">train_network</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="try_map_NN"><a class="viewcode-back" href="../../image_processing.html#image_processing.CNN_learning.try_map_NN">[docs]</a><span class="k">def</span> <span class="nf">try_map_NN</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    helper function for loading and testing of specyfic neural network</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">mapNN</span> <span class="o">=</span> <span class="n">CNN</span><span class="p">((</span><span class="mi">11</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span><span class="s2">&quot;./model/map/&quot;</span><span class="p">,</span> <span class="mi">519</span><span class="p">)</span>
+    <span class="n">mapNN</span><span class="o">.</span><span class="n">load_model</span><span class="p">()</span>
+    <span class="n">mapNN</span><span class="o">.</span><span class="n">add_test_images</span><span class="p">(</span><span class="s1">&#39;../structures_test/&#39;</span><span class="p">)</span>
+    <span class="n">mapNN</span><span class="o">.</span><span class="n">test_network</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="train_battle1_NN"><a class="viewcode-back" href="../../image_processing.html#image_processing.CNN_learning.train_battle1_NN">[docs]</a><span class="k">def</span> <span class="nf">train_battle1_NN</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    helper function for creating and training of specyfic neural network</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">CreatureNN</span> <span class="o">=</span> <span class="n">CNN</span><span class="p">((</span><span class="mi">17</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span><span class="s2">&quot;./model/battle1/&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">CreatureNN</span><span class="o">.</span><span class="n">add_learning_images</span><span class="p">(</span><span class="s1">&#39;../battle1/&#39;</span><span class="p">)</span>
+    <span class="n">CreatureNN</span><span class="o">.</span><span class="n">add_test_images</span><span class="p">(</span><span class="s1">&#39;../battle1_test/&#39;</span><span class="p">)</span>
+    <span class="n">CreatureNN</span><span class="o">.</span><span class="n">train_network</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="train_spells_NN"><a class="viewcode-back" href="../../image_processing.html#image_processing.CNN_learning.train_spells_NN">[docs]</a><span class="k">def</span> <span class="nf">train_spells_NN</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    helper function for creating and training of specyfic neural network</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">CreatureNN</span> <span class="o">=</span> <span class="n">DumbNN</span><span class="p">((</span><span class="mi">35</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="s2">&quot;image_processing/model/spells/&quot;</span><span class="p">,</span> <span class="mi">79</span><span class="p">)</span>
+    <span class="n">CreatureNN</span><span class="o">.</span><span class="n">add_learning_images</span><span class="p">(</span><span class="s1">&#39;./spells/&#39;</span><span class="p">)</span>
+    <span class="n">CreatureNN</span><span class="o">.</span><span class="n">add_test_images</span><span class="p">(</span><span class="s1">&#39;./spells_test/&#39;</span><span class="p">)</span>
+    <span class="n">CreatureNN</span><span class="o">.</span><span class="n">train_network</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="try_spells_NN"><a class="viewcode-back" href="../../image_processing.html#image_processing.CNN_learning.try_spells_NN">[docs]</a><span class="k">def</span> <span class="nf">try_spells_NN</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    helper function for loading and testing of specyfic neural network</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">CreatureNN</span> <span class="o">=</span> <span class="n">DumbNN</span><span class="p">((</span><span class="mi">35</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="s2">&quot;image_processing/model/spells/&quot;</span><span class="p">,</span> <span class="mi">79</span><span class="p">)</span>
+    <span class="n">CreatureNN</span><span class="o">.</span><span class="n">load_model</span><span class="p">()</span>
+    <span class="n">CreatureNN</span><span class="o">.</span><span class="n">add_test_images</span><span class="p">(</span><span class="s1">&#39;./spells_test/&#39;</span><span class="p">)</span>
+    <span class="n">CreatureNN</span><span class="o">.</span><span class="n">test_network</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="try_battle1_NN"><a class="viewcode-back" href="../../image_processing.html#image_processing.CNN_learning.try_battle1_NN">[docs]</a><span class="k">def</span> <span class="nf">try_battle1_NN</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    helper function for loading and testing of specyfic neural network</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">CreatureNN</span> <span class="o">=</span> <span class="n">CNN</span><span class="p">((</span><span class="mi">17</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span><span class="s2">&quot;./model/battle1/&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="n">CreatureNN</span><span class="o">.</span><span class="n">load_model</span><span class="p">()</span>
+    <span class="n">CreatureNN</span><span class="o">.</span><span class="n">add_test_images</span><span class="p">(</span><span class="s1">&#39;../battle1_test/&#39;</span><span class="p">)</span>
+    <span class="n">CreatureNN</span><span class="o">.</span><span class="n">test_network</span><span class="p">()</span></div>
+
+<span class="c1"># train_creatures_NN()</span>
+<span class="c1"># train_map_NN()</span>
+<span class="c1"># test = abomination()</span>
+<span class="c1"># print(1)</span>
+<span class="c1"># for dirname in os.listdir(&quot;../ds/&quot;):</span>
+<span class="c1">#     for filename in os.listdir(os.path.join(&quot;../ds/&quot;, dirname)):</span>
+<span class="c1">#         img = cv2.imread(os.path.join(&quot;../ds/&quot;, dirname, filename))</span>
+<span class="c1">#         if img is not None:</span>
+<span class="c1">#             cv2.imwrite(os.path.join(&quot;../battle1/creature/&quot;, filename),img)</span>
+<span class="c1"># train_battle1_NN()</span>
+<span class="c1"># a = abomination()</span>
+<span class="c1"># print(1)</span>
+
+<span class="c1">#train_spells_NN()</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Fryderyk Róg, Kacper Plesiak, Michał Gruba, Tymoteusz Skrzyński, Mateusz Comblik, Bartosz Szczepanek, Alan Konopko, Mateusz Mikszewicz, Daniel Bil, Piotr Łyczko.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

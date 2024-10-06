@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>town_upgrading package &mdash; HoMM3 Bot 2.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="save module" href="save.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> HoMM3 Bot
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">homm3-bot</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Adventure_AI.html">Adventure_AI package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GUI_handling.html">GUI_handling package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="battleAI.html">battleAI package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data.html">data package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_reader.html">file_reader package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hierarchyFunctions.html">hierarchyFunctions package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="image_processing.html">image_processing package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="main.html">main module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="map.html">map package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="path_finding_alghoritms.html">path_finding_alghoritms package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="save.html">save module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">town_upgrading package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-town_upgrading.castle_upgrade">town_upgrading.castle_upgrade module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#town_upgrading.castle_upgrade.build"><code class="docutils literal notranslate"><span class="pre">build()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#town_upgrading.castle_upgrade.castleUpgrade"><code class="docutils literal notranslate"><span class="pre">castleUpgrade()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#town_upgrading.castle_upgrade.resourceCheck"><code class="docutils literal notranslate"><span class="pre">resourceCheck()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-town_upgrading.choice_generator">town_upgrading.choice_generator module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#town_upgrading.choice_generator.MG"><code class="docutils literal notranslate"><span class="pre">MG()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#town_upgrading.choice_generator.city_hall"><code class="docutils literal notranslate"><span class="pre">city_hall()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#town_upgrading.choice_generator.fort"><code class="docutils literal notranslate"><span class="pre">fort()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#town_upgrading.choice_generator.full_unit_cost"><code class="docutils literal notranslate"><span class="pre">full_unit_cost()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#town_upgrading.choice_generator.habitat"><code class="docutils literal notranslate"><span class="pre">habitat()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#town_upgrading.choice_generator.other"><code class="docutils literal notranslate"><span class="pre">other()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#town_upgrading.choice_generator.town_choice"><code class="docutils literal notranslate"><span class="pre">town_choice()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#town_upgrading.choice_generator.upgrade"><code class="docutils literal notranslate"><span class="pre">upgrade()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-town_upgrading.conflux_upgrade">town_upgrading.conflux_upgrade module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#town_upgrading.conflux_upgrade.build"><code class="docutils literal notranslate"><span class="pre">build()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#town_upgrading.conflux_upgrade.confluxUpgrade"><code class="docutils literal notranslate"><span class="pre">confluxUpgrade()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#town_upgrading.conflux_upgrade.resourceCheck"><code class="docutils literal notranslate"><span class="pre">resourceCheck()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-town_upgrading.cove_upgrade">town_upgrading.cove_upgrade module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#town_upgrading.cove_upgrade.build"><code class="docutils literal notranslate"><span class="pre">build()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#town_upgrading.cove_upgrade.coveUpgrade"><code class="docutils literal notranslate"><span class="pre">coveUpgrade()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#town_upgrading.cove_upgrade.resourceCheck"><code class="docutils literal notranslate"><span class="pre">resourceCheck()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-town_upgrading.dungeon_upgrade">town_upgrading.dungeon_upgrade module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#town_upgrading.dungeon_upgrade.build"><code class="docutils literal notranslate"><span class="pre">build()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#town_upgrading.dungeon_upgrade.dungeonUpgrade"><code class="docutils literal notranslate"><span class="pre">dungeonUpgrade()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#town_upgrading.dungeon_upgrade.resourceCheck"><code class="docutils literal notranslate"><span class="pre">resourceCheck()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-town_upgrading.fortress_upgrade">town_upgrading.fortress_upgrade module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#town_upgrading.fortress_upgrade.build"><code class="docutils literal notranslate"><span class="pre">build()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#town_upgrading.fortress_upgrade.fortressUpgrade"><code class="docutils literal notranslate"><span class="pre">fortressUpgrade()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#town_upgrading.fortress_upgrade.resourceCheck"><code class="docutils literal notranslate"><span class="pre">resourceCheck()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-town_upgrading.inferno_upgrade">town_upgrading.inferno_upgrade module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#town_upgrading.inferno_upgrade.build"><code class="docutils literal notranslate"><span class="pre">build()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#town_upgrading.inferno_upgrade.infernoUpgrade"><code class="docutils literal notranslate"><span class="pre">infernoUpgrade()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#town_upgrading.inferno_upgrade.resourceCheck"><code class="docutils literal notranslate"><span class="pre">resourceCheck()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-town_upgrading.necropolis_upgrade">town_upgrading.necropolis_upgrade module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#town_upgrading.necropolis_upgrade.build"><code class="docutils literal notranslate"><span class="pre">build()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#town_upgrading.necropolis_upgrade.necropolisUpgrade"><code class="docutils literal notranslate"><span class="pre">necropolisUpgrade()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#town_upgrading.necropolis_upgrade.resourceCheck"><code class="docutils literal notranslate"><span class="pre">resourceCheck()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-town_upgrading.rampart_upgrade">town_upgrading.rampart_upgrade module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#town_upgrading.rampart_upgrade.build"><code class="docutils literal notranslate"><span class="pre">build()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#town_upgrading.rampart_upgrade.rampartUpgrade"><code class="docutils literal notranslate"><span class="pre">rampartUpgrade()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#town_upgrading.rampart_upgrade.resourceCheck"><code class="docutils literal notranslate"><span class="pre">resourceCheck()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-town_upgrading.stronghold_upgrade">town_upgrading.stronghold_upgrade module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#town_upgrading.stronghold_upgrade.build"><code class="docutils literal notranslate"><span class="pre">build()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#town_upgrading.stronghold_upgrade.resourceCheck"><code class="docutils literal notranslate"><span class="pre">resourceCheck()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#town_upgrading.stronghold_upgrade.strongholdUpgrade"><code class="docutils literal notranslate"><span class="pre">strongholdUpgrade()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-town_upgrading.tower_upgrade">town_upgrading.tower_upgrade module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#town_upgrading.tower_upgrade.build"><code class="docutils literal notranslate"><span class="pre">build()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#town_upgrading.tower_upgrade.resourceCheck"><code class="docutils literal notranslate"><span class="pre">resourceCheck()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#town_upgrading.tower_upgrade.towerUpgrade"><code class="docutils literal notranslate"><span class="pre">towerUpgrade()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-town_upgrading">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">HoMM3 Bot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">homm3-bot</a></li>
+      <li class="breadcrumb-item active">town_upgrading package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/town_upgrading.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="town-upgrading-package">
+<h1>town_upgrading package<a class="headerlink" href="#town-upgrading-package" title="Permalink to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-town_upgrading.castle_upgrade">
+<span id="town-upgrading-castle-upgrade-module"></span><h2>town_upgrading.castle_upgrade module<a class="headerlink" href="#module-town_upgrading.castle_upgrade" title="Permalink to this heading"></a></h2>
+<p>Script containing Castle castle upgrade algorithm</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="town_upgrading.castle_upgrade.build">
+<span class="sig-prename descclassname"><span class="pre">town_upgrading.castle_upgrade.</span></span><span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buildingCost</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">player</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.player_data.Player" title="data.player_data.Player"><span class="pre">Player</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/town_upgrading/castle_upgrade.html#build"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#town_upgrading.castle_upgrade.build" title="Permalink to this definition"></a></dt>
+<dd><p>Functions responsible for building and managing resources after construction
+:param buildingCost: Cost of the given building
+:param player: Resources of the player</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="town_upgrading.castle_upgrade.castleUpgrade">
+<span class="sig-prename descclassname"><span class="pre">town_upgrading.castle_upgrade.</span></span><span class="sig-name descname"><span class="pre">castleUpgrade</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">player</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">city</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/town_upgrading/castle_upgrade.html#castleUpgrade"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#town_upgrading.castle_upgrade.castleUpgrade" title="Permalink to this definition"></a></dt>
+<dd><p>Castle castle upgrade algorithm.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>player</strong> – Player object</p></li>
+<li><p><strong>city</strong> – city object</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="town_upgrading.castle_upgrade.resourceCheck">
+<span class="sig-prename descclassname"><span class="pre">town_upgrading.castle_upgrade.</span></span><span class="sig-name descname"><span class="pre">resourceCheck</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buildingCost</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.building.Cost" title="data.building.Cost"><span class="pre">Cost</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">player</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.player_data.Player" title="data.player_data.Player"><span class="pre">Player</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/town_upgrading/castle_upgrade.html#resourceCheck"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#town_upgrading.castle_upgrade.resourceCheck" title="Permalink to this definition"></a></dt>
+<dd><p>Checks if a player has enough resources to build.
+:param buildingCost: Cost of the given building
+:param player: Resources of the player
+:return: true or false</p>
+</dd></dl>
+
+</section>
+<section id="module-town_upgrading.choice_generator">
+<span id="town-upgrading-choice-generator-module"></span><h2>town_upgrading.choice_generator module<a class="headerlink" href="#module-town_upgrading.choice_generator" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="town_upgrading.choice_generator.MG">
+<span class="sig-prename descclassname"><span class="pre">town_upgrading.choice_generator.</span></span><span class="sig-name descname"><span class="pre">MG</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">town</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/town_upgrading/choice_generator.html#MG"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#town_upgrading.choice_generator.MG" title="Permalink to this definition"></a></dt>
+<dd><p>This function tells us whether we want to upgrade Mage Guild or not</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>town</strong> – Town being upgraded</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>boolean variable</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="town_upgrading.choice_generator.city_hall">
+<span class="sig-prename descclassname"><span class="pre">town_upgrading.choice_generator.</span></span><span class="sig-name descname"><span class="pre">city_hall</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">town</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">day</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/town_upgrading/choice_generator.html#city_hall"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#town_upgrading.choice_generator.city_hall" title="Permalink to this definition"></a></dt>
+<dd><p>function created to make decision whether we want to upgrade city hall or not. Possible extension of the function</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>town</strong> – </p></li>
+<li><p><strong>day</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>boolean variable</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="town_upgrading.choice_generator.fort">
+<span class="sig-prename descclassname"><span class="pre">town_upgrading.choice_generator.</span></span><span class="sig-name descname"><span class="pre">fort</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">day</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">income</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/town_upgrading/choice_generator.html#fort"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#town_upgrading.choice_generator.fort" title="Permalink to this definition"></a></dt>
+<dd><p>This function tells us whether we want to upgrade our fort or not</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>day</strong> – day of the week</p></li>
+<li><p><strong>income</strong> – player income</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>boolean variable</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="town_upgrading.choice_generator.full_unit_cost">
+<span class="sig-prename descclassname"><span class="pre">town_upgrading.choice_generator.</span></span><span class="sig-name descname"><span class="pre">full_unit_cost</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">town</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/town_upgrading/choice_generator.html#full_unit_cost"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#town_upgrading.choice_generator.full_unit_cost" title="Permalink to this definition"></a></dt>
+<dd><p>function that checks the max cost of all units that we are able to buy in a week without the cos of not bought units.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>town</strong> – Town in which we want to buy units</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>cost of units</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="town_upgrading.choice_generator.habitat">
+<span class="sig-prename descclassname"><span class="pre">town_upgrading.choice_generator.</span></span><span class="sig-name descname"><span class="pre">habitat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">town</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/town_upgrading/choice_generator.html#habitat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#town_upgrading.choice_generator.habitat" title="Permalink to this definition"></a></dt>
+<dd><p>This function tells us whether we want to buy next dwelling or not.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>town</strong> – Town being upgraded</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>boolean variable</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="town_upgrading.choice_generator.other">
+<span class="sig-prename descclassname"><span class="pre">town_upgrading.choice_generator.</span></span><span class="sig-name descname"><span class="pre">other</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">town</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">player</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/town_upgrading/choice_generator.html#other"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#town_upgrading.choice_generator.other" title="Permalink to this definition"></a></dt>
+<dd><p>This function tells us whether we want to upgrade buildings like (Blacksmith, market…)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>town</strong> – Town being upgrade</p></li>
+<li><p><strong>player</strong> – class Player</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>boolean variable</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="town_upgrading.choice_generator.town_choice">
+<span class="sig-prename descclassname"><span class="pre">town_upgrading.choice_generator.</span></span><span class="sig-name descname"><span class="pre">town_choice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">player</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.player_data.Player" title="data.player_data.Player"><span class="pre">Player</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">town</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/town_upgrading/choice_generator.html#town_choice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#town_upgrading.choice_generator.town_choice" title="Permalink to this definition"></a></dt>
+<dd><p>This function is used in upgrading of all towns. It tells our bot what buildings it can upgrade and when</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>player</strong> – </p></li>
+<li><p><strong>town</strong> – The city that is being upgraded</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>boolean variables which correspond to the type of building we want to upgrade</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="town_upgrading.choice_generator.upgrade">
+<span class="sig-prename descclassname"><span class="pre">town_upgrading.choice_generator.</span></span><span class="sig-name descname"><span class="pre">upgrade</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">town</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/town_upgrading/choice_generator.html#upgrade"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#town_upgrading.choice_generator.upgrade" title="Permalink to this definition"></a></dt>
+<dd><p>This function tells us whether we want to upgrade our dwellings or not.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>town</strong> – Town being upgraded</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>boolean variable</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-town_upgrading.conflux_upgrade">
+<span id="town-upgrading-conflux-upgrade-module"></span><h2>town_upgrading.conflux_upgrade module<a class="headerlink" href="#module-town_upgrading.conflux_upgrade" title="Permalink to this heading"></a></h2>
+<p>Script containing Conflux castle upgrade algorithm</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="town_upgrading.conflux_upgrade.build">
+<span class="sig-prename descclassname"><span class="pre">town_upgrading.conflux_upgrade.</span></span><span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buildingCost</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.building.Cost" title="data.building.Cost"><span class="pre">Cost</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">player</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.player_data.Player" title="data.player_data.Player"><span class="pre">Player</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/town_upgrading/conflux_upgrade.html#build"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#town_upgrading.conflux_upgrade.build" title="Permalink to this definition"></a></dt>
+<dd><p>Functions responsible for building and managing resources after construction
+:param buildingCost: Cost of the given building
+:param player: Resources of the player</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="town_upgrading.conflux_upgrade.confluxUpgrade">
+<span class="sig-prename descclassname"><span class="pre">town_upgrading.conflux_upgrade.</span></span><span class="sig-name descname"><span class="pre">confluxUpgrade</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">player</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.player_data.Player" title="data.player_data.Player"><span class="pre">Player</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">city</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/town_upgrading/conflux_upgrade.html#confluxUpgrade"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#town_upgrading.conflux_upgrade.confluxUpgrade" title="Permalink to this definition"></a></dt>
+<dd><p>Conflux castle upgrade algorithm.
+:param player: Player object
+:param city: Conflux object
+:return: None</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="town_upgrading.conflux_upgrade.resourceCheck">
+<span class="sig-prename descclassname"><span class="pre">town_upgrading.conflux_upgrade.</span></span><span class="sig-name descname"><span class="pre">resourceCheck</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buildingCost</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.building.Cost" title="data.building.Cost"><span class="pre">Cost</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">player</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.player_data.Player" title="data.player_data.Player"><span class="pre">Player</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/town_upgrading/conflux_upgrade.html#resourceCheck"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#town_upgrading.conflux_upgrade.resourceCheck" title="Permalink to this definition"></a></dt>
+<dd><p>Checks if a player has enough resources to build.
+:param buildingCost: Cost of the given building
+:param player: Resources of the player
+:return: true or false</p>
+</dd></dl>
+
+</section>
+<section id="module-town_upgrading.cove_upgrade">
+<span id="town-upgrading-cove-upgrade-module"></span><h2>town_upgrading.cove_upgrade module<a class="headerlink" href="#module-town_upgrading.cove_upgrade" title="Permalink to this heading"></a></h2>
+<p>Script containing Cove castle upgrade algorithm</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="town_upgrading.cove_upgrade.build">
+<span class="sig-prename descclassname"><span class="pre">town_upgrading.cove_upgrade.</span></span><span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buildingCost</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.building.Cost" title="data.building.Cost"><span class="pre">Cost</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">player</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.player_data.Player" title="data.player_data.Player"><span class="pre">Player</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/town_upgrading/cove_upgrade.html#build"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#town_upgrading.cove_upgrade.build" title="Permalink to this definition"></a></dt>
+<dd><p>Functions responsible for building and managing resources after construction
+:param buildingCost: Cost of the given building
+:param player: Resources of the player</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="town_upgrading.cove_upgrade.coveUpgrade">
+<span class="sig-prename descclassname"><span class="pre">town_upgrading.cove_upgrade.</span></span><span class="sig-name descname"><span class="pre">coveUpgrade</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">player</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cove</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/town_upgrading/cove_upgrade.html#coveUpgrade"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#town_upgrading.cove_upgrade.coveUpgrade" title="Permalink to this definition"></a></dt>
+<dd><p>Cove castle upgrade algorithm.
+:param player: Player object
+:param cove: Cove object
+:return: None</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="town_upgrading.cove_upgrade.resourceCheck">
+<span class="sig-prename descclassname"><span class="pre">town_upgrading.cove_upgrade.</span></span><span class="sig-name descname"><span class="pre">resourceCheck</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buildingCost</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.building.Cost" title="data.building.Cost"><span class="pre">Cost</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">player</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.player_data.Player" title="data.player_data.Player"><span class="pre">Player</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/town_upgrading/cove_upgrade.html#resourceCheck"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#town_upgrading.cove_upgrade.resourceCheck" title="Permalink to this definition"></a></dt>
+<dd><p>Checks if a player has enough resources to build.
+:param buildingCost: Cost of the given building
+:param player: Resources of the player
+:return: true or false</p>
+</dd></dl>
+
+</section>
+<section id="module-town_upgrading.dungeon_upgrade">
+<span id="town-upgrading-dungeon-upgrade-module"></span><h2>town_upgrading.dungeon_upgrade module<a class="headerlink" href="#module-town_upgrading.dungeon_upgrade" title="Permalink to this heading"></a></h2>
+<p>Script containing Dungeon castle upgrade algorithm</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="town_upgrading.dungeon_upgrade.build">
+<span class="sig-prename descclassname"><span class="pre">town_upgrading.dungeon_upgrade.</span></span><span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buildingCost</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.building.Cost" title="data.building.Cost"><span class="pre">Cost</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">player</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.player_data.Player" title="data.player_data.Player"><span class="pre">Player</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/town_upgrading/dungeon_upgrade.html#build"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#town_upgrading.dungeon_upgrade.build" title="Permalink to this definition"></a></dt>
+<dd><p>Functions responsible for building and managing resources after construction
+:param buildingCost: Cost of the given building
+:param player: Resources of the player</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="town_upgrading.dungeon_upgrade.dungeonUpgrade">
+<span class="sig-prename descclassname"><span class="pre">town_upgrading.dungeon_upgrade.</span></span><span class="sig-name descname"><span class="pre">dungeonUpgrade</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">player</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.player_data.Player" title="data.player_data.Player"><span class="pre">Player</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">city</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/town_upgrading/dungeon_upgrade.html#dungeonUpgrade"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#town_upgrading.dungeon_upgrade.dungeonUpgrade" title="Permalink to this definition"></a></dt>
+<dd><p>Dungeon castle upgrade algorithm.
+:param player: Player object
+:param city: Dungeon object
+:return: None</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="town_upgrading.dungeon_upgrade.resourceCheck">
+<span class="sig-prename descclassname"><span class="pre">town_upgrading.dungeon_upgrade.</span></span><span class="sig-name descname"><span class="pre">resourceCheck</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buildingCost</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.building.Cost" title="data.building.Cost"><span class="pre">Cost</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">player</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.player_data.Player" title="data.player_data.Player"><span class="pre">Player</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/town_upgrading/dungeon_upgrade.html#resourceCheck"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#town_upgrading.dungeon_upgrade.resourceCheck" title="Permalink to this definition"></a></dt>
+<dd><p>Checks if a player has enough resources to build.
+:param buildingCost: Cost of the given building
+:param player: Resources of the player
+:return: true or false</p>
+</dd></dl>
+
+</section>
+<section id="module-town_upgrading.fortress_upgrade">
+<span id="town-upgrading-fortress-upgrade-module"></span><h2>town_upgrading.fortress_upgrade module<a class="headerlink" href="#module-town_upgrading.fortress_upgrade" title="Permalink to this heading"></a></h2>
+<p>Script containing Fortress castle upgrade algorithm</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="town_upgrading.fortress_upgrade.build">
+<span class="sig-prename descclassname"><span class="pre">town_upgrading.fortress_upgrade.</span></span><span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buildingCost</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.building.Cost" title="data.building.Cost"><span class="pre">Cost</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">player</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.player_data.Player" title="data.player_data.Player"><span class="pre">Player</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/town_upgrading/fortress_upgrade.html#build"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#town_upgrading.fortress_upgrade.build" title="Permalink to this definition"></a></dt>
+<dd><p>Functions responsible for building and managing resources after construction
+:param buildingCost: Cost of the given building
+:param player: Resources of the player</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="town_upgrading.fortress_upgrade.fortressUpgrade">
+<span class="sig-prename descclassname"><span class="pre">town_upgrading.fortress_upgrade.</span></span><span class="sig-name descname"><span class="pre">fortressUpgrade</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">player</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">city</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/town_upgrading/fortress_upgrade.html#fortressUpgrade"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#town_upgrading.fortress_upgrade.fortressUpgrade" title="Permalink to this definition"></a></dt>
+<dd><p>Fortress castle upgrade algorithm.
+:param player: player object
+:param city: Fortress object
+:return: None</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="town_upgrading.fortress_upgrade.resourceCheck">
+<span class="sig-prename descclassname"><span class="pre">town_upgrading.fortress_upgrade.</span></span><span class="sig-name descname"><span class="pre">resourceCheck</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buildingCost</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.building.Cost" title="data.building.Cost"><span class="pre">Cost</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">player</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.player_data.Player" title="data.player_data.Player"><span class="pre">Player</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/town_upgrading/fortress_upgrade.html#resourceCheck"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#town_upgrading.fortress_upgrade.resourceCheck" title="Permalink to this definition"></a></dt>
+<dd><p>Checks if a player has enough resources to build.
+:param buildingCost: Cost of the given building
+:param player: Resources of the player
+:return: true or false</p>
+</dd></dl>
+
+</section>
+<section id="module-town_upgrading.inferno_upgrade">
+<span id="town-upgrading-inferno-upgrade-module"></span><h2>town_upgrading.inferno_upgrade module<a class="headerlink" href="#module-town_upgrading.inferno_upgrade" title="Permalink to this heading"></a></h2>
+<p>Script containing Inferno castle upgrade algorithm</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="town_upgrading.inferno_upgrade.build">
+<span class="sig-prename descclassname"><span class="pre">town_upgrading.inferno_upgrade.</span></span><span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buildingCost</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.building.Cost" title="data.building.Cost"><span class="pre">Cost</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">player</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.player_data.Player" title="data.player_data.Player"><span class="pre">Player</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/town_upgrading/inferno_upgrade.html#build"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#town_upgrading.inferno_upgrade.build" title="Permalink to this definition"></a></dt>
+<dd><p>Functions responsible for building and managing resources after construction
+:param buildingCost: Cost of the given building
+:param player: Resources of the player</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="town_upgrading.inferno_upgrade.infernoUpgrade">
+<span class="sig-prename descclassname"><span class="pre">town_upgrading.inferno_upgrade.</span></span><span class="sig-name descname"><span class="pre">infernoUpgrade</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">player</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">city</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/town_upgrading/inferno_upgrade.html#infernoUpgrade"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#town_upgrading.inferno_upgrade.infernoUpgrade" title="Permalink to this definition"></a></dt>
+<dd><p>Inferno castle upgrade algorithm.
+:param player: player object
+:param city: Inferno object
+:return: None</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="town_upgrading.inferno_upgrade.resourceCheck">
+<span class="sig-prename descclassname"><span class="pre">town_upgrading.inferno_upgrade.</span></span><span class="sig-name descname"><span class="pre">resourceCheck</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buildingCost</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.building.Cost" title="data.building.Cost"><span class="pre">Cost</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">player</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.player_data.Player" title="data.player_data.Player"><span class="pre">Player</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/town_upgrading/inferno_upgrade.html#resourceCheck"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#town_upgrading.inferno_upgrade.resourceCheck" title="Permalink to this definition"></a></dt>
+<dd><p>Checks if a player has enough resources to build.
+:param buildingCost: Cost of the given building
+:param player: Resources of the player
+:return: true or false</p>
+</dd></dl>
+
+</section>
+<section id="module-town_upgrading.necropolis_upgrade">
+<span id="town-upgrading-necropolis-upgrade-module"></span><h2>town_upgrading.necropolis_upgrade module<a class="headerlink" href="#module-town_upgrading.necropolis_upgrade" title="Permalink to this heading"></a></h2>
+<p>Script containing Necropolis castle upgrade alghoritm</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="town_upgrading.necropolis_upgrade.build">
+<span class="sig-prename descclassname"><span class="pre">town_upgrading.necropolis_upgrade.</span></span><span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buildingCost</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">player</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/town_upgrading/necropolis_upgrade.html#build"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#town_upgrading.necropolis_upgrade.build" title="Permalink to this definition"></a></dt>
+<dd><p>Functions responsible for building and managing resources after construction
+:param buildingCost: Cost of the given building
+:param player: Resources of the player</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="town_upgrading.necropolis_upgrade.necropolisUpgrade">
+<span class="sig-prename descclassname"><span class="pre">town_upgrading.necropolis_upgrade.</span></span><span class="sig-name descname"><span class="pre">necropolisUpgrade</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">player</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">necropolis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/town_upgrading/necropolis_upgrade.html#necropolisUpgrade"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#town_upgrading.necropolis_upgrade.necropolisUpgrade" title="Permalink to this definition"></a></dt>
+<dd><p>Necropolis castle upgrade alghoritm.
+:param player: player object
+:param necropolis: Necropolis object
+:return: None</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="town_upgrading.necropolis_upgrade.resourceCheck">
+<span class="sig-prename descclassname"><span class="pre">town_upgrading.necropolis_upgrade.</span></span><span class="sig-name descname"><span class="pre">resourceCheck</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buildingCost</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">player</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.player_data.Player" title="data.player_data.Player"><span class="pre">Player</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/town_upgrading/necropolis_upgrade.html#resourceCheck"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#town_upgrading.necropolis_upgrade.resourceCheck" title="Permalink to this definition"></a></dt>
+<dd><p>Checks if a player has enough resources to build.
+:param buildingCost: Cost of the given building
+:param player: Resources of the player
+:return: true or false</p>
+</dd></dl>
+
+</section>
+<section id="module-town_upgrading.rampart_upgrade">
+<span id="town-upgrading-rampart-upgrade-module"></span><h2>town_upgrading.rampart_upgrade module<a class="headerlink" href="#module-town_upgrading.rampart_upgrade" title="Permalink to this heading"></a></h2>
+<p>Script containing Rampart castle upgrade algorithm</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="town_upgrading.rampart_upgrade.build">
+<span class="sig-prename descclassname"><span class="pre">town_upgrading.rampart_upgrade.</span></span><span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buildingCost</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.building.Cost" title="data.building.Cost"><span class="pre">Cost</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">player</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.player_data.Player" title="data.player_data.Player"><span class="pre">Player</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/town_upgrading/rampart_upgrade.html#build"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#town_upgrading.rampart_upgrade.build" title="Permalink to this definition"></a></dt>
+<dd><p>Functions responsible for building and managing resources after construction
+:param buildingCost: Cost of the given building
+:param player: Resources of the player</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="town_upgrading.rampart_upgrade.rampartUpgrade">
+<span class="sig-prename descclassname"><span class="pre">town_upgrading.rampart_upgrade.</span></span><span class="sig-name descname"><span class="pre">rampartUpgrade</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">player</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.player_data.Player" title="data.player_data.Player"><span class="pre">Player</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">city</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/town_upgrading/rampart_upgrade.html#rampartUpgrade"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#town_upgrading.rampart_upgrade.rampartUpgrade" title="Permalink to this definition"></a></dt>
+<dd><p>Rampart castle upgrade algorithm.
+:param player: Player object
+:param city: Rampart object
+:return: None</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="town_upgrading.rampart_upgrade.resourceCheck">
+<span class="sig-prename descclassname"><span class="pre">town_upgrading.rampart_upgrade.</span></span><span class="sig-name descname"><span class="pre">resourceCheck</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buildingCost</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.building.Cost" title="data.building.Cost"><span class="pre">Cost</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">player</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.player_data.Player" title="data.player_data.Player"><span class="pre">Player</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/town_upgrading/rampart_upgrade.html#resourceCheck"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#town_upgrading.rampart_upgrade.resourceCheck" title="Permalink to this definition"></a></dt>
+<dd><p>Checks if a player has enough resources to build.
+:param buildingCost: Cost of the given building
+:param player: Resources of the player
+:return: true or false</p>
+</dd></dl>
+
+</section>
+<section id="module-town_upgrading.stronghold_upgrade">
+<span id="town-upgrading-stronghold-upgrade-module"></span><h2>town_upgrading.stronghold_upgrade module<a class="headerlink" href="#module-town_upgrading.stronghold_upgrade" title="Permalink to this heading"></a></h2>
+<p>Script containing Stronghold castle upgrade algorithm</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="town_upgrading.stronghold_upgrade.build">
+<span class="sig-prename descclassname"><span class="pre">town_upgrading.stronghold_upgrade.</span></span><span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buildingCost</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.building.Cost" title="data.building.Cost"><span class="pre">Cost</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">player</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.player_data.Player" title="data.player_data.Player"><span class="pre">Player</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/town_upgrading/stronghold_upgrade.html#build"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#town_upgrading.stronghold_upgrade.build" title="Permalink to this definition"></a></dt>
+<dd><p>Functions responsible for building and managing resources after construction</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>buildingCost</strong> – Cost of the given building</p></li>
+<li><p><strong>player</strong> – Resources of the player</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="town_upgrading.stronghold_upgrade.resourceCheck">
+<span class="sig-prename descclassname"><span class="pre">town_upgrading.stronghold_upgrade.</span></span><span class="sig-name descname"><span class="pre">resourceCheck</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buildingCost</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.building.Cost" title="data.building.Cost"><span class="pre">Cost</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">player</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.player_data.Player" title="data.player_data.Player"><span class="pre">Player</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/town_upgrading/stronghold_upgrade.html#resourceCheck"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#town_upgrading.stronghold_upgrade.resourceCheck" title="Permalink to this definition"></a></dt>
+<dd><p>Checks if a player has enough resources to build.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>buildingCost</strong> – Cost of the given building</p></li>
+<li><p><strong>player</strong> – Resources of the player</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>true or false</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="town_upgrading.stronghold_upgrade.strongholdUpgrade">
+<span class="sig-prename descclassname"><span class="pre">town_upgrading.stronghold_upgrade.</span></span><span class="sig-name descname"><span class="pre">strongholdUpgrade</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">player</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">city</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/town_upgrading/stronghold_upgrade.html#strongholdUpgrade"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#town_upgrading.stronghold_upgrade.strongholdUpgrade" title="Permalink to this definition"></a></dt>
+<dd><p>Stronghold castle upgrade algorithm.
+:param player: Player object
+:param city: Stronghold object
+:return: None</p>
+</dd></dl>
+
+</section>
+<section id="module-town_upgrading.tower_upgrade">
+<span id="town-upgrading-tower-upgrade-module"></span><h2>town_upgrading.tower_upgrade module<a class="headerlink" href="#module-town_upgrading.tower_upgrade" title="Permalink to this heading"></a></h2>
+<p>Script containing Tower castle upgrade algorithm</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="town_upgrading.tower_upgrade.build">
+<span class="sig-prename descclassname"><span class="pre">town_upgrading.tower_upgrade.</span></span><span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buildingCost</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.building.Cost" title="data.building.Cost"><span class="pre">Cost</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">player</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.player_data.Player" title="data.player_data.Player"><span class="pre">Player</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/town_upgrading/tower_upgrade.html#build"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#town_upgrading.tower_upgrade.build" title="Permalink to this definition"></a></dt>
+<dd><p>Functions responsible for building and managing resources after construction
+:param buildingCost: Cost of the given building
+:param player: Resources of the player</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="town_upgrading.tower_upgrade.resourceCheck">
+<span class="sig-prename descclassname"><span class="pre">town_upgrading.tower_upgrade.</span></span><span class="sig-name descname"><span class="pre">resourceCheck</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buildingCost</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.building.Cost" title="data.building.Cost"><span class="pre">Cost</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">player</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.player_data.Player" title="data.player_data.Player"><span class="pre">Player</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/town_upgrading/tower_upgrade.html#resourceCheck"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#town_upgrading.tower_upgrade.resourceCheck" title="Permalink to this definition"></a></dt>
+<dd><p>Checks if a player has enough resources to build.
+:param buildingCost: Cost of the given building
+:param player: Resources of the player
+:return: true or false</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="town_upgrading.tower_upgrade.towerUpgrade">
+<span class="sig-prename descclassname"><span class="pre">town_upgrading.tower_upgrade.</span></span><span class="sig-name descname"><span class="pre">towerUpgrade</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">player</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.player_data.Player" title="data.player_data.Player"><span class="pre">Player</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">city</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/town_upgrading/tower_upgrade.html#towerUpgrade"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#town_upgrading.tower_upgrade.towerUpgrade" title="Permalink to this definition"></a></dt>
+<dd><p>Tower castle upgrade algorithm.
+:param player: Player object
+:param city: Tower object
+:return: None</p>
+</dd></dl>
+
+</section>
+<section id="module-town_upgrading">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-town_upgrading" title="Permalink to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="save.html" class="btn btn-neutral float-left" title="save module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Fryderyk Róg, Kacper Plesiak, Michał Gruba, Tymoteusz Skrzyński, Mateusz Comblik, Bartosz Szczepanek, Alan Konopko, Mateusz Mikszewicz, Daniel Bil, Piotr Łyczko.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

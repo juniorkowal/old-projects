@@ -1,0 +1,101 @@
+image\_processing package
+=========================
+
+Submodules
+----------
+
+image\_processing.CNN\_learning module
+--------------------------------------
+
+.. automodule:: image_processing.CNN_learning
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+image\_processing.adventure\_image\_processing module
+-----------------------------------------------------
+
+.. automodule:: image_processing.adventure_image_processing
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+image\_processing.battle\_image\_processing module
+--------------------------------------------------
+
+.. automodule:: image_processing.battle_image_processing
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+image\_processing.blue\_hero module
+-----------------------------------
+
+.. automodule:: image_processing.blue_hero
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+image\_processing.detecting\_window module
+------------------------------------------
+
+.. automodule:: image_processing.detecting_window
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+image\_processing.dictionaries module
+-------------------------------------
+
+.. automodule:: image_processing.dictionaries
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+image\_processing.hero\_filling module
+--------------------------------------
+
+.. automodule:: image_processing.hero_filling
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+image\_processing.ocr module
+----------------------------
+
+.. automodule:: image_processing.ocr
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+image\_processing.ocr\_dict module
+----------------------------------
+
+.. automodule:: image_processing.ocr_dict
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+image\_processing.ok\_detection module
+--------------------------------------
+
+.. automodule:: image_processing.ok_detection
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+image\_processing.screen\_slicing module
+----------------------------------------
+
+.. automodule:: image_processing.screen_slicing
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: image_processing
+   :members:
+   :undoc-members:
+   :show-inheritance:

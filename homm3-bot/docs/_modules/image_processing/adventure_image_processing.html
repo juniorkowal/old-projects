@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>image_processing.adventure_image_processing &mdash; HoMM3 Bot 2.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> HoMM3 Bot
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">homm3-bot</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">HoMM3 Bot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">image_processing.adventure_image_processing</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for image_processing.adventure_image_processing</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Module responsible for image processing in the adventure map department&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">colorama</span> <span class="kn">import</span> <span class="n">Fore</span>
+<span class="kn">import</span> <span class="nn">win32gui</span>
+<span class="kn">import</span> <span class="nn">win32ui</span>
+<span class="kn">from</span> <span class="nn">colorama</span> <span class="kn">import</span> <span class="n">Fore</span>
+<span class="kn">from</span> <span class="nn">mss</span> <span class="kn">import</span> <span class="n">mss</span>
+<span class="kn">import</span> <span class="nn">GUI_handling.AdventureGUI</span>
+<span class="kn">from</span> <span class="nn">GUI_handling</span> <span class="kn">import</span> <span class="n">AdventureGUI</span>
+<span class="kn">from</span> <span class="nn">data.player_data</span> <span class="kn">import</span> <span class="n">Player</span>
+<span class="kn">from</span> <span class="nn">image_processing.CNN_learning</span> <span class="kn">import</span> <span class="n">CNN</span>
+<span class="kn">from</span> <span class="nn">image_processing.blue_hero</span> <span class="kn">import</span> <span class="n">check_if_blue_hero_exists</span>
+<span class="kn">from</span> <span class="nn">image_processing.screen_slicing</span> <span class="kn">import</span> <span class="n">take_console</span>
+<span class="kn">import</span> <span class="nn">cv2</span><span class="o">,</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">image_processing.ocr</span> <span class="kn">import</span> <span class="n">read_generic_text</span>
+<span class="kn">from</span> <span class="nn">difflib</span> <span class="kn">import</span> <span class="n">get_close_matches</span>
+<span class="kn">from</span> <span class="nn">image_processing.ocr_dict</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">image_processing.screen_slicing</span> <span class="kn">import</span> <span class="n">ScreenStorage</span><span class="p">,</span> <span class="n">take_small_map</span>
+<span class="kn">from</span> <span class="nn">skimage.metrics</span> <span class="kn">import</span> <span class="n">structural_similarity</span> <span class="k">as</span> <span class="n">ssim</span>
+
+
+<span class="c1"># def initialize_BNN():</span>
+<span class="c1">#     BNN = CNN((11, 11, 3), &quot;./model/map/&quot;, 519)</span>
+<span class="c1">#     BNN.load_model()</span>
+<span class="c1">#     return BNN</span>
+
+
+<span class="c1"># def predict_map(map: CNN, screen: ScreenStorage):</span>
+<span class="c1">#     screen.take_adventure_map()</span>
+<span class="c1">#     adv_map = map.model.predict(screen.cells, batch_size=1560)</span>
+<span class="c1">#     adv_map2 = []</span>
+<span class="c1">#     for i in range(1560):</span>
+<span class="c1">#         adv_map2.append(int((np.where(adv_map[i] == np.amax(adv_map[i])))[0]))</span>
+<span class="c1">#     return adv_map2</span>
+
+
+<span class="c1"># def fill_adv_map(cells):</span>
+<span class="c1">#     cells = np.array(cells)</span>
+<span class="c1">#     cells = np.array([*map(map_dict.get, cells)])</span>
+<span class="c1">#     pack = np.ones((30, 52))</span>
+<span class="c1">#     cells = cells.reshape(30, 52)</span>
+<span class="c1">#     return cells</span>
+
+
+<span class="c1"># def turn(map: CNN, screen: ScreenStorage):</span>
+<span class="c1">#     map = predict_map(map, screen)</span>
+<span class="c1">#     map2 = fill_adv_map(map)</span>
+<span class="c1">#     return map2h</span>
+
+
+<span class="c1"># def matching_adventure(template_list, screen):</span>
+<span class="c1">#     smallpoints = np.zeros((52, 30))</span>
+<span class="c1">#     positions = []</span>
+<span class="c1">#     max_val_locations = []  # list of tuples indicating where values above a certain threshold are stored.</span>
+<span class="c1">#     screen.take_battle_templates()</span>
+<span class="c1">#     for template in template_list:</span>
+<span class="c1">#         img = screen.screen.copy()</span>
+<span class="c1">#         method = eval(&quot;cv2.TM_CCOEFF_NORMED&quot;)</span>
+<span class="c1">#         res = cv2.matchTemplate(img, template, method)</span>
+<span class="c1">#         for i in range(52):  # taking only points that are connected to hexes on map</span>
+<span class="c1">#             for j in range(30):</span>
+<span class="c1">#                 smallpoints[i, j] = np.amax(res[5 + 32 * j - 5:5 + 32 * j + 5, 5 + 32 * i - 5:5 + 32 * i + 5])</span>
+<span class="c1">#</span>
+<span class="c1">#         for i in range(52):  # this is responsible for finding and saving locations of highest values in</span>
+<span class="c1">#             for j in range(30):  # smallpoints array. Threshold 0.9 is applied.</span>
+<span class="c1">#                 if smallpoints[i, j] &gt; 0.9:</span>
+<span class="c1">#                     max_val_locations.append((i, j))</span>
+<span class="c1">#</span>
+<span class="c1">#         # I kinda dont know what to do now :/</span>
+<span class="c1">#         &quot;&quot;&quot;</span>
+<span class="c1">#         if max_val &gt; 0.3:  # it should take only real positions and ignore all later units, value needs change and some work on templates to better differentiate real units from terrain</span>
+<span class="c1">#             top_left = max_loc</span>
+<span class="c1">#             min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)</span>
+<span class="c1">#             top = max_loc</span>
+<span class="c1">#             bottom_right = (top[0] + 45, top[1] + 85)</span>
+<span class="c1">#             cv2.rectangle(screen.screen, top, bottom_right, (100, 100, 100),</span>
+<span class="c1">#                           -1)  # change to image to eliminate unit which is detected by this match</span>
+<span class="c1">#             positions.append(top_left)</span>
+<span class="c1">#             i = i + 1</span>
+<span class="c1">#         else:</span>
+<span class="c1">#             i = i + 1</span>
+<span class="c1">#             positions.append((-1,-1))</span>
+<span class="c1">#         &quot;&quot;&quot;</span>
+<span class="c1">#     return max_val_locations</span>
+
+
+<span class="c1"># def template_adventure(</span>
+<span class="c1">#         screen: ScreenStorage):  # needs some change for later turns, simple check for minimal value of match instead taking only units before next turn</span>
+<span class="c1">#</span>
+<span class="c1">#     templates = []</span>
+<span class="c1">#     template_list = []</span>
+<span class="c1">#     for filename in os.listdir(os.path.join(&quot;template/&quot;)):</span>
+<span class="c1">#         img = cv2.imread(os.path.join(&quot;template/&quot;, filename))</span>
+<span class="c1">#         templates.append(img)</span>
+<span class="c1">#</span>
+<span class="c1">#     pos = []</span>
+<span class="c1">#     # 2 checks for eliminating errors from animating units</span>
+<span class="c1">#     first = matching_adventure(template_list, screen)</span>
+<span class="c1">#     time.sleep(0.5)</span>
+<span class="c1">#     second = matching_adventure(template_list, screen)</span>
+<span class="c1">#     for i in range(len(first)):</span>
+<span class="c1">#         if first[i][0] == -1:</span>
+<span class="c1">#             pos.append(second[i])</span>
+<span class="c1">#         else:</span>
+<span class="c1">#             pos.append(first[i])</span>
+
+
+<span class="c1"># bnn = initialize_BNN()</span>
+<span class="c1"># screen = ScreenStorage()</span>
+<span class="c1"># time.sleep(5)</span>
+<span class="c1"># out = turn(bnn,screen)</span>
+<span class="c1"># print(1)</span>
+
+<div class="viewcode-block" id="detect_thing_ocr"><a class="viewcode-back" href="../../image_processing.html#image_processing.adventure_image_processing.detect_thing_ocr">[docs]</a><span class="k">def</span> <span class="nf">detect_thing_ocr</span><span class="p">(</span><span class="n">player</span><span class="p">:</span> <span class="n">Player</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">drillMouse</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    function detecting objects with usage of ocr</span>
+
+<span class="sd">    :param drillMouse: (bool) makes some mouse shakes before the detection</span>
+<span class="sd">    :param player: player object</span>
+<span class="sd">    :param position: position of object</span>
+<span class="sd">    :param type: type of object we are pointing to</span>
+<span class="sd">    :return: detected object</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">relative_X</span> <span class="o">=</span> <span class="n">position</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">player</span><span class="o">.</span><span class="n">camera</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">relative_Y</span> <span class="o">=</span> <span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">player</span><span class="o">.</span><span class="n">camera</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="nb">type</span> <span class="o">!=</span> <span class="s2">&quot;Castle&quot;</span> <span class="k">else</span> <span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">player</span><span class="o">.</span><span class="n">camera</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="n">camera_to_position</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">relative_X</span><span class="p">,</span> <span class="n">relative_Y</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.08</span><span class="p">)</span>
+    <span class="n">img</span> <span class="o">=</span> <span class="n">take_console</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">drillMouse</span><span class="p">:</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="n">GUI_handling</span><span class="o">.</span><span class="n">AdventureGUI</span><span class="o">.</span><span class="n">move_mouse_by_pixel_relative</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="n">GUI_handling</span><span class="o">.</span><span class="n">AdventureGUI</span><span class="o">.</span><span class="n">move_mouse_by_pixel_relative</span><span class="p">(</span><span class="o">-</span><span class="mi">32</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">read_generic_text</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[OCR INFO]:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    TEXT: </span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    DETECTION POSITION: </span><span class="si">{</span><span class="n">position</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    OBJECT TYPE: </span><span class="si">{</span><span class="nb">type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    CAMERA POSITION: </span><span class="si">{</span><span class="n">player</span><span class="o">.</span><span class="n">camera</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">text</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">1</span>
+
+    <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;Castle&quot;</span><span class="p">:</span>
+        <span class="n">spl</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s2">&quot;, &quot;</span><span class="p">)</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">spl</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">cityname</span> <span class="o">=</span> <span class="n">spl</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">words</span> <span class="o">=</span> <span class="n">towns</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="n">towns_obj</span>
+    <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;Creature&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s2">&quot;of&quot;</span> <span class="ow">in</span> <span class="n">text</span><span class="p">:</span>
+            <span class="n">part</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s2">&quot; of &quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">part</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s2">&quot;)&quot;</span><span class="p">)</span>
+        <span class="n">num2</span> <span class="o">=</span> <span class="n">part</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">num2</span> <span class="o">=</span> <span class="n">num2</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s2">&quot; (&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="n">get_close_matches</span><span class="p">(</span><span class="n">num2</span><span class="p">,</span> <span class="n">amount</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">num2</span> <span class="o">=</span> <span class="n">amount_num</span><span class="p">[</span><span class="n">amount</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">temp</span><span class="p">)]</span>
+        <span class="n">unit_count</span> <span class="o">=</span> <span class="n">num2</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">part</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">words</span> <span class="o">=</span> <span class="n">creatures</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="n">creatures_obj</span>
+    <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;Building&quot;</span><span class="p">:</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s2">&quot;(&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">words</span> <span class="o">=</span> <span class="n">habitats</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="n">habitats_obj</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">position</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;Resource&quot;</span><span class="p">:</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">text</span>
+        <span class="n">words</span> <span class="o">=</span> <span class="n">resource</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="n">resource_obj</span>
+    <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;Artifact&quot;</span><span class="p">:</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">text</span>
+        <span class="n">words</span> <span class="o">=</span> <span class="n">artifacts</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="n">artifacts_obj</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">get_close_matches</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">words</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">num</span> <span class="o">=</span> <span class="n">words</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">num</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;Creature&quot;</span><span class="p">:</span>
+        <span class="n">unit</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">num</span><span class="p">]</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">Slot</span><span class="p">(</span><span class="n">unit</span><span class="p">,</span> <span class="n">unit_count</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;Castle&quot;</span><span class="p">:</span>
+        <span class="n">unit</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">num</span><span class="p">])</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">unit</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">position</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">name_of_city</span> <span class="o">=</span> <span class="n">cityname</span>
+    <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;Building&quot;</span><span class="p">:</span>
+        <span class="n">unit</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">num</span><span class="p">])</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">unit</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">y</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">unit</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">num</span><span class="p">])</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">unit</span>
+    <span class="k">return</span> <span class="n">out</span></div>
+
+
+<div class="viewcode-block" id="distance"><a class="viewcode-back" href="../../image_processing.html#image_processing.adventure_image_processing.distance">[docs]</a><span class="k">def</span> <span class="nf">distance</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">points</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    function checking distance between point and kist of points</span>
+
+<span class="sd">    :param point: checked point</span>
+<span class="sd">    :param points: list of points with labels</span>
+<span class="sd">    :return: name of nearest element of points to point</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dst</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">points</span><span class="p">:</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">dst</span><span class="o">.</span><span class="n">append</span><span class="p">(((</span><span class="n">point</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="p">((</span><span class="n">point</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="p">((</span><span class="n">point</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">y</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span>
+    <span class="n">dst</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">dst</span><span class="p">)</span>
+    <span class="n">dst</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">dst</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">dst</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">amin</span><span class="p">(</span><span class="n">dst</span><span class="p">))</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;tie&quot;</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="n">dst</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span>
+    <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">30</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">points</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">])][</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;none&quot;</span></div>
+
+
+<div class="viewcode-block" id="find_heroes"><a class="viewcode-back" href="../../image_processing.html#image_processing.adventure_image_processing.find_heroes">[docs]</a><span class="k">def</span> <span class="nf">find_heroes</span><span class="p">(</span><span class="n">screen</span><span class="p">:</span> <span class="n">ScreenStorage</span><span class="p">,</span> <span class="n">objMap</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    function finding all visible heroes</span>
+
+<span class="sd">    :param screen: screen slicing object</span>
+<span class="sd">    :return: list of all heroes on map</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">AdventureGUI</span><span class="o">.</span><span class="n">move_mouse_and_click_adventure</span><span class="p">(</span><span class="mi">1810</span><span class="p">,</span> <span class="mi">245</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
+    <span class="n">images</span> <span class="o">=</span> <span class="n">take_small_map</span><span class="p">()</span>
+    <span class="n">tmp</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">72</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">72</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">objMap</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">color</span> <span class="o">=</span> <span class="n">distance</span><span class="p">(</span><span class="n">images</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">],</span> <span class="n">screen</span><span class="o">.</span><span class="n">colors_small_map</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">color</span> <span class="o">!=</span> <span class="s2">&quot;none&quot;</span><span class="p">:</span>
+                    <span class="n">tmp</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">color</span><span class="p">))</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.04</span><span class="p">)</span>
+    <span class="n">AdventureGUI</span><span class="o">.</span><span class="n">leave_screen</span><span class="p">()</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.04</span><span class="p">)</span>
+    <span class="n">screen</span><span class="o">.</span><span class="n">hero_positions</span> <span class="o">=</span> <span class="n">tmp</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[FOUND HEROES]:&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">tmp</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">h</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span><span class="s2">&quot;Red&quot;</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">Fore</span><span class="o">.</span><span class="n">RED</span><span class="p">,</span><span class="sa">f</span><span class="s2">&quot;    </span><span class="si">{</span><span class="n">h</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span><span class="n">Fore</span><span class="o">.</span><span class="n">RESET</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">Fore</span><span class="o">.</span><span class="n">BLUE</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;    </span><span class="si">{</span><span class="n">h</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">Fore</span><span class="o">.</span><span class="n">RESET</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">tmp</span></div>
+
+
+<span class="c1"># simpledt method to check if someone owns a mine</span>
+<div class="viewcode-block" id="check_mine_owner_ocr"><a class="viewcode-back" href="../../image_processing.html#image_processing.adventure_image_processing.check_mine_owner_ocr">[docs]</a><span class="k">def</span> <span class="nf">check_mine_owner_ocr</span><span class="p">(</span><span class="n">player</span><span class="p">:</span> <span class="n">Player</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    function checking owner of select mine</span>
+
+<span class="sd">    :param player: player object</span>
+<span class="sd">    :param position: position of mine</span>
+<span class="sd">    :return: color of owner</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">relative_X</span> <span class="o">=</span> <span class="n">position</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">player</span><span class="o">.</span><span class="n">camera</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">relative_Y</span> <span class="o">=</span> <span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">player</span><span class="o">.</span><span class="n">camera</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">camera_to_position</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">relative_X</span><span class="p">,</span> <span class="n">relative_Y</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.04</span><span class="p">)</span>
+    <span class="n">img</span> <span class="o">=</span> <span class="n">take_console</span><span class="p">()</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">read_generic_text</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">spl</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="n">owner</span> <span class="o">=</span> <span class="n">spl</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">get_close_matches</span><span class="p">(</span><span class="n">owner</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;Red&quot;</span><span class="p">,</span> <span class="s2">&quot;Blue&quot;</span><span class="p">,</span> <span class="s2">&quot;Orange&quot;</span><span class="p">,</span> <span class="s2">&quot;Green&quot;</span><span class="p">,</span> <span class="s2">&quot;Teal&quot;</span><span class="p">,</span> <span class="s2">&quot;Tan&quot;</span><span class="p">,</span> <span class="s2">&quot;Purple&quot;</span><span class="p">,</span> <span class="s2">&quot;Pink&quot;</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">out</span></div>
+
+
+<span class="c1"># minor changes from base function so why not</span>
+<span class="c1"># def check_hero_name_ocr(player: Player, position: tuple):</span>
+<span class="c1">#     relative_X = position[0] - player.camera[0]</span>
+<span class="c1">#     relative_Y = position[1] - player.camera[1]</span>
+<span class="c1">#     camera_to_position(player, position, relative_X, relative_Y)</span>
+<span class="c1">#     time.sleep(0.04)</span>
+<span class="c1">#     img = take_console()</span>
+<span class="c1">#     text = read_generic_text(img, 2)</span>
+<span class="c1">#     spl = text.split()</span>
+<span class="c1">#     name = spl[len(spl) - 1]</span>
+<span class="c1">#     return name</span>
+
+
+<div class="viewcode-block" id="camera_to_position"><a class="viewcode-back" href="../../image_processing.html#image_processing.adventure_image_processing.camera_to_position">[docs]</a><span class="k">def</span> <span class="nf">camera_to_position</span><span class="p">(</span><span class="n">player</span><span class="p">:</span> <span class="n">Player</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">relative_X</span><span class="p">,</span> <span class="n">relative_Y</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    function moving mouse over select coordinates</span>
+
+<span class="sd">    :param player: player object</span>
+<span class="sd">    :param position: chosen point</span>
+<span class="sd">    :param relative_X: distance between chosen point and camera</span>
+<span class="sd">    :param relative_Y: distance between chosen point and camera</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">relative_X</span> <span class="o">&gt;</span> <span class="mi">25</span> <span class="ow">or</span> <span class="n">relative_X</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mi">25</span> <span class="ow">or</span> <span class="n">relative_Y</span> <span class="o">&gt;</span> <span class="mi">14</span> <span class="ow">or</span> <span class="n">relative_Y</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mi">14</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[CAMERA] </span><span class="si">{</span><span class="n">relative_X</span><span class="p">,</span> <span class="n">relative_Y</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="c1"># move to nearest hero/city</span>
+        <span class="n">dist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hypot</span><span class="p">(</span><span class="n">relative_X</span><span class="p">,</span> <span class="n">relative_Y</span><span class="p">)</span>
+        <span class="n">hero</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">town</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">heroes</span><span class="p">):</span>
+            <span class="n">temp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hypot</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">position</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="o">.</span><span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">temp</span> <span class="o">&lt;</span> <span class="n">dist</span><span class="p">:</span>
+                <span class="n">hero</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">dist</span> <span class="o">=</span> <span class="n">temp</span>
+                <span class="n">n</span> <span class="o">=</span> <span class="n">i</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">cities</span><span class="p">):</span>
+            <span class="n">temp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hypot</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">position</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="o">.</span><span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">temp</span> <span class="o">&lt;</span> <span class="n">dist</span><span class="p">:</span>
+                <span class="n">town</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">dist</span> <span class="o">=</span> <span class="n">temp</span>
+                <span class="n">n</span> <span class="o">=</span> <span class="n">i</span>
+        <span class="k">if</span> <span class="n">town</span><span class="p">:</span>
+            <span class="n">AdventureGUI</span><span class="o">.</span><span class="n">press_town</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+            <span class="n">player</span><span class="o">.</span><span class="n">camera</span> <span class="o">=</span> <span class="n">player</span><span class="o">.</span><span class="n">cities</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">position</span>
+        <span class="k">elif</span> <span class="n">hero</span><span class="p">:</span>
+            <span class="n">AdventureGUI</span><span class="o">.</span><span class="n">press_hero</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+            <span class="n">player</span><span class="o">.</span><span class="n">camera</span> <span class="o">=</span> <span class="n">player</span><span class="o">.</span><span class="n">heroes</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">position</span>
+        <span class="n">relative_X</span> <span class="o">=</span> <span class="n">position</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">player</span><span class="o">.</span><span class="n">camera</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">relative_Y</span> <span class="o">=</span> <span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">player</span><span class="o">.</span><span class="n">camera</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="c1"># moving camera to position near detected element</span>
+        <span class="k">if</span> <span class="n">relative_X</span> <span class="o">&gt;</span> <span class="mi">25</span> <span class="ow">or</span> <span class="n">relative_X</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mi">25</span> <span class="ow">or</span> <span class="n">relative_Y</span> <span class="o">&gt;</span> <span class="mi">14</span> <span class="ow">or</span> <span class="n">relative_Y</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mi">14</span><span class="p">:</span>
+            <span class="n">camerax</span> <span class="o">=</span> <span class="n">player</span><span class="o">.</span><span class="n">camera</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">cameray</span> <span class="o">=</span> <span class="n">player</span><span class="o">.</span><span class="n">camera</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">relative_Y</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">while</span> <span class="n">relative_Y</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">:</span>
+                    <span class="n">AdventureGUI</span><span class="o">.</span><span class="n">move_camera_down</span><span class="p">()</span>
+                    <span class="n">relative_Y</span> <span class="o">-=</span> <span class="mi">3</span>
+                    <span class="n">cameray</span> <span class="o">-=</span> <span class="mi">3</span>
+                    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.04</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">while</span> <span class="n">relative_Y</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mi">10</span><span class="p">:</span>
+                    <span class="n">AdventureGUI</span><span class="o">.</span><span class="n">move_camera_up</span><span class="p">()</span>
+                    <span class="n">relative_Y</span> <span class="o">+=</span> <span class="mi">3</span>
+                    <span class="n">cameray</span> <span class="o">+=</span> <span class="mi">3</span>
+                    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.04</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">relative_X</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">while</span> <span class="n">relative_X</span> <span class="o">&gt;</span> <span class="mi">25</span><span class="p">:</span>
+                    <span class="n">AdventureGUI</span><span class="o">.</span><span class="n">move_camera_left</span><span class="p">()</span>
+                    <span class="n">relative_X</span> <span class="o">-=</span> <span class="mi">3</span>
+                    <span class="n">camerax</span> <span class="o">-=</span> <span class="mi">3</span>
+                    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.04</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">while</span> <span class="n">relative_X</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mi">25</span><span class="p">:</span>
+                    <span class="n">AdventureGUI</span><span class="o">.</span><span class="n">move_camera_right</span><span class="p">()</span>
+                    <span class="n">relative_X</span> <span class="o">+=</span> <span class="mi">3</span>
+                    <span class="n">camerax</span> <span class="o">+=</span> <span class="mi">3</span>
+                    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.04</span><span class="p">)</span>
+            <span class="n">player</span><span class="o">.</span><span class="n">camera</span> <span class="o">=</span> <span class="p">(</span><span class="n">camerax</span><span class="p">,</span> <span class="n">cameray</span><span class="p">)</span>
+    <span class="n">AdventureGUI</span><span class="o">.</span><span class="n">move_mouse_to_tile_adventure</span><span class="p">(</span><span class="n">relative_X</span><span class="p">,</span> <span class="n">relative_Y</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="detect_hero_move"><a class="viewcode-back" href="../../image_processing.html#image_processing.adventure_image_processing.detect_hero_move">[docs]</a><span class="k">def</span> <span class="nf">detect_hero_move</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">screen</span><span class="p">,</span> <span class="n">objMap</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    function checking movement of our hero</span>
+
+<span class="sd">    :param player: player object</span>
+<span class="sd">    :param screen: screenslicing object</span>
+<span class="sd">    :return: pair of tuples containing move of hero</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">old_list</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">screen</span><span class="o">.</span><span class="n">hero_positions</span><span class="p">)</span>
+    <span class="n">new_list</span> <span class="o">=</span> <span class="n">find_heroes</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="n">objMap</span><span class="p">)</span>
+    <span class="n">pos_new</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">pos</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">old_list</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">y</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="n">player</span><span class="o">.</span><span class="n">color</span><span class="p">:</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">pos</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">new_list</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">y</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="n">player</span><span class="o">.</span><span class="n">color</span><span class="p">:</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">pos_new</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+    <span class="n">old</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">pos_new</span><span class="p">))</span>
+    <span class="n">new</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">pos_new</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">pos</span><span class="p">))</span>
+
+    <span class="c1"># If new has more elements than 1, that means some of these are fake and we need to test which one -- CamaroTheBOSS</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">new</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">coordinates</span> <span class="o">=</span> <span class="n">new</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">coord</span> <span class="ow">in</span> <span class="n">coordinates</span><span class="p">:</span>
+            <span class="n">ifHero</span><span class="p">,</span> <span class="n">heroName</span> <span class="o">=</span> <span class="n">check_if_blue_hero_exists</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">coord</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">ifHero</span><span class="p">:</span>
+                <span class="n">new</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">coord</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span></div>
+
+
+<div class="viewcode-block" id="remove_dead_heroes"><a class="viewcode-back" href="../../image_processing.html#image_processing.adventure_image_processing.remove_dead_heroes">[docs]</a><span class="k">def</span> <span class="nf">remove_dead_heroes</span><span class="p">(</span><span class="n">player</span><span class="p">:</span> <span class="n">Player</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    function for removing dead heroes from our herolist</span>
+
+<span class="sd">    :param player: player object</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="kc">False</span>
+    <span class="n">list_of_all_heroes</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">list_of_current_heroes</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">heroes</span><span class="p">):</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.04</span><span class="p">)</span>
+        <span class="n">GUI_handling</span><span class="o">.</span><span class="n">AdventureGUI</span><span class="o">.</span><span class="n">move_mouse_over_hero</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="n">list_of_all_heroes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">take_console</span><span class="p">()</span>
+        <span class="n">word</span> <span class="o">=</span> <span class="n">read_generic_text</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">word</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s2">&quot; the &quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">get_close_matches</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">list_of_all_heroes</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">list_of_current_heroes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="n">dead_heroes</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">list_of_all_heroes</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">list_of_current_heroes</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">dead_heroes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+    <span class="n">dead_heroes</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">dead_heroes</span><span class="p">:</span>
+        <span class="n">player</span><span class="o">.</span><span class="n">heroes</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="check_if_hero_is_dead"><a class="viewcode-back" href="../../image_processing.html#image_processing.adventure_image_processing.check_if_hero_is_dead">[docs]</a><span class="k">def</span> <span class="nf">check_if_hero_is_dead</span><span class="p">(</span><span class="n">player</span><span class="p">:</span> <span class="n">Player</span><span class="p">,</span> <span class="n">hero</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    function for removing dead heroes from our herolist</span>
+
+<span class="sd">    :param player: player object</span>
+<span class="sd">    :param hero: hero object</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="kc">False</span>
+    <span class="n">list_of_all_heroes</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">list_of_current_heroes</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">heroes</span><span class="p">):</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="n">GUI_handling</span><span class="o">.</span><span class="n">AdventureGUI</span><span class="o">.</span><span class="n">move_mouse_over_hero</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="n">list_of_all_heroes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">img</span> <span class="o">=</span> <span class="n">take_console</span><span class="p">()</span>
+        <span class="n">word</span> <span class="o">=</span> <span class="n">read_generic_text</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">word</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s2">&quot; the &quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">get_close_matches</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">list_of_all_heroes</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">list_of_current_heroes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">hero</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">list_of_current_heroes</span><span class="p">:</span>
+        <span class="n">dead</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">pass</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">player</span><span class="o">.</span><span class="n">heroes</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">hero</span><span class="p">)</span>
+        <span class="n">dead</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="n">dead</span></div>
+
+
+<div class="viewcode-block" id="check_if_hero_is_dead_first"><a class="viewcode-back" href="../../image_processing.html#image_processing.adventure_image_processing.check_if_hero_is_dead_first">[docs]</a><span class="k">def</span> <span class="nf">check_if_hero_is_dead_first</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    first part of checking if hero died</span>
+
+<span class="sd">    :return: image of list of heroes before move</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="n">mss</span><span class="p">()</span> <span class="k">as</span> <span class="n">sct</span><span class="p">:</span>
+        <span class="n">monitor</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;top&#39;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span> <span class="s1">&#39;left&#39;</span><span class="p">:</span> <span class="mi">1740</span><span class="p">,</span> <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mi">250</span><span class="p">}</span>
+        <span class="n">screen</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sct</span><span class="o">.</span><span class="n">grab</span><span class="p">(</span><span class="n">monitor</span><span class="p">))</span>
+        <span class="n">screen</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span><span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_RGBA2GRAY</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">screen</span></div>
+
+
+<div class="viewcode-block" id="check_if_hero_is_dead_last_without_hero"><a class="viewcode-back" href="../../image_processing.html#image_processing.adventure_image_processing.check_if_hero_is_dead_last_without_hero">[docs]</a><span class="k">def</span> <span class="nf">check_if_hero_is_dead_last_without_hero</span><span class="p">(</span><span class="n">earlier</span><span class="p">,</span><span class="n">player</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    second part of checking if hero died</span>
+
+<span class="sd">    :param earlier: output of first function</span>
+<span class="sd">    :param player: player object</span>
+<span class="sd">    :return bool indicating if hero has died</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="n">mss</span><span class="p">()</span> <span class="k">as</span> <span class="n">sct</span><span class="p">:</span>
+        <span class="n">monitor</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;top&#39;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span> <span class="s1">&#39;left&#39;</span><span class="p">:</span> <span class="mi">1740</span><span class="p">,</span> <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mi">250</span><span class="p">}</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.2</span><span class="p">)</span>
+        <span class="n">screen</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sct</span><span class="o">.</span><span class="n">grab</span><span class="p">(</span><span class="n">monitor</span><span class="p">))</span>
+        <span class="n">screen</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span><span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_RGBA2GRAY</span><span class="p">)</span>
+        <span class="n">score</span> <span class="o">=</span> <span class="n">ssim</span><span class="p">(</span><span class="n">earlier</span><span class="p">,</span><span class="n">screen</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">score</span> <span class="o">&gt;</span> <span class="mf">0.9</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="check_if_hero_is_dead_last"><a class="viewcode-back" href="../../image_processing.html#image_processing.adventure_image_processing.check_if_hero_is_dead_last">[docs]</a><span class="k">def</span> <span class="nf">check_if_hero_is_dead_last</span><span class="p">(</span><span class="n">earlier</span><span class="p">,</span><span class="n">player</span><span class="p">,</span><span class="n">hero</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    second part of checking if hero died</span>
+
+<span class="sd">    :param earlier: output of first function</span>
+<span class="sd">    :param player: player object</span>
+<span class="sd">    :param hero: checked hero</span>
+<span class="sd">    :return bool indicating if hero has died</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="n">mss</span><span class="p">()</span> <span class="k">as</span> <span class="n">sct</span><span class="p">:</span>
+        <span class="n">monitor</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;top&#39;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span> <span class="s1">&#39;left&#39;</span><span class="p">:</span> <span class="mi">1740</span><span class="p">,</span> <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mi">250</span><span class="p">}</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.2</span><span class="p">)</span>
+        <span class="n">screen</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sct</span><span class="o">.</span><span class="n">grab</span><span class="p">(</span><span class="n">monitor</span><span class="p">))</span>
+        <span class="n">screen</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span><span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_RGBA2GRAY</span><span class="p">)</span>
+        <span class="n">score</span> <span class="o">=</span> <span class="n">ssim</span><span class="p">(</span><span class="n">earlier</span><span class="p">,</span><span class="n">screen</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">score</span> <span class="o">&gt;</span> <span class="mf">0.9</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">player</span><span class="o">.</span><span class="n">heroes</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">hero</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span></div>
+
+<span class="kn">import</span> <span class="nn">cv2</span>
+<div class="viewcode-block" id="remove_lost_cities"><a class="viewcode-back" href="../../image_processing.html#image_processing.adventure_image_processing.remove_lost_cities">[docs]</a><span class="k">def</span> <span class="nf">remove_lost_cities</span><span class="p">(</span><span class="n">player</span><span class="p">:</span> <span class="n">Player</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    function for removing lost cities from our citylist</span>
+
+<span class="sd">    :param player: player object</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;alternatives.json&quot;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">outp</span><span class="p">:</span>
+        <span class="n">alternatives</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">outp</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+    <span class="n">list_of_all_cities</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">list_of_current_cities</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">cities</span><span class="p">):</span>
+        <span class="n">GUI_handling</span><span class="o">.</span><span class="n">AdventureGUI</span><span class="o">.</span><span class="n">move_mouse_over_town</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.04</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">alternatives</span><span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">name_of_city</span><span class="p">]</span>
+            <span class="n">y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">name_of_city</span><span class="p">)</span>
+            <span class="n">list_of_all_cities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ADDING ALTERNATIVE NAMES: &quot;</span><span class="p">,</span><span class="n">x</span><span class="o">.</span><span class="n">name_of_city</span><span class="p">,</span><span class="s2">&quot; : &quot;</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">list_of_all_cities</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">x</span><span class="o">.</span><span class="n">name_of_city</span><span class="p">])</span>
+        <span class="n">text_img</span> <span class="o">=</span> <span class="n">take_console</span><span class="p">()</span>
+        <span class="n">word</span> <span class="o">=</span> <span class="n">read_generic_text</span><span class="p">(</span><span class="n">text_img</span><span class="p">)</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">word</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s2">&quot;, &quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;NAME: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;LIST OF ALL CITIES: </span><span class="si">{</span><span class="n">list_of_all_cities</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">flat_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">j</span> <span class="k">for</span> <span class="n">sub</span> <span class="ow">in</span> <span class="n">list_of_all_cities</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">sub</span><span class="p">]</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">get_close_matches</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">flat_list</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">cv2</span><span class="o">.</span><span class="n">imwrite</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;error_handlers/last_remove_cities_graphic.png&quot;</span><span class="p">,</span> <span class="n">text_img</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">list_of_all_cities</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">y</span> <span class="o">=</span> <span class="n">alternatives</span><span class="p">[</span><span class="n">list_of_all_cities</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]]</span>
+                    <span class="n">y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+                    <span class="n">alternatives</span><span class="p">[</span><span class="n">list_of_all_cities</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">y</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="n">alternatives</span><span class="p">[</span><span class="n">list_of_all_cities</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span><span class="n">name</span><span class="p">]</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;alternatives.json&quot;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">outp</span><span class="p">:</span>
+                    <span class="n">outp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">alternatives</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ERROR OCCURED WHEN [get_close_matches(name, list_of_all_cities, 1)[0]] IN [remove_lost_cities(player: Player)] FUNCTION&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;word: </span><span class="si">{</span><span class="n">word</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;name: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;list all cities: </span><span class="si">{</span><span class="n">list_of_all_cities</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Check error_handlers folder to seee [last_remove_cities_graphic.png] file&quot;</span><span class="p">)</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+        <span class="n">list_of_current_cities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="n">lost_cities</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">list_of_current_cities</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">list_of_all_cities</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="s2">&quot; : &quot;</span><span class="p">,</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">x</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[J]:&quot;</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">list_of_current_cities</span><span class="p">:</span>
+                <span class="k">break</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">lost_cities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[REMOVED CITIES]:&quot;</span><span class="p">,</span> <span class="n">lost_cities</span><span class="p">)</span>
+        <span class="c1"># if x in list_of_current_cities:</span>
+        <span class="c1">#     pass</span>
+        <span class="c1"># else:</span>
+        <span class="c1">#     lost_cities.append(i)</span>
+    <span class="n">lost_cities</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">lost_cities</span><span class="p">:</span>
+        <span class="n">player</span><span class="o">.</span><span class="n">cities</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="get_cursor_type"><a class="viewcode-back" href="../../image_processing.html#image_processing.adventure_image_processing.get_cursor_type">[docs]</a><span class="k">def</span> <span class="nf">get_cursor_type</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Collects cursor icon</span>
+
+<span class="sd">    return name of cursor</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">cursor_dict</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="mf">3.38</span><span class="p">:</span> <span class="s2">&quot;wait&quot;</span><span class="p">,</span>  <span class="c1"># wait</span>
+        <span class="mf">0.68</span><span class="p">:</span> <span class="s2">&quot;normal&quot;</span><span class="p">,</span>  <span class="c1"># normal cursor</span>
+        <span class="mf">2.92</span><span class="p">:</span> <span class="s2">&quot;active target&quot;</span><span class="p">,</span>  <span class="c1"># move to action 1 turn</span>
+        <span class="mf">2.69</span><span class="p">:</span> <span class="s2">&quot;move target&quot;</span><span class="p">,</span>  <span class="c1"># move to tile 1 turn</span>
+        <span class="mf">1.52</span><span class="p">:</span> <span class="s2">&quot;move to fight&quot;</span><span class="p">,</span>  <span class="c1"># move to fight 1 turn</span>
+        <span class="mf">1.89</span><span class="p">:</span> <span class="s2">&quot;move to fight&quot;</span><span class="p">,</span>  <span class="c1"># move to fight more than 1 turn</span>
+        <span class="mf">1.81</span><span class="p">:</span> <span class="s2">&quot;move to fight&quot;</span><span class="p">,</span>  <span class="c1"># move to fight more than 1 turn</span>
+        <span class="mf">2.82</span><span class="p">:</span> <span class="s2">&quot;move target longer&quot;</span><span class="p">,</span>  <span class="c1"># move to tile more than 1 turn</span>
+        <span class="mf">2.88</span><span class="p">:</span> <span class="s2">&quot;move target longer&quot;</span><span class="p">,</span>  <span class="c1"># move to tile more than 1 turn</span>
+        <span class="mf">3.12</span><span class="p">:</span> <span class="s2">&quot;active target longer&quot;</span><span class="p">,</span>  <span class="c1"># move to action more than 1 turn</span>
+        <span class="mf">3.11</span><span class="p">:</span> <span class="s2">&quot;active target longer&quot;</span><span class="p">,</span>  <span class="c1"># move to action more than 1 turn</span>
+        <span class="mf">1.12</span><span class="p">:</span> <span class="s2">&quot;?&quot;</span><span class="p">,</span>
+        <span class="mf">2.56</span><span class="p">:</span> <span class="s2">&quot;hero&quot;</span><span class="p">,</span>  <span class="c1"># our hero</span>
+        <span class="mf">3.95</span><span class="p">:</span> <span class="s2">&quot;city&quot;</span><span class="p">,</span>  <span class="c1"># our city</span>
+    <span class="p">}</span>
+    <span class="n">hcursor</span> <span class="o">=</span> <span class="n">win32gui</span><span class="o">.</span><span class="n">GetCursorInfo</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">hwnd</span> <span class="o">=</span> <span class="n">win32gui</span><span class="o">.</span><span class="n">GetForegroundWindow</span><span class="p">()</span>
+    <span class="n">hdc</span> <span class="o">=</span> <span class="n">win32ui</span><span class="o">.</span><span class="n">CreateDCFromHandle</span><span class="p">(</span><span class="n">win32gui</span><span class="o">.</span><span class="n">GetDC</span><span class="p">(</span><span class="n">hwnd</span><span class="p">))</span>
+    <span class="n">hbmp</span> <span class="o">=</span> <span class="n">win32ui</span><span class="o">.</span><span class="n">CreateBitmap</span><span class="p">()</span>
+    <span class="n">hbmp</span><span class="o">.</span><span class="n">CreateCompatibleBitmap</span><span class="p">(</span><span class="n">hdc</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">)</span>
+    <span class="n">hdc</span> <span class="o">=</span> <span class="n">hdc</span><span class="o">.</span><span class="n">CreateCompatibleDC</span><span class="p">()</span>
+    <span class="n">hdc</span><span class="o">.</span><span class="n">SelectObject</span><span class="p">(</span><span class="n">hbmp</span><span class="p">)</span>
+    <span class="n">hdc</span><span class="o">.</span><span class="n">DrawIcon</span><span class="p">((</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">hcursor</span><span class="p">)</span>
+    <span class="n">bmpstr</span> <span class="o">=</span> <span class="n">hbmp</span><span class="o">.</span><span class="n">GetBitmapBits</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">cursor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span><span class="n">bmpstr</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;uint8&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">win32gui</span><span class="o">.</span><span class="n">DeleteObject</span><span class="p">(</span><span class="n">hbmp</span><span class="o">.</span><span class="n">GetHandle</span><span class="p">())</span>
+    <span class="n">hdc</span><span class="o">.</span><span class="n">DeleteDC</span><span class="p">()</span>
+    <span class="n">cursor_type</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">cursor</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">cursor_type</span> <span class="o">=</span> <span class="n">cursor_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cursor_type</span><span class="p">)</span> <span class="ow">or</span> <span class="n">cursor_dict</span><span class="p">[</span>
+        <span class="nb">min</span><span class="p">(</span><span class="n">cursor_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">key</span><span class="p">:</span> <span class="nb">abs</span><span class="p">(</span><span class="n">key</span> <span class="o">-</span> <span class="n">cursor_type</span><span class="p">))]</span>
+    <span class="k">return</span> <span class="n">cursor_type</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Fryderyk Róg, Kacper Plesiak, Michał Gruba, Tymoteusz Skrzyński, Mateusz Comblik, Bartosz Szczepanek, Alan Konopko, Mateusz Mikszewicz, Daniel Bil, Piotr Łyczko.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

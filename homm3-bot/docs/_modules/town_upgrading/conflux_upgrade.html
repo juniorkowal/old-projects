@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>town_upgrading.conflux_upgrade &mdash; HoMM3 Bot 2.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> HoMM3 Bot
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">homm3-bot</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">HoMM3 Bot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">town_upgrading.conflux_upgrade</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for town_upgrading.conflux_upgrade</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Script containing Conflux castle upgrade algorithm&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">town_upgrading.choice_generator</span> <span class="kn">import</span> <span class="n">town_choice</span><span class="p">,</span> <span class="n">full_unit_cost</span>
+<span class="kn">from</span> <span class="nn">GUI_handling.TownGUI</span> <span class="kn">import</span> <span class="n">buy_building</span>
+<span class="kn">from</span> <span class="nn">data.building</span> <span class="kn">import</span> <span class="n">Cost</span>
+<span class="kn">from</span> <span class="nn">data.player_data</span> <span class="kn">import</span> <span class="n">Player</span>
+
+
+<div class="viewcode-block" id="resourceCheck"><a class="viewcode-back" href="../../town_upgrading.html#town_upgrading.conflux_upgrade.resourceCheck">[docs]</a><span class="k">def</span> <span class="nf">resourceCheck</span><span class="p">(</span><span class="n">buildingCost</span><span class="p">:</span> <span class="n">Cost</span><span class="p">,</span> <span class="n">player</span><span class="p">:</span> <span class="n">Player</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Checks if a player has enough resources to build.</span>
+<span class="sd">    :param buildingCost: Cost of the given building</span>
+<span class="sd">    :param player: Resources of the player</span>
+<span class="sd">    :return: true or false</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">gold</span> <span class="o">&gt;=</span> <span class="n">buildingCost</span><span class="o">.</span><span class="n">gold</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">wood</span> <span class="o">&gt;=</span> <span class="n">buildingCost</span><span class="o">.</span><span class="n">wood</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
+            <span class="n">player</span><span class="o">.</span><span class="n">ore</span> <span class="o">&gt;=</span> <span class="n">buildingCost</span><span class="o">.</span><span class="n">ore</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">mercury</span> <span class="o">&gt;=</span> <span class="n">buildingCost</span><span class="o">.</span><span class="n">mercury</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
+            <span class="n">player</span><span class="o">.</span><span class="n">sulfur</span> <span class="o">&gt;=</span> <span class="n">buildingCost</span><span class="o">.</span><span class="n">sulfur</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">crystal</span> <span class="o">&gt;=</span> <span class="n">buildingCost</span><span class="o">.</span><span class="n">crystal</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
+            <span class="n">player</span><span class="o">.</span><span class="n">gems</span> <span class="o">&gt;=</span> <span class="n">buildingCost</span><span class="o">.</span><span class="n">gems</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="build"><a class="viewcode-back" href="../../town_upgrading.html#town_upgrading.conflux_upgrade.build">[docs]</a><span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="n">buildingCost</span><span class="p">:</span> <span class="n">Cost</span><span class="p">,</span> <span class="n">player</span><span class="p">:</span> <span class="n">Player</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Functions responsible for building and managing resources after construction</span>
+<span class="sd">    :param buildingCost: Cost of the given building</span>
+<span class="sd">    :param player: Resources of the player</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">player</span><span class="o">.</span><span class="n">gold</span> <span class="o">-=</span> <span class="n">buildingCost</span><span class="o">.</span><span class="n">gold</span>
+    <span class="n">player</span><span class="o">.</span><span class="n">wood</span> <span class="o">-=</span> <span class="n">buildingCost</span><span class="o">.</span><span class="n">wood</span>
+    <span class="n">player</span><span class="o">.</span><span class="n">ore</span> <span class="o">-=</span> <span class="n">buildingCost</span><span class="o">.</span><span class="n">ore</span>
+    <span class="n">player</span><span class="o">.</span><span class="n">mercury</span> <span class="o">-=</span> <span class="n">buildingCost</span><span class="o">.</span><span class="n">mercury</span>
+    <span class="n">player</span><span class="o">.</span><span class="n">sulfur</span> <span class="o">-=</span> <span class="n">buildingCost</span><span class="o">.</span><span class="n">sulfur</span>
+    <span class="n">player</span><span class="o">.</span><span class="n">crystal</span> <span class="o">-=</span> <span class="n">buildingCost</span><span class="o">.</span><span class="n">crystal</span>
+    <span class="n">player</span><span class="o">.</span><span class="n">gems</span> <span class="o">-=</span> <span class="n">buildingCost</span><span class="o">.</span><span class="n">gems</span></div>
+
+
+<div class="viewcode-block" id="confluxUpgrade"><a class="viewcode-back" href="../../town_upgrading.html#town_upgrading.conflux_upgrade.confluxUpgrade">[docs]</a><span class="k">def</span> <span class="nf">confluxUpgrade</span><span class="p">(</span><span class="n">player</span><span class="p">:</span> <span class="n">Player</span><span class="p">,</span> <span class="n">city</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Conflux castle upgrade algorithm.</span>
+<span class="sd">    :param player: Player object</span>
+<span class="sd">    :param city: Conflux object</span>
+<span class="sd">    :return: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cost</span> <span class="o">=</span> <span class="n">full_unit_cost</span><span class="p">(</span><span class="n">city</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">player</span><span class="o">.</span><span class="n">gold</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">cost</span><span class="o">/</span><span class="mi">3</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Not enough gold for units, don&#39;t build anything&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="c1"># ----------------------------HARDCODED ZONE-----------------------------------------------</span>
+    <span class="c1"># 1 Tavern</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">city</span><span class="o">.</span><span class="n">tavern</span><span class="o">.</span><span class="n">built</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">resourceCheck</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">tavern</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">player</span><span class="p">):</span>
+            <span class="n">build</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">tavern</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">player</span><span class="p">)</span>
+            <span class="n">city</span><span class="o">.</span><span class="n">tavern</span><span class="o">.</span><span class="n">built</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">buy_building</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">tavern</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;conflux&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Tavern built!&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Not enough resources!&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="c1"># 2 Fort                            &lt;our rule&gt;</span>
+    <span class="k">if</span> <span class="n">city</span><span class="o">.</span><span class="n">fort</span><span class="o">.</span><span class="n">lvl</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">city</span><span class="o">.</span><span class="n">tavern</span><span class="o">.</span><span class="n">built</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">resourceCheck</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">fort</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">player</span><span class="p">):</span>
+            <span class="n">build</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">fort</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">player</span><span class="p">)</span>
+            <span class="n">city</span><span class="o">.</span><span class="n">fort</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">buy_building</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">fort</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;conflux&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Fort lvl 1 built!&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Not enough resources!&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="c1"># 3 Magic Lantern</span>
+    <span class="k">if</span> <span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">1</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">city</span><span class="o">.</span><span class="n">fort</span><span class="o">.</span><span class="n">lvl</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">resourceCheck</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">1</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">player</span><span class="p">):</span>
+            <span class="n">build</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">1</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">player</span><span class="p">)</span>
+            <span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">1</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">buy_building</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">1</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;conflux&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Magic Lantern built!&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Not enough resources!&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="c1"># 4 Mage Guild Level 1                       &lt;our rule&gt;</span>
+    <span class="k">if</span> <span class="n">city</span><span class="o">.</span><span class="n">mage_guild</span><span class="o">.</span><span class="n">lvl</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">1</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">resourceCheck</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">mage_guild</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">player</span><span class="p">):</span>
+            <span class="n">build</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">mage_guild</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">player</span><span class="p">)</span>
+            <span class="n">city</span><span class="o">.</span><span class="n">mage_guild</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">buy_building</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">mage_guild</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;conflux&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Mage Guild Level 1!&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Not enough resources!&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="c1"># 5 Altar of Air</span>
+    <span class="k">if</span> <span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">2</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">city</span><span class="o">.</span><span class="n">mage_guild</span><span class="o">.</span><span class="n">lvl</span> <span class="o">&gt;=</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">1</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">resourceCheck</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">2</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">player</span><span class="p">):</span>
+            <span class="n">build</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">2</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">player</span><span class="p">)</span>
+            <span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">2</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">buy_building</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">2</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;conflux&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Altair of Air built!&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Not enough resources!&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="c1"># 6 Altar of Water</span>
+    <span class="k">if</span> <span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">3</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">city</span><span class="o">.</span><span class="n">mage_guild</span><span class="o">.</span><span class="n">lvl</span> <span class="o">&gt;=</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">1</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">resourceCheck</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">3</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">player</span><span class="p">):</span>
+            <span class="n">build</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">3</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">player</span><span class="p">)</span>
+            <span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">3</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">buy_building</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">3</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;conflux&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Altar of Water built!&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Not enough resources!&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="c1"># 7 Town Hall                                      &lt;our rule&gt;</span>
+    <span class="k">if</span> <span class="n">city</span><span class="o">.</span><span class="n">city_hall</span><span class="o">.</span><span class="n">lvl</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">city</span><span class="o">.</span><span class="n">mage_guild</span><span class="o">.</span><span class="n">lvl</span> <span class="o">&gt;=</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">city</span><span class="o">.</span><span class="n">tavern</span><span class="o">.</span><span class="n">built</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">resourceCheck</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">city_hall</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">player</span><span class="p">):</span>
+            <span class="n">build</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">city_hall</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">player</span><span class="p">)</span>
+            <span class="n">city</span><span class="o">.</span><span class="n">city_hall</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">buy_building</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">city_hall</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;conflux&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Town Hall built!&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Not enough resources!&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="c1"># 8 Citadel                             &lt;our rule&gt;</span>
+    <span class="k">if</span> <span class="n">city</span><span class="o">.</span><span class="n">fort</span><span class="o">.</span><span class="n">lvl</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">city</span><span class="o">.</span><span class="n">city_hall</span><span class="o">.</span><span class="n">lvl</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">resourceCheck</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">fort</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">player</span><span class="p">):</span>
+            <span class="n">build</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">fort</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">player</span><span class="p">)</span>
+            <span class="n">city</span><span class="o">.</span><span class="n">fort</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">2</span>
+            <span class="n">buy_building</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">fort</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;conflux&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Citadel built!&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Not enough resources!&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+    <span class="c1"># ----------------------------HARDCODED ZONE-----------------------------------------------</span>
+    <span class="c1"># [hab = build habitat], [upg = upgrade habitat], [wall = build/upgrade fort], [capi = build/upgrade city_hall], [MG_M = build Marketplace , upgrade/build mage_guild, build blacksmith], [builds = build other buildings]</span>
+    <span class="n">hab</span><span class="p">,</span> <span class="n">upg</span><span class="p">,</span> <span class="n">wall</span><span class="p">,</span> <span class="n">capi</span><span class="p">,</span> <span class="n">MG_M</span><span class="p">,</span> <span class="n">builds</span> <span class="o">=</span> <span class="n">town_choice</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">city</span><span class="p">)</span>
+
+    <span class="c1"># ------------------------------------------------------------------------------------------</span>
+    <span class="c1"># 9 Altar of Fire</span>
+    <span class="k">if</span> <span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">4</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">2</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">&gt;=</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">hab</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">resourceCheck</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">4</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">player</span><span class="p">):</span>
+            <span class="n">build</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">4</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">player</span><span class="p">)</span>
+            <span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">4</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">buy_building</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">4</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;conflux&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Altar of Fire built!&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Not enough resources!&#39;</span><span class="p">)</span>
+
+    <span class="c1"># 10 Marketplace</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">city</span><span class="o">.</span><span class="n">marketplace</span><span class="o">.</span><span class="n">built</span> <span class="ow">and</span> <span class="n">MG_M</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">resourceCheck</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">marketplace</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">player</span><span class="p">):</span>
+            <span class="n">build</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">marketplace</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">player</span><span class="p">)</span>
+            <span class="n">city</span><span class="o">.</span><span class="n">marketplace</span><span class="o">.</span><span class="n">built</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">buy_building</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">marketplace</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;conflux&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Marketplace built!&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Not enough resources!&#39;</span><span class="p">)</span>
+
+    <span class="c1"># 11 Blacksmith</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">city</span><span class="o">.</span><span class="n">blacksmith</span><span class="o">.</span><span class="n">built</span> <span class="ow">and</span> <span class="n">MG_M</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">resourceCheck</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">blacksmith</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">player</span><span class="p">):</span>
+            <span class="n">build</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">blacksmith</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">player</span><span class="p">)</span>
+            <span class="n">city</span><span class="o">.</span><span class="n">blacksmith</span><span class="o">.</span><span class="n">built</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">buy_building</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">blacksmith</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;conflux&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Blacksmith built!&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Not enough resources!&#39;</span><span class="p">)</span>
+
+    <span class="c1"># 12 City Hall</span>
+    <span class="k">if</span> <span class="n">city</span><span class="o">.</span><span class="n">city_hall</span><span class="o">.</span><span class="n">lvl</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">city</span><span class="o">.</span><span class="n">blacksmith</span><span class="o">.</span><span class="n">built</span> <span class="ow">and</span> <span class="n">city</span><span class="o">.</span><span class="n">mage_guild</span><span class="o">.</span><span class="n">lvl</span> <span class="o">&gt;=</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">city</span><span class="o">.</span><span class="n">marketplace</span><span class="o">.</span><span class="n">built</span> <span class="ow">and</span> <span class="n">capi</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">resourceCheck</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">city_hall</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">player</span><span class="p">):</span>
+            <span class="n">build</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">city_hall</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">player</span><span class="p">)</span>
+            <span class="n">city</span><span class="o">.</span><span class="n">city_hall</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">2</span>
+            <span class="n">buy_building</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">city_hall</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;conflux&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;City Hall built!&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Not enough resources!&#39;</span><span class="p">)</span>
+
+    <span class="c1"># 13 Upg. Altar of Water</span>
+    <span class="k">if</span> <span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">3</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">upg</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">resourceCheck</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">3</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">player</span><span class="p">):</span>
+            <span class="n">build</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">3</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">player</span><span class="p">)</span>
+            <span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">3</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">2</span>
+            <span class="n">buy_building</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">3</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;conflux&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Altar of Water upgraded!&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Not enough resources!&#39;</span><span class="p">)</span>
+
+    <span class="c1"># 14 Garden of Life</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">city</span><span class="o">.</span><span class="n">garden_of_life</span><span class="o">.</span><span class="n">built</span> <span class="ow">and</span> <span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">1</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">&gt;=</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">builds</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">resourceCheck</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">garden_of_life</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">player</span><span class="p">):</span>
+            <span class="n">build</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">garden_of_life</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">player</span><span class="p">)</span>
+            <span class="n">city</span><span class="o">.</span><span class="n">garden_of_life</span><span class="o">.</span><span class="n">built</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">buy_building</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">garden_of_life</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;conflux&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Garden of Life built!&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Not enough resources!&#39;</span><span class="p">)</span>
+
+    <span class="c1"># 15 Mage Guild Level 2</span>
+    <span class="k">if</span> <span class="n">city</span><span class="o">.</span><span class="n">mage_guild</span><span class="o">.</span><span class="n">lvl</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">MG_M</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">resourceCheck</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">mage_guild</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">player</span><span class="p">):</span>
+            <span class="n">build</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">mage_guild</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">player</span><span class="p">)</span>
+            <span class="n">city</span><span class="o">.</span><span class="n">mage_guild</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">2</span>
+            <span class="n">buy_building</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">mage_guild</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;conflux&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Mage Guild Level 2!&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Not enough resources!&#39;</span><span class="p">)</span>
+
+    <span class="c1"># 16 Castle</span>
+    <span class="k">if</span> <span class="n">city</span><span class="o">.</span><span class="n">fort</span><span class="o">.</span><span class="n">lvl</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">wall</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">resourceCheck</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">fort</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">2</span><span class="p">],</span> <span class="n">player</span><span class="p">):</span>
+            <span class="n">build</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">fort</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">2</span><span class="p">],</span> <span class="n">player</span><span class="p">)</span>
+            <span class="n">city</span><span class="o">.</span><span class="n">fort</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">3</span>
+            <span class="n">buy_building</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">fort</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;conflux&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Castle built!&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Not enough resources!&#39;</span><span class="p">)</span>
+
+    <span class="c1"># 17 Capitol</span>
+    <span class="k">if</span> <span class="n">city</span><span class="o">.</span><span class="n">fort</span><span class="o">.</span><span class="n">lvl</span> <span class="o">&gt;=</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">city</span><span class="o">.</span><span class="n">city_hall</span><span class="o">.</span><span class="n">lvl</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">capi</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">resourceCheck</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">city_hall</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">2</span><span class="p">],</span> <span class="n">player</span><span class="p">):</span>
+            <span class="n">build</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">city_hall</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">2</span><span class="p">],</span> <span class="n">player</span><span class="p">)</span>
+            <span class="n">city</span><span class="o">.</span><span class="n">city_hall</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">3</span>
+            <span class="n">buy_building</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">city_hall</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;conflux&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Capitol built!&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Not enough resources!&#39;</span><span class="p">)</span>
+
+    <span class="c1"># 18 Altar of Earth</span>
+    <span class="k">if</span> <span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">5</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">3</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">&gt;=</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">hab</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">resourceCheck</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">5</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">player</span><span class="p">):</span>
+            <span class="n">build</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">5</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">player</span><span class="p">)</span>
+            <span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">5</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">buy_building</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">5</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;conflux&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Altar of Earth built!&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Not enough resources!&#39;</span><span class="p">)</span>
+
+    <span class="c1"># 19 Upg. Altar of Air</span>
+    <span class="k">if</span> <span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">2</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">upg</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">resourceCheck</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">2</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">player</span><span class="p">):</span>
+            <span class="n">build</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">2</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">player</span><span class="p">)</span>
+            <span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">2</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">2</span>
+            <span class="n">buy_building</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">2</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;conflux&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Altar of Air upgraded!&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Not enough resources!&#39;</span><span class="p">)</span>
+
+    <span class="c1"># 20 Upg. Magic Lantern</span>
+    <span class="k">if</span> <span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">1</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">city</span><span class="o">.</span><span class="n">magic_university</span><span class="o">.</span><span class="n">built</span> <span class="ow">and</span> <span class="n">upg</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">resourceCheck</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">1</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">player</span><span class="p">):</span>
+            <span class="n">build</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">1</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">player</span><span class="p">)</span>
+            <span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">1</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">2</span>
+            <span class="n">buy_building</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">1</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;conflux&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Magic Lantern upgraded!&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Not enough resources!&#39;</span><span class="p">)</span>
+
+    <span class="c1"># 21 Upg. Altar of Fire</span>
+    <span class="k">if</span> <span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">4</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">upg</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">resourceCheck</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">4</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">player</span><span class="p">):</span>
+            <span class="n">build</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">4</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">player</span><span class="p">)</span>
+            <span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">4</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">2</span>
+            <span class="n">buy_building</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">4</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;conflux&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Altar of Fire Upgraded!&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Not enough resources!&#39;</span><span class="p">)</span>
+
+    <span class="c1"># 22 Mage Guild Level 3</span>
+    <span class="k">if</span> <span class="n">city</span><span class="o">.</span><span class="n">mage_guild</span><span class="o">.</span><span class="n">lvl</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">MG_M</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">resourceCheck</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">mage_guild</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">2</span><span class="p">],</span> <span class="n">player</span><span class="p">):</span>
+            <span class="n">build</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">mage_guild</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">2</span><span class="p">],</span> <span class="n">player</span><span class="p">)</span>
+            <span class="n">city</span><span class="o">.</span><span class="n">mage_guild</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">3</span>
+            <span class="n">buy_building</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">mage_guild</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;conflux&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Mage Guild Level 3!&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Not enough resources!&#39;</span><span class="p">)</span>
+
+    <span class="c1"># 23 Altar of Thought</span>
+    <span class="k">if</span> <span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">6</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">5</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">&gt;=</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">hab</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">resourceCheck</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">6</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">player</span><span class="p">):</span>
+            <span class="n">build</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">6</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">player</span><span class="p">)</span>
+            <span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">6</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">buy_building</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">6</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;conflux&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Altar of Thought built!&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Not enough resources!&#39;</span><span class="p">)</span>
+
+    <span class="c1"># 24 Magic University</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">city</span><span class="o">.</span><span class="n">magic_university</span><span class="o">.</span><span class="n">built</span> <span class="ow">and</span> <span class="n">city</span><span class="o">.</span><span class="n">mage_guild</span><span class="o">.</span><span class="n">lvl</span> <span class="o">&gt;=</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">builds</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">resourceCheck</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">magic_university</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">player</span><span class="p">):</span>
+            <span class="n">build</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">magic_university</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">player</span><span class="p">)</span>
+            <span class="n">city</span><span class="o">.</span><span class="n">magic_university</span><span class="o">.</span><span class="n">built</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">buy_building</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">magic_university</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;conflux&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Magic University built!&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Not enough resources!&#39;</span><span class="p">)</span>
+
+    <span class="c1"># 25 Upg. Altar of Earth</span>
+    <span class="k">if</span> <span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">5</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">upg</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">resourceCheck</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">5</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">player</span><span class="p">):</span>
+            <span class="n">build</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">5</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">player</span><span class="p">)</span>
+            <span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">5</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">2</span>
+            <span class="n">buy_building</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">5</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;conflux&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;CAltar of Earth upgraded!&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Not enough resources!&#39;</span><span class="p">)</span>
+
+    <span class="c1"># 26 Resource Silo</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">city</span><span class="o">.</span><span class="n">resource_silo</span><span class="o">.</span><span class="n">built</span> <span class="ow">and</span> <span class="n">city</span><span class="o">.</span><span class="n">marketplace</span><span class="o">.</span><span class="n">built</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">resourceCheck</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">resource_silo</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">player</span><span class="p">):</span>
+            <span class="n">build</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">resource_silo</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">player</span><span class="p">)</span>
+            <span class="n">city</span><span class="o">.</span><span class="n">resource_silo</span><span class="o">.</span><span class="n">built</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">buy_building</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">resource_silo</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;conflux&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Resource Silo built!&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Not enough resources!&#39;</span><span class="p">)</span>
+
+    <span class="c1"># 27 Pyre</span>
+    <span class="k">if</span> <span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">7</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">6</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">&gt;=</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">hab</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">resourceCheck</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">7</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">player</span><span class="p">):</span>
+            <span class="n">build</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">7</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">player</span><span class="p">)</span>
+            <span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">7</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">buy_building</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">7</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;conflux&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Pyre built!&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Not enough resources!&#39;</span><span class="p">)</span>
+
+    <span class="c1"># 28 Mage Guild Level 4</span>
+    <span class="k">if</span> <span class="n">city</span><span class="o">.</span><span class="n">mage_guild</span><span class="o">.</span><span class="n">lvl</span> <span class="o">==</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">MG_M</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">resourceCheck</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">mage_guild</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">3</span><span class="p">],</span> <span class="n">player</span><span class="p">):</span>
+            <span class="n">build</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">mage_guild</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">3</span><span class="p">],</span> <span class="n">player</span><span class="p">)</span>
+            <span class="n">city</span><span class="o">.</span><span class="n">mage_guild</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">4</span>
+            <span class="n">buy_building</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">mage_guild</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;conflux&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Mage Guild Level 4!&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Not enough resources!&#39;</span><span class="p">)</span>
+
+    <span class="c1"># 29 Mage Guild Level 5</span>
+    <span class="k">if</span> <span class="n">city</span><span class="o">.</span><span class="n">mage_guild</span><span class="o">.</span><span class="n">lvl</span> <span class="o">==</span> <span class="mi">4</span> <span class="ow">and</span> <span class="n">MG_M</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">resourceCheck</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">mage_guild</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">4</span><span class="p">],</span> <span class="n">player</span><span class="p">):</span>
+            <span class="n">build</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">mage_guild</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">4</span><span class="p">],</span> <span class="n">player</span><span class="p">)</span>
+            <span class="n">city</span><span class="o">.</span><span class="n">mage_guild</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">5</span>
+            <span class="n">buy_building</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">mage_guild</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;conflux&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Mage Guild Level 5!&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Not enough resources!&#39;</span><span class="p">)</span>
+
+    <span class="c1"># 30 Upg. Altar of Thought</span>
+    <span class="k">if</span> <span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">6</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">city</span><span class="o">.</span><span class="n">mage_guild</span><span class="o">.</span><span class="n">lvl</span> <span class="o">&gt;=</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">upg</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">resourceCheck</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">6</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">player</span><span class="p">):</span>
+            <span class="n">build</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">6</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">player</span><span class="p">)</span>
+            <span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">6</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">2</span>
+            <span class="n">buy_building</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">6</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;conflux&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Altar of Thought upgraded!&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Not enough resources!&#39;</span><span class="p">)</span>
+
+    <span class="c1"># 31 Upg. Pyre</span>
+    <span class="k">if</span> <span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">7</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">upg</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">resourceCheck</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">7</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">player</span><span class="p">):</span>
+            <span class="n">build</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">7</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">player</span><span class="p">)</span>
+            <span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">7</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="mi">2</span>
+            <span class="n">buy_building</span><span class="p">(</span><span class="n">city</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">7</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;conflux&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Pyre upgraded!&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Not enough resources!&#39;</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Fryderyk Róg, Kacper Plesiak, Michał Gruba, Tymoteusz Skrzyński, Mateusz Comblik, Bartosz Szczepanek, Alan Konopko, Mateusz Mikszewicz, Daniel Bil, Piotr Łyczko.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

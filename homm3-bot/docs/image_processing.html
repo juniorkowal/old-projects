@@ -1,0 +1,1466 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>image_processing package &mdash; HoMM3 Bot 2.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="main module" href="main.html" />
+    <link rel="prev" title="hierarchyFunctions package" href="hierarchyFunctions.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> HoMM3 Bot
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">homm3-bot</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Adventure_AI.html">Adventure_AI package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GUI_handling.html">GUI_handling package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="battleAI.html">battleAI package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data.html">data package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_reader.html">file_reader package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hierarchyFunctions.html">hierarchyFunctions package</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">image_processing package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-image_processing.CNN_learning">image_processing.CNN_learning module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.CNN_learning.CNN"><code class="docutils literal notranslate"><span class="pre">CNN</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.CNN_learning.DumbNN"><code class="docutils literal notranslate"><span class="pre">DumbNN</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.CNN_learning.abomination"><code class="docutils literal notranslate"><span class="pre">abomination()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.CNN_learning.train_artifact_NN"><code class="docutils literal notranslate"><span class="pre">train_artifact_NN()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.CNN_learning.train_battle1_NN"><code class="docutils literal notranslate"><span class="pre">train_battle1_NN()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.CNN_learning.train_creatures_NN"><code class="docutils literal notranslate"><span class="pre">train_creatures_NN()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.CNN_learning.train_map_NN"><code class="docutils literal notranslate"><span class="pre">train_map_NN()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.CNN_learning.train_queue_NN"><code class="docutils literal notranslate"><span class="pre">train_queue_NN()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.CNN_learning.train_spells_NN"><code class="docutils literal notranslate"><span class="pre">train_spells_NN()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.CNN_learning.train_unit_NN"><code class="docutils literal notranslate"><span class="pre">train_unit_NN()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.CNN_learning.try_artifact_NN"><code class="docutils literal notranslate"><span class="pre">try_artifact_NN()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.CNN_learning.try_battle1_NN"><code class="docutils literal notranslate"><span class="pre">try_battle1_NN()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.CNN_learning.try_creatures_NN"><code class="docutils literal notranslate"><span class="pre">try_creatures_NN()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.CNN_learning.try_map_NN"><code class="docutils literal notranslate"><span class="pre">try_map_NN()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.CNN_learning.try_queue_NN"><code class="docutils literal notranslate"><span class="pre">try_queue_NN()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.CNN_learning.try_spells_NN"><code class="docutils literal notranslate"><span class="pre">try_spells_NN()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.CNN_learning.try_unit_NN"><code class="docutils literal notranslate"><span class="pre">try_unit_NN()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-image_processing.adventure_image_processing">image_processing.adventure_image_processing module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.adventure_image_processing.camera_to_position"><code class="docutils literal notranslate"><span class="pre">camera_to_position()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.adventure_image_processing.check_if_hero_is_dead"><code class="docutils literal notranslate"><span class="pre">check_if_hero_is_dead()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.adventure_image_processing.check_if_hero_is_dead_first"><code class="docutils literal notranslate"><span class="pre">check_if_hero_is_dead_first()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.adventure_image_processing.check_if_hero_is_dead_last"><code class="docutils literal notranslate"><span class="pre">check_if_hero_is_dead_last()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.adventure_image_processing.check_if_hero_is_dead_last_without_hero"><code class="docutils literal notranslate"><span class="pre">check_if_hero_is_dead_last_without_hero()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.adventure_image_processing.check_mine_owner_ocr"><code class="docutils literal notranslate"><span class="pre">check_mine_owner_ocr()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.adventure_image_processing.detect_hero_move"><code class="docutils literal notranslate"><span class="pre">detect_hero_move()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.adventure_image_processing.detect_thing_ocr"><code class="docutils literal notranslate"><span class="pre">detect_thing_ocr()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.adventure_image_processing.distance"><code class="docutils literal notranslate"><span class="pre">distance()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.adventure_image_processing.find_heroes"><code class="docutils literal notranslate"><span class="pre">find_heroes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.adventure_image_processing.get_cursor_type"><code class="docutils literal notranslate"><span class="pre">get_cursor_type()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.adventure_image_processing.remove_dead_heroes"><code class="docutils literal notranslate"><span class="pre">remove_dead_heroes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.adventure_image_processing.remove_lost_cities"><code class="docutils literal notranslate"><span class="pre">remove_lost_cities()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-image_processing.battle_image_processing">image_processing.battle_image_processing module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.battle_image_processing.checkForObstacle"><code class="docutils literal notranslate"><span class="pre">checkForObstacle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.battle_image_processing.checkIfTurnIsOurs"><code class="docutils literal notranslate"><span class="pre">checkIfTurnIsOurs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.battle_image_processing.check_terrain"><code class="docutils literal notranslate"><span class="pre">check_terrain()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.battle_image_processing.determine_unit"><code class="docutils literal notranslate"><span class="pre">determine_unit()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.battle_image_processing.distance"><code class="docutils literal notranslate"><span class="pre">distance()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.battle_image_processing.distance2"><code class="docutils literal notranslate"><span class="pre">distance2()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.battle_image_processing.find_first_unit"><code class="docutils literal notranslate"><span class="pre">find_first_unit()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.battle_image_processing.find_unit"><code class="docutils literal notranslate"><span class="pre">find_unit()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.battle_image_processing.initialize_BNN"><code class="docutils literal notranslate"><span class="pre">initialize_BNN()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.battle_image_processing.initialize_QNN"><code class="docutils literal notranslate"><span class="pre">initialize_QNN()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.battle_image_processing.initialize_SNN"><code class="docutils literal notranslate"><span class="pre">initialize_SNN()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.battle_image_processing.initialize_UNN"><code class="docutils literal notranslate"><span class="pre">initialize_UNN()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.battle_image_processing.mouse_unit_check"><code class="docutils literal notranslate"><span class="pre">mouse_unit_check()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.battle_image_processing.near_enough"><code class="docutils literal notranslate"><span class="pre">near_enough()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.battle_image_processing.new_unit_detection_system"><code class="docutils literal notranslate"><span class="pre">new_unit_detection_system()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.battle_image_processing.queue_partial_detection"><code class="docutils literal notranslate"><span class="pre">queue_partial_detection()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-image_processing.blue_hero">image_processing.blue_hero module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.blue_hero.check_if_blue_hero_exists"><code class="docutils literal notranslate"><span class="pre">check_if_blue_hero_exists()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.blue_hero.fill_enemy_hero"><code class="docutils literal notranslate"><span class="pre">fill_enemy_hero()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.blue_hero.get_creature_numbers"><code class="docutils literal notranslate"><span class="pre">get_creature_numbers()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.blue_hero.moveCameraToTarget"><code class="docutils literal notranslate"><span class="pre">moveCameraToTarget()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.blue_hero.ocr_name"><code class="docutils literal notranslate"><span class="pre">ocr_name()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-image_processing.detecting_window">image_processing.detecting_window module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.detecting_window.SecondarySkill"><code class="docutils literal notranslate"><span class="pre">SecondarySkill</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.detecting_window.action_window"><code class="docutils literal notranslate"><span class="pre">action_window()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.detecting_window.action_window_enemy_turn"><code class="docutils literal notranslate"><span class="pre">action_window_enemy_turn()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.detecting_window.check_fortification"><code class="docutils literal notranslate"><span class="pre">check_fortification()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.detecting_window.compare"><code class="docutils literal notranslate"><span class="pre">compare()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.detecting_window.execute_detecting"><code class="docutils literal notranslate"><span class="pre">execute_detecting()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.detecting_window.execute_detecting_enemy_turn"><code class="docutils literal notranslate"><span class="pre">execute_detecting_enemy_turn()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.detecting_window.follow_check"><code class="docutils literal notranslate"><span class="pre">follow_check()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.detecting_window.pursue_check"><code class="docutils literal notranslate"><span class="pre">pursue_check()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.detecting_window.read_gray_image"><code class="docutils literal notranslate"><span class="pre">read_gray_image()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.detecting_window.skills_window"><code class="docutils literal notranslate"><span class="pre">skills_window()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.detecting_window.which_window"><code class="docutils literal notranslate"><span class="pre">which_window()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-image_processing.dictionaries">image_processing.dictionaries module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-image_processing.hero_filling">image_processing.hero_filling module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.hero_filling.Finder"><code class="docutils literal notranslate"><span class="pre">Finder</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-image_processing.ocr">image_processing.ocr module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.ocr.battle_unit_count"><code class="docutils literal notranslate"><span class="pre">battle_unit_count()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.ocr.prepare_text"><code class="docutils literal notranslate"><span class="pre">prepare_text()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.ocr.read_generic_numbers"><code class="docutils literal notranslate"><span class="pre">read_generic_numbers()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.ocr.read_generic_text"><code class="docutils literal notranslate"><span class="pre">read_generic_text()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.ocr.read_text"><code class="docutils literal notranslate"><span class="pre">read_text()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.ocr.read_text_faster"><code class="docutils literal notranslate"><span class="pre">read_text_faster()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-image_processing.ocr_dict">image_processing.ocr_dict module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-image_processing.ok_detection">image_processing.ok_detection module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.ok_detection.check_ok"><code class="docutils literal notranslate"><span class="pre">check_ok()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.ok_detection.compare"><code class="docutils literal notranslate"><span class="pre">compare()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-image_processing.screen_slicing">image_processing.screen_slicing module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.screen_slicing.ScreenStorage"><code class="docutils literal notranslate"><span class="pre">ScreenStorage</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.screen_slicing.check_resources"><code class="docutils literal notranslate"><span class="pre">check_resources()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.screen_slicing.readColors"><code class="docutils literal notranslate"><span class="pre">readColors()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.screen_slicing.readColors2"><code class="docutils literal notranslate"><span class="pre">readColors2()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.screen_slicing.readTemplates"><code class="docutils literal notranslate"><span class="pre">readTemplates()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.screen_slicing.save_small_map"><code class="docutils literal notranslate"><span class="pre">save_small_map()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.screen_slicing.slice_queue"><code class="docutils literal notranslate"><span class="pre">slice_queue()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.screen_slicing.take_console"><code class="docutils literal notranslate"><span class="pre">take_console()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.screen_slicing.take_resources_"><code class="docutils literal notranslate"><span class="pre">take_resources_()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.screen_slicing.take_small_map"><code class="docutils literal notranslate"><span class="pre">take_small_map()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image_processing.screen_slicing.temp_move"><code class="docutils literal notranslate"><span class="pre">temp_move()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-image_processing">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="main.html">main module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="map.html">map package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="path_finding_alghoritms.html">path_finding_alghoritms package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="save.html">save module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="town_upgrading.html">town_upgrading package</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">HoMM3 Bot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">homm3-bot</a></li>
+      <li class="breadcrumb-item active">image_processing package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/image_processing.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="image-processing-package">
+<h1>image_processing package<a class="headerlink" href="#image-processing-package" title="Permalink to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-image_processing.CNN_learning">
+<span id="image-processing-cnn-learning-module"></span><h2>image_processing.CNN_learning module<a class="headerlink" href="#module-image_processing.CNN_learning" title="Permalink to this heading"></a></h2>
+<p>Script containing neural network classes that we use in obstacle/creature in queue recognition</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="image_processing.CNN_learning.CNN">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">image_processing.CNN_learning.</span></span><span class="sig-name descname"><span class="pre">CNN</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(33,</span> <span class="pre">33,</span> <span class="pre">3)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'./model/model/'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_of_classes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">69</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/CNN_learning.html#CNN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.CNN_learning.CNN" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="image_processing.CNN_learning.CNN.add_learning_images">
+<span class="sig-name descname"><span class="pre">add_learning_images</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_to_directory</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'../structures/'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/CNN_learning.html#CNN.add_learning_images"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.CNN_learning.CNN.add_learning_images" title="Permalink to this definition"></a></dt>
+<dd><p>function adding learning dataset for neural network</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path_to_directory</strong> – path to directory containing dataset for function</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="image_processing.CNN_learning.CNN.add_test_images">
+<span class="sig-name descname"><span class="pre">add_test_images</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_to_directory</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'./test/'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/CNN_learning.html#CNN.add_test_images"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.CNN_learning.CNN.add_test_images" title="Permalink to this definition"></a></dt>
+<dd><p>function adding test dataset for neural network</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path_to_directory</strong> – path to directory containing dataset for function</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="image_processing.CNN_learning.CNN.load_model">
+<span class="sig-name descname"><span class="pre">load_model</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/CNN_learning.html#CNN.load_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.CNN_learning.CNN.load_model" title="Permalink to this definition"></a></dt>
+<dd><p>function loading weightfiles from path specified in init</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="image_processing.CNN_learning.CNN.test_network">
+<span class="sig-name descname"><span class="pre">test_network</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/CNN_learning.html#CNN.test_network"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.CNN_learning.CNN.test_network" title="Permalink to this definition"></a></dt>
+<dd><p>function evaluating neural network</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="image_processing.CNN_learning.CNN.train_network">
+<span class="sig-name descname"><span class="pre">train_network</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/CNN_learning.html#CNN.train_network"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.CNN_learning.CNN.train_network" title="Permalink to this definition"></a></dt>
+<dd><p>function training and evaluating neural network, needs earlier 2 function to be called before being able to work</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="image_processing.CNN_learning.DumbNN">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">image_processing.CNN_learning.</span></span><span class="sig-name descname"><span class="pre">DumbNN</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(33,</span> <span class="pre">33,</span> <span class="pre">3)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'./models/model/'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_of_classes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">165</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/CNN_learning.html#DumbNN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.CNN_learning.DumbNN" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="image_processing.CNN_learning.DumbNN.add_learning_images">
+<span class="sig-name descname"><span class="pre">add_learning_images</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_to_directory</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'../unit_portraits/'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/CNN_learning.html#DumbNN.add_learning_images"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.CNN_learning.DumbNN.add_learning_images" title="Permalink to this definition"></a></dt>
+<dd><p>function adding learning dataset for neural network</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path_to_directory</strong> – path to directory containing dataset for function</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="image_processing.CNN_learning.DumbNN.add_test_images">
+<span class="sig-name descname"><span class="pre">add_test_images</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_to_directory</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'../queue_test/'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/CNN_learning.html#DumbNN.add_test_images"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.CNN_learning.DumbNN.add_test_images" title="Permalink to this definition"></a></dt>
+<dd><p>function adding test dataset for neural network</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path_to_directory</strong> – path to directory containing dataset for function</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="image_processing.CNN_learning.DumbNN.load_model">
+<span class="sig-name descname"><span class="pre">load_model</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/CNN_learning.html#DumbNN.load_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.CNN_learning.DumbNN.load_model" title="Permalink to this definition"></a></dt>
+<dd><p>function loading weightfiles from path specified in init</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="image_processing.CNN_learning.DumbNN.test_network">
+<span class="sig-name descname"><span class="pre">test_network</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/CNN_learning.html#DumbNN.test_network"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.CNN_learning.DumbNN.test_network" title="Permalink to this definition"></a></dt>
+<dd><p>function evaluating neural network</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="image_processing.CNN_learning.DumbNN.train_network">
+<span class="sig-name descname"><span class="pre">train_network</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/CNN_learning.html#DumbNN.train_network"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.CNN_learning.DumbNN.train_network" title="Permalink to this definition"></a></dt>
+<dd><p>function training and evaluating neural network, needs earlier 2 function to be called before being able to work</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.CNN_learning.abomination">
+<span class="sig-prename descclassname"><span class="pre">image_processing.CNN_learning.</span></span><span class="sig-name descname"><span class="pre">abomination</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/CNN_learning.html#abomination"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.CNN_learning.abomination" title="Permalink to this definition"></a></dt>
+<dd><p>just dont
+function created for finding which classes of output is giving most errors in first iteration of neural network based image recognition</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>list containing each pair of bad predictions of network</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.CNN_learning.train_artifact_NN">
+<span class="sig-prename descclassname"><span class="pre">image_processing.CNN_learning.</span></span><span class="sig-name descname"><span class="pre">train_artifact_NN</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/CNN_learning.html#train_artifact_NN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.CNN_learning.train_artifact_NN" title="Permalink to this definition"></a></dt>
+<dd><p>helper function for creating and training of specyfic neural network</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.CNN_learning.train_battle1_NN">
+<span class="sig-prename descclassname"><span class="pre">image_processing.CNN_learning.</span></span><span class="sig-name descname"><span class="pre">train_battle1_NN</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/CNN_learning.html#train_battle1_NN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.CNN_learning.train_battle1_NN" title="Permalink to this definition"></a></dt>
+<dd><p>helper function for creating and training of specyfic neural network</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.CNN_learning.train_creatures_NN">
+<span class="sig-prename descclassname"><span class="pre">image_processing.CNN_learning.</span></span><span class="sig-name descname"><span class="pre">train_creatures_NN</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/CNN_learning.html#train_creatures_NN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.CNN_learning.train_creatures_NN" title="Permalink to this definition"></a></dt>
+<dd><p>helper function for creating and training of specyfic neural network</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.CNN_learning.train_map_NN">
+<span class="sig-prename descclassname"><span class="pre">image_processing.CNN_learning.</span></span><span class="sig-name descname"><span class="pre">train_map_NN</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/CNN_learning.html#train_map_NN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.CNN_learning.train_map_NN" title="Permalink to this definition"></a></dt>
+<dd><p>helper function for creating and training of specyfic neural network</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.CNN_learning.train_queue_NN">
+<span class="sig-prename descclassname"><span class="pre">image_processing.CNN_learning.</span></span><span class="sig-name descname"><span class="pre">train_queue_NN</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/CNN_learning.html#train_queue_NN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.CNN_learning.train_queue_NN" title="Permalink to this definition"></a></dt>
+<dd><p>helper function for creating and training of specyfic neural network</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.CNN_learning.train_spells_NN">
+<span class="sig-prename descclassname"><span class="pre">image_processing.CNN_learning.</span></span><span class="sig-name descname"><span class="pre">train_spells_NN</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/CNN_learning.html#train_spells_NN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.CNN_learning.train_spells_NN" title="Permalink to this definition"></a></dt>
+<dd><p>helper function for creating and training of specyfic neural network</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.CNN_learning.train_unit_NN">
+<span class="sig-prename descclassname"><span class="pre">image_processing.CNN_learning.</span></span><span class="sig-name descname"><span class="pre">train_unit_NN</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/CNN_learning.html#train_unit_NN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.CNN_learning.train_unit_NN" title="Permalink to this definition"></a></dt>
+<dd><p>helper function for creating and training of specyfic neural network</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.CNN_learning.try_artifact_NN">
+<span class="sig-prename descclassname"><span class="pre">image_processing.CNN_learning.</span></span><span class="sig-name descname"><span class="pre">try_artifact_NN</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/CNN_learning.html#try_artifact_NN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.CNN_learning.try_artifact_NN" title="Permalink to this definition"></a></dt>
+<dd><p>helper function for loading and testing of specyfic neural network</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.CNN_learning.try_battle1_NN">
+<span class="sig-prename descclassname"><span class="pre">image_processing.CNN_learning.</span></span><span class="sig-name descname"><span class="pre">try_battle1_NN</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/CNN_learning.html#try_battle1_NN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.CNN_learning.try_battle1_NN" title="Permalink to this definition"></a></dt>
+<dd><p>helper function for loading and testing of specyfic neural network</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.CNN_learning.try_creatures_NN">
+<span class="sig-prename descclassname"><span class="pre">image_processing.CNN_learning.</span></span><span class="sig-name descname"><span class="pre">try_creatures_NN</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/CNN_learning.html#try_creatures_NN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.CNN_learning.try_creatures_NN" title="Permalink to this definition"></a></dt>
+<dd><p>helper function for loading and testing of specyfic neural network</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.CNN_learning.try_map_NN">
+<span class="sig-prename descclassname"><span class="pre">image_processing.CNN_learning.</span></span><span class="sig-name descname"><span class="pre">try_map_NN</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/CNN_learning.html#try_map_NN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.CNN_learning.try_map_NN" title="Permalink to this definition"></a></dt>
+<dd><p>helper function for loading and testing of specyfic neural network</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.CNN_learning.try_queue_NN">
+<span class="sig-prename descclassname"><span class="pre">image_processing.CNN_learning.</span></span><span class="sig-name descname"><span class="pre">try_queue_NN</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/CNN_learning.html#try_queue_NN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.CNN_learning.try_queue_NN" title="Permalink to this definition"></a></dt>
+<dd><p>helper function for loading and testing of specyfic neural network</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.CNN_learning.try_spells_NN">
+<span class="sig-prename descclassname"><span class="pre">image_processing.CNN_learning.</span></span><span class="sig-name descname"><span class="pre">try_spells_NN</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/CNN_learning.html#try_spells_NN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.CNN_learning.try_spells_NN" title="Permalink to this definition"></a></dt>
+<dd><p>helper function for loading and testing of specyfic neural network</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.CNN_learning.try_unit_NN">
+<span class="sig-prename descclassname"><span class="pre">image_processing.CNN_learning.</span></span><span class="sig-name descname"><span class="pre">try_unit_NN</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/CNN_learning.html#try_unit_NN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.CNN_learning.try_unit_NN" title="Permalink to this definition"></a></dt>
+<dd><p>helper function for loading and testing of specyfic neural network</p>
+</dd></dl>
+
+</section>
+<section id="module-image_processing.adventure_image_processing">
+<span id="image-processing-adventure-image-processing-module"></span><h2>image_processing.adventure_image_processing module<a class="headerlink" href="#module-image_processing.adventure_image_processing" title="Permalink to this heading"></a></h2>
+<p>Module responsible for image processing in the adventure map department</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.adventure_image_processing.camera_to_position">
+<span class="sig-prename descclassname"><span class="pre">image_processing.adventure_image_processing.</span></span><span class="sig-name descname"><span class="pre">camera_to_position</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">player</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.player_data.Player" title="data.player_data.Player"><span class="pre">Player</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relative_X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relative_Y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/adventure_image_processing.html#camera_to_position"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.adventure_image_processing.camera_to_position" title="Permalink to this definition"></a></dt>
+<dd><p>function moving mouse over select coordinates</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>player</strong> – player object</p></li>
+<li><p><strong>position</strong> – chosen point</p></li>
+<li><p><strong>relative_X</strong> – distance between chosen point and camera</p></li>
+<li><p><strong>relative_Y</strong> – distance between chosen point and camera</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.adventure_image_processing.check_if_hero_is_dead">
+<span class="sig-prename descclassname"><span class="pre">image_processing.adventure_image_processing.</span></span><span class="sig-name descname"><span class="pre">check_if_hero_is_dead</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">player</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.player_data.Player" title="data.player_data.Player"><span class="pre">Player</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">hero</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/adventure_image_processing.html#check_if_hero_is_dead"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.adventure_image_processing.check_if_hero_is_dead" title="Permalink to this definition"></a></dt>
+<dd><p>function for removing dead heroes from our herolist</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>player</strong> – player object</p></li>
+<li><p><strong>hero</strong> – hero object</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.adventure_image_processing.check_if_hero_is_dead_first">
+<span class="sig-prename descclassname"><span class="pre">image_processing.adventure_image_processing.</span></span><span class="sig-name descname"><span class="pre">check_if_hero_is_dead_first</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/adventure_image_processing.html#check_if_hero_is_dead_first"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.adventure_image_processing.check_if_hero_is_dead_first" title="Permalink to this definition"></a></dt>
+<dd><p>first part of checking if hero died</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>image of list of heroes before move</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.adventure_image_processing.check_if_hero_is_dead_last">
+<span class="sig-prename descclassname"><span class="pre">image_processing.adventure_image_processing.</span></span><span class="sig-name descname"><span class="pre">check_if_hero_is_dead_last</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">earlier</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">player</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hero</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/adventure_image_processing.html#check_if_hero_is_dead_last"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.adventure_image_processing.check_if_hero_is_dead_last" title="Permalink to this definition"></a></dt>
+<dd><p>second part of checking if hero died</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>earlier</strong> – output of first function</p></li>
+<li><p><strong>player</strong> – player object</p></li>
+<li><p><strong>hero</strong> – checked hero</p></li>
+</ul>
+</dd>
+</dl>
+<p>:return bool indicating if hero has died</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.adventure_image_processing.check_if_hero_is_dead_last_without_hero">
+<span class="sig-prename descclassname"><span class="pre">image_processing.adventure_image_processing.</span></span><span class="sig-name descname"><span class="pre">check_if_hero_is_dead_last_without_hero</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">earlier</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">player</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/adventure_image_processing.html#check_if_hero_is_dead_last_without_hero"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.adventure_image_processing.check_if_hero_is_dead_last_without_hero" title="Permalink to this definition"></a></dt>
+<dd><p>second part of checking if hero died</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>earlier</strong> – output of first function</p></li>
+<li><p><strong>player</strong> – player object</p></li>
+</ul>
+</dd>
+</dl>
+<p>:return bool indicating if hero has died</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.adventure_image_processing.check_mine_owner_ocr">
+<span class="sig-prename descclassname"><span class="pre">image_processing.adventure_image_processing.</span></span><span class="sig-name descname"><span class="pre">check_mine_owner_ocr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">player</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.player_data.Player" title="data.player_data.Player"><span class="pre">Player</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/adventure_image_processing.html#check_mine_owner_ocr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.adventure_image_processing.check_mine_owner_ocr" title="Permalink to this definition"></a></dt>
+<dd><p>function checking owner of select mine</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>player</strong> – player object</p></li>
+<li><p><strong>position</strong> – position of mine</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>color of owner</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.adventure_image_processing.detect_hero_move">
+<span class="sig-prename descclassname"><span class="pre">image_processing.adventure_image_processing.</span></span><span class="sig-name descname"><span class="pre">detect_hero_move</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">player</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">screen</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">objMap</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/adventure_image_processing.html#detect_hero_move"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.adventure_image_processing.detect_hero_move" title="Permalink to this definition"></a></dt>
+<dd><p>function checking movement of our hero</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>player</strong> – player object</p></li>
+<li><p><strong>screen</strong> – screenslicing object</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>pair of tuples containing move of hero</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.adventure_image_processing.detect_thing_ocr">
+<span class="sig-prename descclassname"><span class="pre">image_processing.adventure_image_processing.</span></span><span class="sig-name descname"><span class="pre">detect_thing_ocr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">player</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.player_data.Player" title="data.player_data.Player"><span class="pre">Player</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drillMouse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/adventure_image_processing.html#detect_thing_ocr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.adventure_image_processing.detect_thing_ocr" title="Permalink to this definition"></a></dt>
+<dd><p>function detecting objects with usage of ocr</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>drillMouse</strong> – (bool) makes some mouse shakes before the detection</p></li>
+<li><p><strong>player</strong> – player object</p></li>
+<li><p><strong>position</strong> – position of object</p></li>
+<li><p><strong>type</strong> – type of object we are pointing to</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>detected object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.adventure_image_processing.distance">
+<span class="sig-prename descclassname"><span class="pre">image_processing.adventure_image_processing.</span></span><span class="sig-name descname"><span class="pre">distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/adventure_image_processing.html#distance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.adventure_image_processing.distance" title="Permalink to this definition"></a></dt>
+<dd><p>function checking distance between point and kist of points</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>point</strong> – checked point</p></li>
+<li><p><strong>points</strong> – list of points with labels</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>name of nearest element of points to point</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.adventure_image_processing.find_heroes">
+<span class="sig-prename descclassname"><span class="pre">image_processing.adventure_image_processing.</span></span><span class="sig-name descname"><span class="pre">find_heroes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">screen</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#image_processing.screen_slicing.ScreenStorage" title="image_processing.screen_slicing.ScreenStorage"><span class="pre">ScreenStorage</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">objMap</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/adventure_image_processing.html#find_heroes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.adventure_image_processing.find_heroes" title="Permalink to this definition"></a></dt>
+<dd><p>function finding all visible heroes</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>screen</strong> – screen slicing object</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>list of all heroes on map</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.adventure_image_processing.get_cursor_type">
+<span class="sig-prename descclassname"><span class="pre">image_processing.adventure_image_processing.</span></span><span class="sig-name descname"><span class="pre">get_cursor_type</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/adventure_image_processing.html#get_cursor_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.adventure_image_processing.get_cursor_type" title="Permalink to this definition"></a></dt>
+<dd><p>Collects cursor icon</p>
+<p>return name of cursor</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.adventure_image_processing.remove_dead_heroes">
+<span class="sig-prename descclassname"><span class="pre">image_processing.adventure_image_processing.</span></span><span class="sig-name descname"><span class="pre">remove_dead_heroes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">player</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.player_data.Player" title="data.player_data.Player"><span class="pre">Player</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/adventure_image_processing.html#remove_dead_heroes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.adventure_image_processing.remove_dead_heroes" title="Permalink to this definition"></a></dt>
+<dd><p>function for removing dead heroes from our herolist</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>player</strong> – player object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.adventure_image_processing.remove_lost_cities">
+<span class="sig-prename descclassname"><span class="pre">image_processing.adventure_image_processing.</span></span><span class="sig-name descname"><span class="pre">remove_lost_cities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">player</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.player_data.Player" title="data.player_data.Player"><span class="pre">Player</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/adventure_image_processing.html#remove_lost_cities"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.adventure_image_processing.remove_lost_cities" title="Permalink to this definition"></a></dt>
+<dd><p>function for removing lost cities from our citylist</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>player</strong> – player object</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-image_processing.battle_image_processing">
+<span id="image-processing-battle-image-processing-module"></span><h2>image_processing.battle_image_processing module<a class="headerlink" href="#module-image_processing.battle_image_processing" title="Permalink to this heading"></a></h2>
+<p>Script that contains functions used in battle image recognition</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.battle_image_processing.checkForObstacle">
+<span class="sig-prename descclassname"><span class="pre">image_processing.battle_image_processing.</span></span><span class="sig-name descname"><span class="pre">checkForObstacle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/battle_image_processing.html#checkForObstacle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.battle_image_processing.checkForObstacle" title="Permalink to this definition"></a></dt>
+<dd><p>function chcecking if on select tile we really have obstacle</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>target</strong> – tile coordinates to check</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>information if on tile is obstacle</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.battle_image_processing.checkIfTurnIsOurs">
+<span class="sig-prename descclassname"><span class="pre">image_processing.battle_image_processing.</span></span><span class="sig-name descname"><span class="pre">checkIfTurnIsOurs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">screen</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/battle_image_processing.html#checkIfTurnIsOurs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.battle_image_processing.checkIfTurnIsOurs" title="Permalink to this definition"></a></dt>
+<dd><p>function checking if currently is our turn</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>screen</strong> – screenslicing object</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>value telling if the turn is ours or not</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.battle_image_processing.check_terrain">
+<span class="sig-prename descclassname"><span class="pre">image_processing.battle_image_processing.</span></span><span class="sig-name descname"><span class="pre">check_terrain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bnn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#image_processing.CNN_learning.CNN" title="image_processing.CNN_learning.CNN"><span class="pre">CNN</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">screen</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#image_processing.screen_slicing.ScreenStorage" title="image_processing.screen_slicing.ScreenStorage"><span class="pre">ScreenStorage</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">units</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/battle_image_processing.html#check_terrain"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.battle_image_processing.check_terrain" title="Permalink to this definition"></a></dt>
+<dd><p>function for detecting obstacles at beginning of battle</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bnn</strong> – neural network object</p></li>
+<li><p><strong>screen</strong> – screen slicing object</p></li>
+<li><p><strong>units</strong> – list of units on map</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>list of potential obstacles on map</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.battle_image_processing.determine_unit">
+<span class="sig-prename descclassname"><span class="pre">image_processing.battle_image_processing.</span></span><span class="sig-name descname"><span class="pre">determine_unit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qnn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">snn</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/battle_image_processing.html#determine_unit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.battle_image_processing.determine_unit" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.battle_image_processing.distance">
+<span class="sig-prename descclassname"><span class="pre">image_processing.battle_image_processing.</span></span><span class="sig-name descname"><span class="pre">distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/battle_image_processing.html#distance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.battle_image_processing.distance" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>point</strong> – point for which we are detecting nearest element</p></li>
+<li><p><strong>points</strong> – list of points with names</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>name of nearest field from point to given point</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.battle_image_processing.distance2">
+<span class="sig-prename descclassname"><span class="pre">image_processing.battle_image_processing.</span></span><span class="sig-name descname"><span class="pre">distance2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/battle_image_processing.html#distance2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.battle_image_processing.distance2" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>point</strong> – point for which we are detecting nearest element, different input data than distance function</p></li>
+<li><p><strong>points</strong> – list of points with names</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>name of nearest field from point to given point</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.battle_image_processing.find_first_unit">
+<span class="sig-prename descclassname"><span class="pre">image_processing.battle_image_processing.</span></span><span class="sig-name descname"><span class="pre">find_first_unit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">screen</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#image_processing.screen_slicing.ScreenStorage" title="image_processing.screen_slicing.ScreenStorage"><span class="pre">ScreenStorage</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/battle_image_processing.html#find_first_unit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.battle_image_processing.find_first_unit" title="Permalink to this definition"></a></dt>
+<dd><p>function finding where is current first unit to find how many units are currently in battle</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>screen</strong> – screenslicnig object</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>amount of queue tiles that we need to check</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.battle_image_processing.find_unit">
+<span class="sig-prename descclassname"><span class="pre">image_processing.battle_image_processing.</span></span><span class="sig-name descname"><span class="pre">find_unit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">screen</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/battle_image_processing.html#find_unit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.battle_image_processing.find_unit" title="Permalink to this definition"></a></dt>
+<dd><p>function checking if there is unit on coordinates xy</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – x index of tile in battle</p></li>
+<li><p><strong>y</strong> – y index of tile in battle</p></li>
+<li><p><strong>base</strong> – clear image of queue</p></li>
+<li><p><strong>screen</strong> – screen slicing object</p></li>
+<li><p><strong>n</strong> – number of units in queue</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>number of unit in queue we are currently pointing</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.battle_image_processing.initialize_BNN">
+<span class="sig-prename descclassname"><span class="pre">image_processing.battle_image_processing.</span></span><span class="sig-name descname"><span class="pre">initialize_BNN</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/battle_image_processing.html#initialize_BNN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.battle_image_processing.initialize_BNN" title="Permalink to this definition"></a></dt>
+<dd><p>function creating neural network object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>neural network object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.battle_image_processing.initialize_QNN">
+<span class="sig-prename descclassname"><span class="pre">image_processing.battle_image_processing.</span></span><span class="sig-name descname"><span class="pre">initialize_QNN</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/battle_image_processing.html#initialize_QNN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.battle_image_processing.initialize_QNN" title="Permalink to this definition"></a></dt>
+<dd><p>function creating neural network object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>neural network object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.battle_image_processing.initialize_SNN">
+<span class="sig-prename descclassname"><span class="pre">image_processing.battle_image_processing.</span></span><span class="sig-name descname"><span class="pre">initialize_SNN</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/battle_image_processing.html#initialize_SNN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.battle_image_processing.initialize_SNN" title="Permalink to this definition"></a></dt>
+<dd><p>function creating neural network object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>neural network object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.battle_image_processing.initialize_UNN">
+<span class="sig-prename descclassname"><span class="pre">image_processing.battle_image_processing.</span></span><span class="sig-name descname"><span class="pre">initialize_UNN</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/battle_image_processing.html#initialize_UNN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.battle_image_processing.initialize_UNN" title="Permalink to this definition"></a></dt>
+<dd><p>function creating neural network object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>neural network object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.battle_image_processing.mouse_unit_check">
+<span class="sig-prename descclassname"><span class="pre">image_processing.battle_image_processing.</span></span><span class="sig-name descname"><span class="pre">mouse_unit_check</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qnn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#image_processing.CNN_learning.DumbNN" title="image_processing.CNN_learning.DumbNN"><span class="pre">DumbNN</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">screen</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#image_processing.screen_slicing.ScreenStorage" title="image_processing.screen_slicing.ScreenStorage"><span class="pre">ScreenStorage</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">skills</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/battle_image_processing.html#mouse_unit_check"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.battle_image_processing.mouse_unit_check" title="Permalink to this definition"></a></dt>
+<dd><p>function checking units in battle</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>qnn</strong> – neural network for checking units in battle</p></li>
+<li><p><strong>screen</strong> – screen slicing object</p></li>
+<li><p><strong>skills</strong> – list of SecondarySkills</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>list of creatureboxes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.battle_image_processing.near_enough">
+<span class="sig-prename descclassname"><span class="pre">image_processing.battle_image_processing.</span></span><span class="sig-name descname"><span class="pre">near_enough</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/battle_image_processing.html#near_enough"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.battle_image_processing.near_enough" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.battle_image_processing.new_unit_detection_system">
+<span class="sig-prename descclassname"><span class="pre">image_processing.battle_image_processing.</span></span><span class="sig-name descname"><span class="pre">new_unit_detection_system</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qnn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#image_processing.CNN_learning.DumbNN" title="image_processing.CNN_learning.DumbNN"><span class="pre">DumbNN</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">unn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#image_processing.CNN_learning.DumbNN" title="image_processing.CNN_learning.DumbNN"><span class="pre">DumbNN</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">snn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#image_processing.CNN_learning.DumbNN" title="image_processing.CNN_learning.DumbNN"><span class="pre">DumbNN</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">screen</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#image_processing.screen_slicing.ScreenStorage" title="image_processing.screen_slicing.ScreenStorage"><span class="pre">ScreenStorage</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">skills</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/battle_image_processing.html#new_unit_detection_system"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.battle_image_processing.new_unit_detection_system" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.battle_image_processing.queue_partial_detection">
+<span class="sig-prename descclassname"><span class="pre">image_processing.battle_image_processing.</span></span><span class="sig-name descname"><span class="pre">queue_partial_detection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qnn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#image_processing.CNN_learning.DumbNN" title="image_processing.CNN_learning.DumbNN"><span class="pre">DumbNN</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">screen</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#image_processing.screen_slicing.ScreenStorage" title="image_processing.screen_slicing.ScreenStorage"><span class="pre">ScreenStorage</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/battle_image_processing.html#queue_partial_detection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.battle_image_processing.queue_partial_detection" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-image_processing.blue_hero">
+<span id="image-processing-blue-hero-module"></span><h2>image_processing.blue_hero module<a class="headerlink" href="#module-image_processing.blue_hero" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.blue_hero.check_if_blue_hero_exists">
+<span class="sig-prename descclassname"><span class="pre">image_processing.blue_hero.</span></span><span class="sig-name descname"><span class="pre">check_if_blue_hero_exists</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">player</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enemy_coordinates</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/blue_hero.html#check_if_blue_hero_exists"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.blue_hero.check_if_blue_hero_exists" title="Permalink to this definition"></a></dt>
+<dd><p>Check all found blue heroes and find whether they exist or not</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>player</strong> – Current player</p></li>
+<li><p><strong>enemy_coordinates</strong> – Checked enemy coordinates</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>tuple (True/False, Hero_name) (Hero exists, his name is None when no hero found)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.blue_hero.fill_enemy_hero">
+<span class="sig-prename descclassname"><span class="pre">image_processing.blue_hero.</span></span><span class="sig-name descname"><span class="pre">fill_enemy_hero</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">player</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.player_data.Player" title="data.player_data.Player"><span class="pre">Player</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">enemy_coordinates</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/blue_hero.html#fill_enemy_hero"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.blue_hero.fill_enemy_hero" title="Permalink to this definition"></a></dt>
+<dd><p>Fills enemy hero should be used only as it also checks if it exists first</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>player</strong> – Our hero</p></li>
+<li><p><strong>enemy_coordinates</strong> – Enemy coordinates</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Nothing</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.blue_hero.get_creature_numbers">
+<span class="sig-prename descclassname"><span class="pre">image_processing.blue_hero.</span></span><span class="sig-name descname"><span class="pre">get_creature_numbers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shiftX</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shiftY</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/blue_hero.html#get_creature_numbers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.blue_hero.get_creature_numbers" title="Permalink to this definition"></a></dt>
+<dd><p>Get numbers of enemy units</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of numbers of enemy units</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.blue_hero.moveCameraToTarget">
+<span class="sig-prename descclassname"><span class="pre">image_processing.blue_hero.</span></span><span class="sig-name descname"><span class="pre">moveCameraToTarget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">player</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/blue_hero.html#moveCameraToTarget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.blue_hero.moveCameraToTarget" title="Permalink to this definition"></a></dt>
+<dd><p>Move camera to target</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target</strong> – Target coordinates</p></li>
+<li><p><strong>player</strong> – Our player</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.blue_hero.ocr_name">
+<span class="sig-prename descclassname"><span class="pre">image_processing.blue_hero.</span></span><span class="sig-name descname"><span class="pre">ocr_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">screen</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/blue_hero.html#ocr_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.blue_hero.ocr_name" title="Permalink to this definition"></a></dt>
+<dd><p>Function that helps read the name of the hero</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>screen</strong> – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Found name</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-image_processing.detecting_window">
+<span id="image-processing-detecting-window-module"></span><h2>image_processing.detecting_window module<a class="headerlink" href="#module-image_processing.detecting_window" title="Permalink to this heading"></a></h2>
+<p>Script containing classes and functions responsible for detecting and handling window pop ups.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="image_processing.detecting_window.SecondarySkill">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">image_processing.detecting_window.</span></span><span class="sig-name descname"><span class="pre">SecondarySkill</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lvl</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/detecting_window.html#SecondarySkill"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.detecting_window.SecondarySkill" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.detecting_window.action_window">
+<span class="sig-prename descclassname"><span class="pre">image_processing.detecting_window.</span></span><span class="sig-name descname"><span class="pre">action_window</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">which</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hero</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/detecting_window.html#action_window"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.detecting_window.action_window" title="Permalink to this definition"></a></dt>
+<dd><p>Deciding which key to press depending on the window we detected</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>which</strong> – 1 -&gt; followers, 2 -&gt; battle, 3 -&gt; pursue, 4-&gt; diplomacy window, 5 -&gt; insulted units</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.detecting_window.action_window_enemy_turn">
+<span class="sig-prename descclassname"><span class="pre">image_processing.detecting_window.</span></span><span class="sig-name descname"><span class="pre">action_window_enemy_turn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">which</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hero</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/detecting_window.html#action_window_enemy_turn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.detecting_window.action_window_enemy_turn" title="Permalink to this definition"></a></dt>
+<dd><p>Deciding which key to press depending on the window we detected</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>which</strong> – 1 -&gt; followers, 2 -&gt; battle, 3 -&gt; pursue, 4-&gt; diplomacy window, 5 -&gt; insulted units</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.detecting_window.check_fortification">
+<span class="sig-prename descclassname"><span class="pre">image_processing.detecting_window.</span></span><span class="sig-name descname"><span class="pre">check_fortification</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/detecting_window.html#check_fortification"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.detecting_window.check_fortification" title="Permalink to this definition"></a></dt>
+<dd><p>Checks what type of fortification does the opponent have</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Either “fort”, “citadel” or “castle” string</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.detecting_window.compare">
+<span class="sig-prename descclassname"><span class="pre">image_processing.detecting_window.</span></span><span class="sig-name descname"><span class="pre">compare</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">result</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result_image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/detecting_window.html#compare"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.detecting_window.compare" title="Permalink to this definition"></a></dt>
+<dd><p>Single function to detect if the best match image is exact same as we need</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>result</strong> – image of the best match</p></li>
+<li><p><strong>result_image</strong> – stock image (e.g. battle_result.png)</p></li>
+<li><p><strong>image</strong> – screenshot</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>returning 1 if its exact the same</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.detecting_window.execute_detecting">
+<span class="sig-prename descclassname"><span class="pre">image_processing.detecting_window.</span></span><span class="sig-name descname"><span class="pre">execute_detecting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Hero</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/detecting_window.html#execute_detecting"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.detecting_window.execute_detecting" title="Permalink to this definition"></a></dt>
+<dd><p>Executing whole program</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.detecting_window.execute_detecting_enemy_turn">
+<span class="sig-prename descclassname"><span class="pre">image_processing.detecting_window.</span></span><span class="sig-name descname"><span class="pre">execute_detecting_enemy_turn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Hero</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/detecting_window.html#execute_detecting_enemy_turn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.detecting_window.execute_detecting_enemy_turn" title="Permalink to this definition"></a></dt>
+<dd><p>Executing whole program</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.detecting_window.follow_check">
+<span class="sig-prename descclassname"><span class="pre">image_processing.detecting_window.</span></span><span class="sig-name descname"><span class="pre">follow_check</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img_source</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/detecting_window.html#follow_check"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.detecting_window.follow_check" title="Permalink to this definition"></a></dt>
+<dd><p>Using tesseract to detect if there is word ‘follow’ in the window</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>img_source</strong> – screenshot</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>1 if detects word ‘pursue’, 0 if it is not detected</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.detecting_window.pursue_check">
+<span class="sig-prename descclassname"><span class="pre">image_processing.detecting_window.</span></span><span class="sig-name descname"><span class="pre">pursue_check</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img_source</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/detecting_window.html#pursue_check"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.detecting_window.pursue_check" title="Permalink to this definition"></a></dt>
+<dd><p>Using tesseract to detect if there is word ‘pursue’ in the window</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>img_source</strong> – screenshot</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>1 if detects word ‘pursue’, 0 if it is not detected</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.detecting_window.read_gray_image">
+<span class="sig-prename descclassname"><span class="pre">image_processing.detecting_window.</span></span><span class="sig-name descname"><span class="pre">read_gray_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/detecting_window.html#read_gray_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.detecting_window.read_gray_image" title="Permalink to this definition"></a></dt>
+<dd><p>Utility function for reading image and converting it to gray scale</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> – path to an image</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>gray scale image</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.detecting_window.skills_window">
+<span class="sig-prename descclassname"><span class="pre">image_processing.detecting_window.</span></span><span class="sig-name descname"><span class="pre">skills_window</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">h</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/detecting_window.html#skills_window"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.detecting_window.skills_window" title="Permalink to this definition"></a></dt>
+<dd><p>Very crude, yet working solution for our skills picking needs for our heroes.
+First, it checks for an ‘okey’ sign on our screen. After detection, if there
+indeed is an ‘okey’ here - we check certain positions and use optical character recognition
+on them to get our skills’ names. Then we pick the best skill according to our calculations
+and click it on our screen in game. Parameter h is our hero and it gets updated with picked
+skill.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>h</strong> – our Hero that gets updated with new skill</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.detecting_window.which_window">
+<span class="sig-prename descclassname"><span class="pre">image_processing.detecting_window.</span></span><span class="sig-name descname"><span class="pre">which_window</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/detecting_window.html#which_window"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.detecting_window.which_window" title="Permalink to this definition"></a></dt>
+<dd><p>Making screenshot, matching windows with the best match using cv2,
+comparing it with actual image to decide which window popped on screen</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>1 -&gt; followers, 2 -&gt; battle, 3 -&gt; pursue, 4-&gt; diplomacy window, 5 -&gt; insulted units</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-image_processing.dictionaries">
+<span id="image-processing-dictionaries-module"></span><h2>image_processing.dictionaries module<a class="headerlink" href="#module-image_processing.dictionaries" title="Permalink to this heading"></a></h2>
+<p>Script containing a dictionary</p>
+</section>
+<section id="module-image_processing.hero_filling">
+<span id="image-processing-hero-filling-module"></span><h2>image_processing.hero_filling module<a class="headerlink" href="#module-image_processing.hero_filling" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="image_processing.hero_filling.Finder">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">image_processing.hero_filling.</span></span><span class="sig-name descname"><span class="pre">Finder</span></span><a class="reference internal" href="_modules/image_processing/hero_filling.html#Finder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.hero_filling.Finder" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="image_processing.hero_filling.Finder.find_all">
+<span class="sig-name descname"><span class="pre">find_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">h</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.hero.Hero" title="data.hero.Hero"><span class="pre">Hero</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/hero_filling.html#Finder.find_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.hero_filling.Finder.find_all" title="Permalink to this definition"></a></dt>
+<dd><p>Combines all the functions inside the Finder class, so it’s not necessary to use them independently if
+every function needs to be used</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>h</strong> – Given hero</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="image_processing.hero_filling.Finder.find_attributes">
+<span class="sig-name descname"><span class="pre">find_attributes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">h</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.hero.Hero" title="data.hero.Hero"><span class="pre">Hero</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/hero_filling.html#Finder.find_attributes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.hero_filling.Finder.find_attributes" title="Permalink to this definition"></a></dt>
+<dd><p>Find attack, defense, knowledge and spell power of a hero. Before checking you have to enter
+the hero inventory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>h</strong> – Hero to insert the values to</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="image_processing.hero_filling.Finder.find_main_attr">
+<span class="sig-name descname"><span class="pre">find_main_attr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">h</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.hero.Hero" title="data.hero.Hero"><span class="pre">Hero</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/hero_filling.html#Finder.find_main_attr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.hero_filling.Finder.find_main_attr" title="Permalink to this definition"></a></dt>
+<dd><p>Finds the name, hero_type and level of the chosen hero. You have to be inside the hero inventory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>h</strong> – Hero to fill the values to</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="image_processing.hero_filling.Finder.find_skills">
+<span class="sig-name descname"><span class="pre">find_skills</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">h</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.hero.Hero" title="data.hero.Hero"><span class="pre">Hero</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/hero_filling.html#Finder.find_skills"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.hero_filling.Finder.find_skills" title="Permalink to this definition"></a></dt>
+<dd><p>Finds the abilities of our hero. You need to be in the hero inventory. Inserts found skills into the appropriate
+skill slots, if no skill is found inserts a default SecondarySkill instance. Uses difflib.get_close_matches
+to make sure the found skill is always correct even if tesseract finds teh text slightly wrong</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>h</strong> – Hero to insert the values to</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="image_processing.hero_filling.Finder.find_units">
+<span class="sig-name descname"><span class="pre">find_units</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">h</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="data.html#data.hero.Hero" title="data.hero.Hero"><span class="pre">Hero</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/hero_filling.html#Finder.find_units"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.hero_filling.Finder.find_units" title="Permalink to this definition"></a></dt>
+<dd><p>Combine find_units_portraits and find_units_amount and fill in the hero</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>h</strong> – Our hero</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="image_processing.hero_filling.Finder.find_units_amount">
+<span class="sig-name descname"><span class="pre">find_units_amount</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/hero_filling.html#Finder.find_units_amount"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.hero_filling.Finder.find_units_amount" title="Permalink to this definition"></a></dt>
+<dd><p>Finds the exact amount of certain units a hero has. It checks all the spaces from left to right, up to down
+and return their value. There’s no need to enter the hero inventory, as long as the units are visible on the
+right side of the screen.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Number of units in hero slots. Returns 0 if no number was found</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="image_processing.hero_filling.Finder.find_units_portraits">
+<span class="sig-name descname"><span class="pre">find_units_portraits</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/hero_filling.html#Finder.find_units_portraits"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.hero_filling.Finder.find_units_portraits" title="Permalink to this definition"></a></dt>
+<dd><p>Finds which units our army consists of without finding their numbers. Before checking you have to enter
+the hero inventory</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Either returns an instance of a found unit or None if no unit was found</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-image_processing.ocr">
+<span id="image-processing-ocr-module"></span><h2>image_processing.ocr module<a class="headerlink" href="#module-image_processing.ocr" title="Permalink to this heading"></a></h2>
+<p>Script containing OCR functions that help us with reading text.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.ocr.battle_unit_count">
+<span class="sig-prename descclassname"><span class="pre">image_processing.ocr.</span></span><span class="sig-name descname"><span class="pre">battle_unit_count</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">red_unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/ocr.html#battle_unit_count"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.ocr.battle_unit_count" title="Permalink to this definition"></a></dt>
+<dd><p>Used in battle - different thresholds only works for red player
+The given image has to contain just one text without the picture
+:param img: Input image
+:param scale: Parameter used in resizing windows.
+:param red_unit: Boolean. Set to true if a unit is red
+:return: text</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.ocr.prepare_text">
+<span class="sig-prename descclassname"><span class="pre">image_processing.ocr.</span></span><span class="sig-name descname"><span class="pre">prepare_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">building</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dilate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">red_text</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/ocr.html#prepare_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.ocr.prepare_text" title="Permalink to this definition"></a></dt>
+<dd><p>Prepare text for tesseract usage - thresholding and dilation
+:param image: Input image.
+:param scale: Parameter used in resizing windows. Multiplied by height and width
+:param building: Boolean. Set to true if we are operating on the building
+:param dilate: Boolean. Set to true if dilation operation is to be done.
+:param red_text: Boolean. Set to true if we are reading red text.
+:return: mask put on an image</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.ocr.read_generic_numbers">
+<span class="sig-prename descclassname"><span class="pre">image_processing.ocr.</span></span><span class="sig-name descname"><span class="pre">read_generic_numbers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">banned_psm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">redtext</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/ocr.html#read_generic_numbers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.ocr.read_generic_numbers" title="Permalink to this definition"></a></dt>
+<dd><p>Eliminates all answers it finds that contain letters
+The given image has to contain just one text without the picture</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>img</strong> – Input image</p></li>
+<li><p><strong>scale</strong> – Parameter used in resizing windows.</p></li>
+<li><p><strong>banned_psm</strong> – Which PSM we do not want to use</p></li>
+<li><p><strong>redtext</strong> – if background of image is red</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>text, psm.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.ocr.read_generic_text">
+<span class="sig-prename descclassname"><span class="pre">image_processing.ocr.</span></span><span class="sig-name descname"><span class="pre">read_generic_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/ocr.html#read_generic_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.ocr.read_generic_text" title="Permalink to this definition"></a></dt>
+<dd><p>The given image has to contain just one text without the picture
+Bigger scale can make letters unreadable because of pixelation especially if they are small at the beginning
+:param img: Input image
+:param scale: Parameter used in resizing windows
+:return: text</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.ocr.read_text">
+<span class="sig-prename descclassname"><span class="pre">image_processing.ocr.</span></span><span class="sig-name descname"><span class="pre">read_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">psm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">battle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fml</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/ocr.html#read_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.ocr.read_text" title="Permalink to this definition"></a></dt>
+<dd><p>It can usually read HOTA font clearly if it’s big enough.
+Typically shouldn’t be used. read_generic_text should be used for general cases
+:param image: Input image
+:param psm: Page segmentation. Set to 10 by default.
+:param battle: Boolean. Set to true if we are reading text in battle
+:return: text</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.ocr.read_text_faster">
+<span class="sig-prename descclassname"><span class="pre">image_processing.ocr.</span></span><span class="sig-name descname"><span class="pre">read_text_faster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/ocr.html#read_text_faster"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.ocr.read_text_faster" title="Permalink to this definition"></a></dt>
+<dd><p>Same thing as read_generic_text but fewer checks so used when there can sometimes be no text
+:param img: Input image
+:param scale: Parameter used in resizing windows.
+:return: text</p>
+</dd></dl>
+
+</section>
+<section id="module-image_processing.ocr_dict">
+<span id="image-processing-ocr-dict-module"></span><h2>image_processing.ocr_dict module<a class="headerlink" href="#module-image_processing.ocr_dict" title="Permalink to this heading"></a></h2>
+<p>Script containing dicts that we use in ocr text detection</p>
+</section>
+<section id="module-image_processing.ok_detection">
+<span id="image-processing-ok-detection-module"></span><h2>image_processing.ok_detection module<a class="headerlink" href="#module-image_processing.ok_detection" title="Permalink to this heading"></a></h2>
+<p>Script containing okay button detection, which helps us with handling windows</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.ok_detection.check_ok">
+<span class="sig-prename descclassname"><span class="pre">image_processing.ok_detection.</span></span><span class="sig-name descname"><span class="pre">check_ok</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/ok_detection.html#check_ok"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.ok_detection.check_ok" title="Permalink to this definition"></a></dt>
+<dd><p>Function responsible for detecting if there is an okay on the screen. Crucial in window handling.
+:return: 0 - no okay button, 1 - green okay button, 2 - grey okay button, 3 - skill okay button, 4 - city okay button</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.ok_detection.compare">
+<span class="sig-prename descclassname"><span class="pre">image_processing.ok_detection.</span></span><span class="sig-name descname"><span class="pre">compare</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">result</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result_image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/ok_detection.html#compare"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.ok_detection.compare" title="Permalink to this definition"></a></dt>
+<dd><p>Single function to detect if the best match image is exact same as we need
+:param result: image of the best match
+:param result_image: stock image (e.g. battle_result.png)
+:param image: screenshot
+:return: returning 1 if its exact the same</p>
+</dd></dl>
+
+</section>
+<section id="module-image_processing.screen_slicing">
+<span id="image-processing-screen-slicing-module"></span><h2>image_processing.screen_slicing module<a class="headerlink" href="#module-image_processing.screen_slicing" title="Permalink to this heading"></a></h2>
+<p>Script containing classes and functions needed for extracting elements that are present on the screen</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="image_processing.screen_slicing.ScreenStorage">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">image_processing.screen_slicing.</span></span><span class="sig-name descname"><span class="pre">ScreenStorage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Red'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/screen_slicing.html#ScreenStorage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.screen_slicing.ScreenStorage" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="image_processing.screen_slicing.ScreenStorage.take_adventure_map">
+<span class="sig-name descname"><span class="pre">take_adventure_map</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/screen_slicing.html#ScreenStorage.take_adventure_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.screen_slicing.ScreenStorage.take_adventure_map" title="Permalink to this definition"></a></dt>
+<dd><p>function taking screenshot and slicing it a way to have each tile of adventure map under different index in list</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="image_processing.screen_slicing.ScreenStorage.take_adventure_map_units_window">
+<span class="sig-name descname"><span class="pre">take_adventure_map_units_window</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/screen_slicing.html#ScreenStorage.take_adventure_map_units_window"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.screen_slicing.ScreenStorage.take_adventure_map_units_window" title="Permalink to this definition"></a></dt>
+<dd><p>function taking image of unit portraits from adventure map</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="image_processing.screen_slicing.ScreenStorage.take_adventure_templates">
+<span class="sig-name descname"><span class="pre">take_adventure_templates</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/screen_slicing.html#ScreenStorage.take_adventure_templates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.screen_slicing.ScreenStorage.take_adventure_templates" title="Permalink to this definition"></a></dt>
+<dd><p>function taking image of adventure map</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="image_processing.screen_slicing.ScreenStorage.take_battle">
+<span class="sig-name descname"><span class="pre">take_battle</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/screen_slicing.html#ScreenStorage.take_battle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.screen_slicing.ScreenStorage.take_battle" title="Permalink to this definition"></a></dt>
+<dd><p>function creating a list with each possible place for unit in battle with image of that place</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="image_processing.screen_slicing.ScreenStorage.take_battle_map">
+<span class="sig-name descname"><span class="pre">take_battle_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/screen_slicing.html#ScreenStorage.take_battle_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.screen_slicing.ScreenStorage.take_battle_map" title="Permalink to this definition"></a></dt>
+<dd><p>function taking differential image between battle when we are pointing to current unit and selected unit other than that similar to take_battle</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>num</strong> – number of unit for which we are checking posiible places</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="image_processing.screen_slicing.ScreenStorage.take_battle_map_first">
+<span class="sig-name descname"><span class="pre">take_battle_map_first</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/screen_slicing.html#ScreenStorage.take_battle_map_first"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.screen_slicing.ScreenStorage.take_battle_map_first" title="Permalink to this definition"></a></dt>
+<dd><p>obsolete function for taking battle image</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="image_processing.screen_slicing.ScreenStorage.take_battle_templates">
+<span class="sig-name descname"><span class="pre">take_battle_templates</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/screen_slicing.html#ScreenStorage.take_battle_templates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.screen_slicing.ScreenStorage.take_battle_templates" title="Permalink to this definition"></a></dt>
+<dd><p>function taking screenshot of battle image</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="image_processing.screen_slicing.ScreenStorage.take_firstFromQueue">
+<span class="sig-name descname"><span class="pre">take_firstFromQueue</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/screen_slicing.html#ScreenStorage.take_firstFromQueue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.screen_slicing.ScreenStorage.take_firstFromQueue" title="Permalink to this definition"></a></dt>
+<dd><p>function taking image of first unit in queue (grayscale) and its amount and color part of graphic</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="image_processing.screen_slicing.ScreenStorage.take_one_from_queue">
+<span class="sig-name descname"><span class="pre">take_one_from_queue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/screen_slicing.html#ScreenStorage.take_one_from_queue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.screen_slicing.ScreenStorage.take_one_from_queue" title="Permalink to this definition"></a></dt>
+<dd><p>funtion taking selected unit from queue</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>n</strong> – number of unit in queue</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="image_processing.screen_slicing.ScreenStorage.take_possible_units">
+<span class="sig-name descname"><span class="pre">take_possible_units</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/screen_slicing.html#ScreenStorage.take_possible_units"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.screen_slicing.ScreenStorage.take_possible_units" title="Permalink to this definition"></a></dt>
+<dd><p>function creating a list with each possible place for unit in battle</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="image_processing.screen_slicing.ScreenStorage.take_possible_units_temp">
+<span class="sig-name descname"><span class="pre">take_possible_units_temp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">terrain</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/screen_slicing.html#ScreenStorage.take_possible_units_temp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.screen_slicing.ScreenStorage.take_possible_units_temp" title="Permalink to this definition"></a></dt>
+<dd><p>function creating a list with each possible place for unit in battle</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="image_processing.screen_slicing.ScreenStorage.take_queue">
+<span class="sig-name descname"><span class="pre">take_queue</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/screen_slicing.html#ScreenStorage.take_queue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.screen_slicing.ScreenStorage.take_queue" title="Permalink to this definition"></a></dt>
+<dd><p>funtion creating list of unit portraits from queue (grayscale) and taking color and unit amount part of queue</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="image_processing.screen_slicing.ScreenStorage.take_queue_to_find_unit">
+<span class="sig-name descname"><span class="pre">take_queue_to_find_unit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/screen_slicing.html#ScreenStorage.take_queue_to_find_unit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.screen_slicing.ScreenStorage.take_queue_to_find_unit" title="Permalink to this definition"></a></dt>
+<dd><p>function taking unit borders from queue to find at which unit we are pointing</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – x index of tile in battle</p></li>
+<li><p><strong>y</strong> – y index of tile in battle</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="image_processing.screen_slicing.ScreenStorage.take_queue_to_find_unit_raw">
+<span class="sig-name descname"><span class="pre">take_queue_to_find_unit_raw</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/screen_slicing.html#ScreenStorage.take_queue_to_find_unit_raw"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.screen_slicing.ScreenStorage.take_queue_to_find_unit_raw" title="Permalink to this definition"></a></dt>
+<dd><p>function creating list of unit portraits from queue</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="image_processing.screen_slicing.ScreenStorage.take_resources">
+<span class="sig-name descname"><span class="pre">take_resources</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/screen_slicing.html#ScreenStorage.take_resources"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.screen_slicing.ScreenStorage.take_resources" title="Permalink to this definition"></a></dt>
+<dd><p>function taking image of resource bar</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="image_processing.screen_slicing.ScreenStorage.take_unit_quantity">
+<span class="sig-name descname"><span class="pre">take_unit_quantity</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/screen_slicing.html#ScreenStorage.take_unit_quantity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.screen_slicing.ScreenStorage.take_unit_quantity" title="Permalink to this definition"></a></dt>
+<dd><p>function taking images of unit amounts from queue</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.screen_slicing.check_resources">
+<span class="sig-prename descclassname"><span class="pre">image_processing.screen_slicing.</span></span><span class="sig-name descname"><span class="pre">check_resources</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">player</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">res_range:</span> <span class="pre">tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generic:</span> <span class="pre">~data.building.Cost</span> <span class="pre">=</span> <span class="pre">&lt;data.building.Cost</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only_one=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n=0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/screen_slicing.html#check_resources"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.screen_slicing.check_resources" title="Permalink to this definition"></a></dt>
+<dd><p>Function that is responsible for updating player’s resources..</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>player</strong> – Player object</p></li>
+<li><p><strong>res_range</strong> – Range of the given resource (size on screen)</p></li>
+<li><p><strong>generic</strong> – objecgt of class cost containing value of minimal added resources for case when ocr cannot read our resources</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.screen_slicing.readColors">
+<span class="sig-prename descclassname"><span class="pre">image_processing.screen_slicing.</span></span><span class="sig-name descname"><span class="pre">readColors</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/screen_slicing.html#readColors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.screen_slicing.readColors" title="Permalink to this definition"></a></dt>
+<dd><p>function reading player colors from battle</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>list of pixels with names to compare our future images to color</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.screen_slicing.readColors2">
+<span class="sig-prename descclassname"><span class="pre">image_processing.screen_slicing.</span></span><span class="sig-name descname"><span class="pre">readColors2</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/screen_slicing.html#readColors2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.screen_slicing.readColors2" title="Permalink to this definition"></a></dt>
+<dd><p>function reading player colors from world view</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>list of pixels with names to compare our future images to color</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.screen_slicing.readTemplates">
+<span class="sig-prename descclassname"><span class="pre">image_processing.screen_slicing.</span></span><span class="sig-name descname"><span class="pre">readTemplates</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/screen_slicing.html#readTemplates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.screen_slicing.readTemplates" title="Permalink to this definition"></a></dt>
+<dd><p>old function for reading templates from files</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>list of images</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.screen_slicing.save_small_map">
+<span class="sig-prename descclassname"><span class="pre">image_processing.screen_slicing.</span></span><span class="sig-name descname"><span class="pre">save_small_map</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/screen_slicing.html#save_small_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.screen_slicing.save_small_map" title="Permalink to this definition"></a></dt>
+<dd><p>Saves world viev</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.screen_slicing.slice_queue">
+<span class="sig-prename descclassname"><span class="pre">image_processing.screen_slicing.</span></span><span class="sig-name descname"><span class="pre">slice_queue</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/screen_slicing.html#slice_queue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.screen_slicing.slice_queue" title="Permalink to this definition"></a></dt>
+<dd><p>function saving images of unit queue in current folder</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.screen_slicing.take_console">
+<span class="sig-prename descclassname"><span class="pre">image_processing.screen_slicing.</span></span><span class="sig-name descname"><span class="pre">take_console</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/screen_slicing.html#take_console"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.screen_slicing.take_console" title="Permalink to this definition"></a></dt>
+<dd><p>function taking image of game console</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>image of console</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.screen_slicing.take_resources_">
+<span class="sig-prename descclassname"><span class="pre">image_processing.screen_slicing.</span></span><span class="sig-name descname"><span class="pre">take_resources_</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/screen_slicing.html#take_resources_"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.screen_slicing.take_resources_" title="Permalink to this definition"></a></dt>
+<dd><p>function taking image of resource bar</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.screen_slicing.take_small_map">
+<span class="sig-prename descclassname"><span class="pre">image_processing.screen_slicing.</span></span><span class="sig-name descname"><span class="pre">take_small_map</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/screen_slicing.html#take_small_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.screen_slicing.take_small_map" title="Permalink to this definition"></a></dt>
+<dd><p>function taking image of world view</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>list of tiles from world view corresponding to tiles in full map</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="image_processing.screen_slicing.temp_move">
+<span class="sig-prename descclassname"><span class="pre">image_processing.screen_slicing.</span></span><span class="sig-name descname"><span class="pre">temp_move</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/image_processing/screen_slicing.html#temp_move"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#image_processing.screen_slicing.temp_move" title="Permalink to this definition"></a></dt>
+<dd><p>function moving mouse to select tile in battle</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – x coordinate of hex in battle</p></li>
+<li><p><strong>y</strong> – y coordinate of hex in battle</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-image_processing">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-image_processing" title="Permalink to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="hierarchyFunctions.html" class="btn btn-neutral float-left" title="hierarchyFunctions package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="main.html" class="btn btn-neutral float-right" title="main module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Fryderyk Róg, Kacper Plesiak, Michał Gruba, Tymoteusz Skrzyński, Mateusz Comblik, Bartosz Szczepanek, Alan Konopko, Mateusz Mikszewicz, Daniel Bil, Piotr Łyczko.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

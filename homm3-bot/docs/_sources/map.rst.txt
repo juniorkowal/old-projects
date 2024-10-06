@@ -1,0 +1,10 @@
+map package
+===========
+
+Module contents
+---------------
+
+.. automodule:: map
+   :members:
+   :undoc-members:
+   :show-inheritance:

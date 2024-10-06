@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>battleAI.damage &mdash; HoMM3 Bot 2.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> HoMM3 Bot
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">homm3-bot</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">HoMM3 Bot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">battleAI.damage</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for battleAI.damage</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">random</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+
+<span class="c1"># DMGf = DMGb × (1 + I1 + I2 + I3 + I4 + I5) × (1 - R1) × (1 - R2 - R3) × (1 - R4) × (1 - R5) × (1 - R6) × (1 - R7) × (1 - R8)</span>
+
+<span class="c1"># BASE DAMAGE - DMGb</span>
+
+<span class="c1"># Damage range for a single unit type is displayed in its stats. Base damage for a stack of creatures is calculated as such:</span>
+<div class="viewcode-block" id="baseDamage"><a class="viewcode-back" href="../../battleAI.html#battleAI.damage.baseDamage">[docs]</a><span class="k">def</span> <span class="nf">baseDamage</span><span class="p">(</span><span class="n">minDamage</span><span class="p">,</span><span class="n">maxDamage</span><span class="p">,</span><span class="n">numberOfUnits</span><span class="p">):</span>
+    <span class="n">dmg</span><span class="o">=</span><span class="mi">0</span>
+<span class="c1"># If there are less than or equal to 10 creatures in a stack then a random integer is chosen in a damage range for each creature,</span>
+<span class="c1"># and they are added up.</span>
+    <span class="k">if</span> <span class="n">numberOfUnits</span><span class="o">&lt;=</span><span class="mi">10</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">numberOfUnits</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">minDamage</span> <span class="o">==</span> <span class="n">maxDamage</span><span class="p">:</span>  <span class="n">dmg</span><span class="o">+=</span> <span class="n">minDamage</span>
+            <span class="k">else</span><span class="p">:</span>                       <span class="n">dmg</span><span class="o">+=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="n">minDamage</span><span class="p">,</span><span class="n">maxDamage</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dmg</span>
+<span class="c1"># If there are more than 10 creatures in a stack, 10 random integers are chosen in a damage range of the creature and added up.</span>
+<span class="c1"># The result is multiplied by N/10, where N is the number of creatures in the stack, and rounded down.</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">minDamage</span> <span class="o">==</span> <span class="n">maxDamage</span><span class="p">:</span>  <span class="n">dmg</span> <span class="o">+=</span> <span class="n">minDamage</span>
+            <span class="k">else</span><span class="p">:</span>                       <span class="n">dmg</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="n">minDamage</span><span class="p">,</span> <span class="n">maxDamage</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">dmg</span><span class="o">*</span><span class="p">(</span><span class="n">numberOfUnits</span><span class="o">/</span><span class="mi">10</span><span class="p">))</span></div>
+
+
+<span class="c1"># ATTACK-DEFENSE DIFFERENCE (I1 AND R1)</span>
+
+<span class="c1"># It is calculated as the difference between the attacker&#39;s attack value and the defender&#39;s defense value.</span>
+<span class="c1"># These are determined by adding up the attack skill of the attacking hero and of the attacking creature type,</span>
+<span class="c1"># and by adding up defense skill of the defending hero and defending creature type. Spells and creature abilities</span>
+<span class="c1"># that affect attack or defense values, such as Bloodlust or disease, are also taken into account in this part of the formula,</span>
+<span class="c1"># as are any bonuses from native terrain or hero&#39;s creature specialties.</span>
+
+<div class="viewcode-block" id="attackDefenseDifference"><a class="viewcode-back" href="../../battleAI.html#battleAI.damage.attackDefenseDifference">[docs]</a><span class="k">def</span> <span class="nf">attackDefenseDifference</span><span class="p">(</span><span class="n">heroLevel</span><span class="p">,</span><span class="n">creatureLevel</span><span class="p">,</span><span class="n">attackHero</span><span class="p">,</span><span class="n">attackCreature</span><span class="p">,</span><span class="n">defenseHero</span><span class="p">,</span><span class="n">defenseCreature</span><span class="p">,</span><span class="n">nativeTerrain</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                            <span class="n">spellAttack</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">spellDefense</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">creatureAbilityAttack</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">creatureAbilityDefense</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">creatureSpecialty</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="n">creatureSpecialtyAttack</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">creatureSpecialtyDefense</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">creatureSpecialty</span><span class="p">:</span>
+        <span class="n">creatureSpecialtyAttack</span><span class="o">=</span><span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">heroLevel</span><span class="o">/</span><span class="n">creatureLevel</span><span class="p">)</span><span class="o">*</span><span class="n">attackCreature</span><span class="o">/</span><span class="mi">20</span><span class="p">)</span>
+        <span class="n">creatureSpecialtyDefense</span><span class="o">=</span><span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">heroLevel</span><span class="o">/</span><span class="n">creatureLevel</span><span class="p">)</span><span class="o">*</span><span class="n">defenseCreature</span><span class="o">/</span><span class="mi">20</span><span class="p">)</span>
+
+    <span class="n">attack</span><span class="o">=</span><span class="n">attackHero</span><span class="o">+</span><span class="n">attackCreature</span><span class="o">+</span><span class="n">nativeTerrain</span><span class="o">+</span><span class="n">spellAttack</span><span class="o">+</span><span class="n">creatureAbilityAttack</span><span class="o">+</span><span class="n">creatureSpecialtyAttack</span>
+    <span class="n">defense</span><span class="o">=</span><span class="n">defenseHero</span><span class="o">+</span><span class="n">defenseCreature</span><span class="o">+</span><span class="n">nativeTerrain</span><span class="o">+</span><span class="n">spellDefense</span><span class="o">+</span><span class="n">creatureAbilityDefense</span><span class="o">+</span><span class="n">creatureSpecialtyDefense</span>
+
+    <span class="k">return</span> <span class="n">attack</span><span class="o">-</span><span class="n">defense</span></div>
+
+
+<span class="c1"># SECONDARY SKILL FACTORS - VARIABLES I2 AND I3</span>
+
+<span class="c1">#I2</span>
+<div class="viewcode-block" id="archeryOffense"><a class="viewcode-back" href="../../battleAI.html#battleAI.damage.archeryOffense">[docs]</a><span class="k">def</span> <span class="nf">archeryOffense</span><span class="p">(</span><span class="n">archeryLevel</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">offenseLevel</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">ranged</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="n">archery</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.10</span><span class="p">,</span><span class="mf">0.25</span><span class="p">,</span><span class="mf">0.50</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">ranged</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">archery</span><span class="p">[</span><span class="n">archeryLevel</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">offenseLevel</span><span class="o">*</span><span class="mf">0.10</span></div>
+
+<span class="c1">#I3</span>
+<div class="viewcode-block" id="heroSpecialization"><a class="viewcode-back" href="../../battleAI.html#battleAI.damage.heroSpecialization">[docs]</a><span class="k">def</span> <span class="nf">heroSpecialization</span><span class="p">(</span><span class="n">heroLevel</span><span class="p">,</span><span class="n">archeryLevel</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">offenseLevel</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">heroName</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">ranged</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="n">specialHeroes</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Orrin&#39;</span><span class="p">,</span><span class="s1">&#39;Gundula&#39;</span><span class="p">,</span><span class="s1">&#39;Crag Hack&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">heroName</span> <span class="ow">in</span> <span class="n">specialHeroes</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">heroName</span> <span class="o">==</span> <span class="n">specialHeroes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">and</span> <span class="n">ranged</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">0.05</span><span class="o">*</span><span class="n">heroLevel</span><span class="o">*</span><span class="n">archeryOffense</span><span class="p">(</span><span class="n">archeryLevel</span><span class="p">,</span><span class="n">offenseLevel</span><span class="p">,</span><span class="n">ranged</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">heroName</span><span class="o">==</span><span class="n">specialHeroes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">or</span> <span class="n">heroName</span><span class="o">==</span><span class="n">specialHeroes</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="ow">and</span> <span class="n">ranged</span><span class="o">==</span><span class="kc">False</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">0.05</span><span class="o">*</span><span class="n">heroLevel</span><span class="o">*</span><span class="n">archeryOffense</span><span class="p">(</span><span class="n">archeryLevel</span><span class="p">,</span><span class="n">offenseLevel</span><span class="p">,</span><span class="n">ranged</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span></div>
+
+
+<span class="c1"># LUCK - I4 //todo: more modifiers affecting luck</span>
+
+<div class="viewcode-block" id="luck"><a class="viewcode-back" href="../../battleAI.html#battleAI.damage.luck">[docs]</a><span class="k">def</span> <span class="nf">luck</span><span class="p">(</span><span class="n">luckSkillLevel</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="n">luckyStrike</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">luckyVar</span><span class="o">=</span><span class="n">luckSkillLevel</span>
+
+    <span class="k">if</span> <span class="n">luckyVar</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+        <span class="n">luckyStrike</span><span class="o">=</span><span class="n">random</span><span class="o">.</span><span class="n">choices</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],(</span><span class="mi">1</span><span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">24</span><span class="p">,</span><span class="mi">1</span><span class="o">/</span><span class="mi">24</span><span class="p">),</span><span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">luckyVar</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">luckyStrike</span><span class="o">=</span><span class="n">random</span><span class="o">.</span><span class="n">choices</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],(</span><span class="mi">1</span><span class="o">-</span><span class="mi">2</span><span class="o">/</span><span class="mi">24</span><span class="p">,</span><span class="mi">2</span><span class="o">/</span><span class="mi">24</span><span class="p">),</span><span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">luckyVar</span><span class="o">&gt;=</span><span class="mi">3</span><span class="p">:</span>
+        <span class="n">luckyStrike</span><span class="o">=</span><span class="n">random</span><span class="o">.</span><span class="n">choices</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],(</span><span class="mi">1</span><span class="o">-</span><span class="mi">3</span><span class="o">/</span><span class="mi">24</span><span class="p">,</span><span class="mi">3</span><span class="o">/</span><span class="mi">24</span><span class="p">),</span><span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">luckyStrike</span></div>
+
+
+<span class="c1"># CREATURE ABILITIES - I5</span>
+
+<div class="viewcode-block" id="creatureAbilities"><a class="viewcode-back" href="../../battleAI.html#battleAI.damage.creatureAbilities">[docs]</a><span class="k">def</span> <span class="nf">creatureAbilities</span><span class="p">(</span><span class="n">creatureName</span><span class="p">,</span><span class="n">attackedCreatureName</span><span class="p">,</span><span class="n">heroLevel</span><span class="p">,</span><span class="n">squaresTravelled</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+
+    <span class="k">if</span> <span class="n">creatureName</span><span class="o">==</span><span class="s1">&#39;Dread Knight&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">random</span><span class="o">.</span><span class="n">choices</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],(</span><span class="mi">1</span><span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">5</span><span class="p">,</span><span class="mi">1</span><span class="o">/</span><span class="mi">5</span><span class="p">),</span><span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">creatureName</span><span class="o">==</span><span class="s1">&#39;Ballista&#39;</span> <span class="ow">or</span> <span class="n">creatureName</span><span class="o">==</span><span class="s1">&#39;Cannon&#39;</span><span class="p">:</span>
+        <span class="c1"># The I5 variable is also 1.00 for a ballista or cannon (Horn of the Abyss) whose shots deal double (base) damage,</span>
+        <span class="c1"># and 2.00 for cannon&#39;s triple damage.</span>
+        <span class="c1"># But it doesn&#39;t specify when ballista or cannon deals double or triple damage.</span>
+        <span class="k">return</span> <span class="mi">0</span>
+    <span class="k">elif</span> <span class="n">creatureName</span><span class="o">==</span><span class="s1">&#39;Angel&#39;</span> <span class="ow">and</span> <span class="n">attackedCreatureName</span><span class="o">==</span><span class="s1">&#39;Devil&#39;</span> <span class="ow">or</span> <span class="n">creatureName</span><span class="o">==</span><span class="s1">&#39;Devil&#39;</span> <span class="ow">and</span> <span class="n">attackedCreatureName</span><span class="o">==</span><span class="s1">&#39;Angel&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mf">0.5</span>
+    <span class="k">elif</span> <span class="n">creatureName</span><span class="o">==</span><span class="s1">&#39;Titan&#39;</span> <span class="ow">and</span> <span class="n">attackedCreatureName</span><span class="o">==</span><span class="s1">&#39;Black Dragon&#39;</span> <span class="ow">or</span> <span class="n">creatureName</span><span class="o">==</span><span class="s1">&#39;Black Dragon&#39;</span> <span class="ow">and</span> <span class="n">attackedCreatureName</span><span class="o">==</span><span class="s1">&#39;Titan&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mf">0.5</span>
+    <span class="k">elif</span> <span class="n">creatureName</span><span class="o">==</span><span class="s1">&#39;Genie&#39;</span> <span class="ow">and</span> <span class="n">attackedCreatureName</span><span class="o">==</span><span class="s1">&#39;Efreeti&#39;</span> <span class="ow">or</span> <span class="n">creatureName</span><span class="o">==</span><span class="s1">&#39;Efreeti&#39;</span> <span class="ow">and</span> <span class="n">attackedCreatureName</span><span class="o">==</span><span class="s1">&#39;Genie&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mf">0.5</span>
+    <span class="k">elif</span> <span class="n">creatureName</span><span class="o">==</span><span class="s1">&#39;Fire Elemental&#39;</span> <span class="ow">and</span> <span class="n">attackedCreatureName</span><span class="o">==</span><span class="s1">&#39;Water Elemental&#39;</span> <span class="ow">or</span> <span class="n">creatureName</span><span class="o">==</span><span class="s1">&#39;Water Elemental&#39;</span> <span class="ow">and</span> <span class="n">attackedCreatureName</span><span class="o">==</span><span class="s1">&#39;Fire Elemental&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">1</span>
+    <span class="k">elif</span> <span class="n">creatureName</span><span class="o">==</span><span class="s1">&#39;Air Elemental&#39;</span> <span class="ow">and</span> <span class="n">attackedCreatureName</span><span class="o">==</span><span class="s1">&#39;Earth Elemental&#39;</span> <span class="ow">or</span> <span class="n">creatureName</span><span class="o">==</span><span class="s1">&#39;Earth Elemental&#39;</span> <span class="ow">and</span> <span class="n">attackedCreatureName</span><span class="o">==</span><span class="s1">&#39;Air Elemental&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">1</span>
+    <span class="k">elif</span> <span class="n">creatureName</span><span class="o">==</span><span class="s1">&#39;Cavalier&#39;</span> <span class="ow">or</span> <span class="n">creatureName</span><span class="o">==</span><span class="s1">&#39;Champion&#39;</span> <span class="ow">and</span> <span class="n">attackedCreatureName</span><span class="o">!=</span><span class="s1">&#39;Pikeman&#39;</span> <span class="ow">or</span> <span class="n">attackedCreatureName</span><span class="o">!=</span><span class="s1">&#39;Halberdier&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mf">0.05</span><span class="o">*</span><span class="n">heroLevel</span><span class="o">*</span><span class="n">squaresTravelled</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span></div>
+
+
+<span class="c1"># DEFENSE VARIABLES</span>
+
+<span class="c1">#R2 and R3</span>
+
+<div class="viewcode-block" id="armorerVariables"><a class="viewcode-back" href="../../battleAI.html#battleAI.damage.armorerVariables">[docs]</a><span class="k">def</span> <span class="nf">armorerVariables</span><span class="p">(</span><span class="n">heroName</span><span class="p">,</span><span class="n">attackingCreature</span><span class="p">,</span><span class="n">heroLevel</span><span class="p">,</span><span class="n">armorerLevel</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="n">armorer</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.05</span><span class="p">,</span><span class="mf">0.10</span><span class="p">,</span><span class="mf">0.15</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">heroName</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Mephala&#39;</span><span class="p">,</span><span class="s1">&#39;Neela&#39;</span><span class="p">,</span><span class="s1">&#39;Tazar&#39;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">attackingCreature</span><span class="o">==</span><span class="s1">&#39;Arrow_Tower&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="o">-</span><span class="n">armorer</span><span class="p">[</span><span class="n">armorerLevel</span><span class="p">]</span><span class="o">+</span><span class="mf">0.05</span><span class="o">*</span><span class="n">heroLevel</span><span class="o">*</span><span class="n">armorer</span><span class="p">[</span><span class="n">armorerLevel</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">armorer</span><span class="p">[</span><span class="n">armorerLevel</span><span class="p">]</span><span class="o">+</span><span class="mf">0.05</span><span class="o">*</span><span class="n">heroLevel</span><span class="o">*</span><span class="n">armorer</span><span class="p">[</span><span class="n">armorerLevel</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">attackingCreature</span><span class="o">==</span><span class="s1">&#39;Arrow_Tower&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="o">-</span><span class="n">armorer</span><span class="p">[</span><span class="n">armorerLevel</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">armorer</span><span class="p">[</span><span class="n">armorerLevel</span><span class="p">]</span></div>
+
+<span class="c1">#R4</span>
+
+<div class="viewcode-block" id="magicShields"><a class="viewcode-back" href="../../battleAI.html#battleAI.damage.magicShields">[docs]</a><span class="k">def</span> <span class="nf">magicShields</span><span class="p">(</span><span class="n">shield</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">shieldLevel</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">airShield</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">airShieldLevel</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">ranged</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="n">shieldValues</span><span class="o">=</span><span class="p">[</span><span class="mf">0.15</span><span class="p">,</span><span class="mf">0.30</span><span class="p">,</span><span class="mf">0.30</span><span class="p">]</span>
+    <span class="n">airShieldValues</span><span class="o">=</span><span class="p">[</span><span class="mf">0.25</span><span class="p">,</span><span class="mf">0.50</span><span class="p">,</span><span class="mf">0.50</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">ranged</span><span class="o">==</span><span class="kc">False</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">shield</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">shieldValues</span><span class="p">[</span><span class="n">shieldLevel</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">airShield</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">airShieldValues</span><span class="p">[</span><span class="n">airShieldLevel</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span></div>
+
+
+<span class="c1">#R5</span>
+
+<div class="viewcode-block" id="rangeMeleePenalty"><a class="viewcode-back" href="../../battleAI.html#battleAI.damage.rangeMeleePenalty">[docs]</a><span class="k">def</span> <span class="nf">rangeMeleePenalty</span><span class="p">(</span><span class="n">distance</span><span class="p">,</span><span class="n">goldenBow</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">bowOfTheSharpshooter</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">ranged</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">creatureName</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">goldenBow</span> <span class="ow">or</span> <span class="n">bowOfTheSharpshooter</span> <span class="ow">or</span> <span class="n">creatureName</span><span class="o">==</span><span class="s1">&#39;Sharpshooter&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">ranged</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">distance</span><span class="o">&gt;=</span><span class="mi">10</span> <span class="ow">or</span> <span class="n">distance</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">creatureName</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Beholder&#39;</span><span class="p">,</span><span class="s1">&#39;Evil_Eye&#39;</span><span class="p">,</span><span class="s1">&#39;Medusa&#39;</span><span class="p">,</span><span class="s1">&#39;Medusa_Queen&#39;</span><span class="p">,</span><span class="s1">&#39;Magi&#39;</span><span class="p">,</span><span class="s1">&#39;Arch_Magi&#39;</span><span class="p">,</span><span class="s1">&#39;Zealot&#39;</span><span class="p">,</span><span class="s1">&#39;Enchanter&#39;</span><span class="p">,</span><span class="s1">&#39;Titan&#39;</span><span class="p">]:</span>
+                <span class="k">return</span> <span class="mi">0</span>
+            <span class="k">return</span> <span class="mf">0.50</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span></div>
+
+
+<span class="c1">#R6</span>
+
+<div class="viewcode-block" id="obstaclePenalty"><a class="viewcode-back" href="../../battleAI.html#battleAI.damage.obstaclePenalty">[docs]</a><span class="k">def</span> <span class="nf">obstaclePenalty</span><span class="p">(</span><span class="n">creatureName</span><span class="p">,</span><span class="n">goldenBow</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">bowOfTheSharpshooter</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">behindWall</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">creatureName</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Magi&#39;</span><span class="p">,</span><span class="s1">&#39;Arch_Magi&#39;</span><span class="p">,</span><span class="s1">&#39;Enchanter&#39;</span><span class="p">,</span><span class="s1">&#39;Sharpshooter&#39;</span><span class="p">]</span> <span class="ow">or</span> <span class="n">goldenBow</span> <span class="ow">or</span> <span class="n">bowOfTheSharpshooter</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">behindWall</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mf">0.50</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span></div>
+
+<span class="c1">#R7</span>
+
+<div class="viewcode-block" id="mindSpells"><a class="viewcode-back" href="../../battleAI.html#battleAI.damage.mindSpells">[docs]</a><span class="k">def</span> <span class="nf">mindSpells</span><span class="p">(</span><span class="n">blind</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">blind</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mf">0.50</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span></div>
+
+<span class="c1">#R8</span>
+
+<div class="viewcode-block" id="creatureSpecialties"><a class="viewcode-back" href="../../battleAI.html#battleAI.damage.creatureSpecialties">[docs]</a><span class="k">def</span> <span class="nf">creatureSpecialties</span><span class="p">(</span><span class="n">paralysed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">petrified</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">creatureName</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">attackedCreature</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">creatureName</span><span class="o">==</span><span class="s1">&#39;Psychic_Elemental&#39;</span> <span class="ow">and</span> <span class="p">(</span><span class="n">attackedCreature</span><span class="o">==</span><span class="s1">&#39;Giant&#39;</span> <span class="ow">or</span> <span class="n">attackedCreature</span><span class="o">==</span><span class="s1">&#39;Undead&#39;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mf">0.50</span>
+    <span class="k">if</span> <span class="n">creatureName</span><span class="o">==</span><span class="s1">&#39;Magic_Elemental&#39;</span> <span class="ow">and</span> <span class="p">(</span><span class="n">attackedCreature</span><span class="o">==</span><span class="s1">&#39;Magic_Elemental&#39;</span> <span class="ow">or</span> <span class="n">attackedCreature</span><span class="o">==</span><span class="s1">&#39;Black_Dragon&#39;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mf">0.50</span>
+    <span class="k">if</span> <span class="n">petrified</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mf">0.50</span>
+    <span class="k">if</span> <span class="n">paralysed</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mf">0.25</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span></div>
+
+
+
+<div class="viewcode-block" id="creatureStackDmg"><a class="viewcode-back" href="../../battleAI.html#battleAI.damage.creatureStackDmg">[docs]</a><span class="k">def</span> <span class="nf">creatureStackDmg</span><span class="p">(</span><span class="n">attackingCreature</span><span class="p">,</span><span class="n">attackingHero</span><span class="p">,</span><span class="n">attackedCreature</span><span class="p">,</span><span class="n">attackedHero</span><span class="p">,</span><span class="n">nativeTerrain</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">spellAttack</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">spellDefense</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">creatureAbilityAttack</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                <span class="n">creatureAbilityDefense</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">creatureSpecialty</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">ranged</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">archeryLevel</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">offenseLevel</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">squaresTravelled</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">attackedHeroArmorerLevel</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">attackedShield</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">attackedShieldLevel</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">attackedAirShield</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">attackedAirShieldLevel</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">distanceBetweenAttackingAndAttacked</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span><span class="n">goldenBow</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">bowOfTheSharpshooter</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">blind</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">behindWall</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">paralysed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">petrified</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+    <span class="n">dmgb</span><span class="o">=</span><span class="n">baseDamage</span><span class="p">(</span><span class="n">attackingCreature</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">damage</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">attackingCreature</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">damage</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">attackingCreature</span><span class="o">.</span><span class="n">quantity</span><span class="p">)</span>
+    <span class="n">i1</span><span class="o">=</span><span class="n">attackDefenseDifference</span><span class="p">(</span><span class="n">attackingHero</span><span class="o">.</span><span class="n">lvl</span><span class="p">,</span><span class="n">attackingCreature</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">lvl</span><span class="p">,</span><span class="n">attackingHero</span><span class="o">.</span><span class="n">attack</span><span class="p">,</span><span class="n">attackingCreature</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">attack</span><span class="p">,</span><span class="n">attackedHero</span><span class="o">.</span><span class="n">defense</span><span class="p">,</span><span class="n">attackedCreature</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">defense</span><span class="p">,</span>
+                                                    <span class="n">nativeTerrain</span><span class="p">,</span><span class="n">spellAttack</span><span class="p">,</span><span class="n">spellDefense</span><span class="p">,</span><span class="n">creatureAbilityAttack</span><span class="p">,</span><span class="n">creatureAbilityDefense</span><span class="p">,</span><span class="n">creatureSpecialty</span><span class="p">)</span>
+    <span class="n">i2</span><span class="o">=</span><span class="n">archeryOffense</span><span class="p">(</span><span class="n">archeryLevel</span><span class="p">,</span><span class="n">offenseLevel</span><span class="p">,</span><span class="n">ranged</span><span class="p">)</span>
+    <span class="n">i3</span><span class="o">=</span><span class="n">heroSpecialization</span><span class="p">(</span><span class="n">attackingHero</span><span class="o">.</span><span class="n">lvl</span><span class="p">,</span><span class="n">archeryLevel</span><span class="p">,</span><span class="n">offenseLevel</span><span class="p">,</span><span class="n">attackingHero</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="n">ranged</span><span class="p">)</span>
+    <span class="n">i4</span><span class="o">=</span><span class="n">luck</span><span class="p">(</span><span class="n">attackingHero</span><span class="o">.</span><span class="n">luck</span><span class="p">)</span>
+    <span class="n">i5</span><span class="o">=</span><span class="n">creatureAbilities</span><span class="p">(</span><span class="n">attackingCreature</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="n">attackedCreature</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="n">attackingHero</span><span class="o">.</span><span class="n">lvl</span><span class="p">,</span><span class="n">squaresTravelled</span><span class="p">)</span>
+    
+    <span class="n">r2_and_r3</span><span class="o">=</span><span class="n">armorerVariables</span><span class="p">(</span><span class="n">attackedHero</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="n">attackingCreature</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="n">attackedHero</span><span class="o">.</span><span class="n">lvl</span><span class="p">,</span><span class="n">attackedHeroArmorerLevel</span><span class="p">)</span>
+    <span class="n">r4</span><span class="o">=</span><span class="n">magicShields</span><span class="p">(</span><span class="n">attackedShield</span><span class="p">,</span><span class="n">attackedShieldLevel</span><span class="p">,</span><span class="n">attackedAirShield</span><span class="p">,</span><span class="n">attackedAirShieldLevel</span><span class="p">,</span><span class="n">ranged</span><span class="p">)</span>
+    <span class="n">r5</span><span class="o">=</span><span class="n">rangeMeleePenalty</span><span class="p">(</span><span class="n">distanceBetweenAttackingAndAttacked</span><span class="p">,</span><span class="n">goldenBow</span><span class="p">,</span><span class="n">bowOfTheSharpshooter</span><span class="p">,</span><span class="n">ranged</span><span class="p">,</span><span class="n">attackingCreature</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">r6</span><span class="o">=</span><span class="n">obstaclePenalty</span><span class="p">(</span><span class="n">attackingCreature</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="n">goldenBow</span><span class="p">,</span><span class="n">bowOfTheSharpshooter</span><span class="p">,</span><span class="n">behindWall</span><span class="p">)</span>
+    <span class="n">r7</span><span class="o">=</span><span class="n">mindSpells</span><span class="p">(</span><span class="n">blind</span><span class="p">)</span>
+    <span class="n">r8</span><span class="o">=</span><span class="n">creatureSpecialties</span><span class="p">(</span><span class="n">paralysed</span><span class="p">,</span><span class="n">petrified</span><span class="p">,</span><span class="n">attackingCreature</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="n">attackedCreature</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="n">r1</span><span class="o">=</span><span class="mi">0</span>
+    <span class="k">if</span> <span class="n">i1</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+        <span class="n">i1</span><span class="o">=</span><span class="mf">0.05</span><span class="o">*</span><span class="n">i1</span>
+    <span class="k">elif</span> <span class="n">i1</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">:</span>
+        <span class="n">r1</span><span class="o">=</span><span class="nb">abs</span><span class="p">(</span><span class="n">i1</span><span class="p">)</span><span class="o">*</span><span class="mf">0.025</span>
+    
+    <span class="k">if</span> <span class="n">i1</span><span class="o">&gt;</span><span class="mi">60</span><span class="p">:</span> <span class="n">i1</span><span class="o">=</span><span class="mi">60</span>
+    <span class="k">if</span> <span class="n">i1</span><span class="o">&lt;-</span><span class="mi">28</span><span class="p">:</span>
+        <span class="n">i1</span><span class="o">=</span><span class="mi">0</span>
+        <span class="n">r1</span><span class="o">=-</span><span class="mi">28</span>
+
+    <span class="n">damage</span><span class="o">=</span><span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">dmgb</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">i1</span><span class="o">+</span><span class="n">i2</span><span class="o">+</span><span class="n">i3</span><span class="o">+</span><span class="n">i4</span><span class="o">+</span><span class="n">i5</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">r2_and_r3</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">r4</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">r5</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">r6</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">r7</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">r8</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">damage</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">:</span>
+        <span class="n">damage</span><span class="o">=</span><span class="mi">0</span>
+
+    <span class="k">return</span> <span class="n">damage</span></div>
+
+<span class="c1"># To use the above function, you need to provide:</span>
+<span class="c1"># attackingCreature - the creature stack which attacks</span>
+<span class="c1"># attackingHero - attacking creature stack&#39;s hero</span>
+<span class="c1"># attackedCreature - creature stack that is about to be attacked</span>
+<span class="c1"># attackedHero - self expalnatory</span>
+<span class="c1"># nativeTerrain - whether the attacking stack is on its native terrain (True/False)</span>
+<span class="c1"># spellAttack - any bonuses from spells which add to attack</span>
+<span class="c1"># spellDefense - any bonuses from spells which add to defense</span>
+<span class="c1"># creatureAbilityAttack - any bonuses from creature abilities which add to attack</span>
+<span class="c1"># creatureAbilityDefense - any bonuses from creature abilities which add to defense</span>
+<span class="c1"># creatureSpecialty - whether hero specializes in a creature (True/False)</span>
+<span class="c1"># ranged - whether the creature stack is making a ranged attack</span>
+<span class="c1"># archeryLevel - level of the archery skill of the attacking hero</span>
+<span class="c1"># offenseLevel - level of the offense skill of the attacking hero</span>
+<span class="c1"># squaresTravelled - how many squares has the creature stack travelled to make an attack</span>
+<span class="c1"># attackedHeroArmorerLevel - level of the armorer level of the attacked hero</span>
+<span class="c1"># attackedShield - whether attacked creature is under the effects of the shield spell</span>
+<span class="c1"># attackedShieldLevel - level of the shield spell</span>
+<span class="c1"># attackedAirShield - whether attacked creature is under the effects of the air shield spell</span>
+<span class="c1"># attackedAirShieldLevel - level of the air shield spell</span>
+<span class="c1"># distanceBetweenAttackingAndAttacked - distance between battling creatures, used to apply ranged penalties</span>
+<span class="c1"># goldenBow - whether the attacking hero has the goldenbow artifact</span>
+<span class="c1"># bowOfTheSharpshooter - whether the attacking hero has the bowofthesharpshooter artifact</span>
+<span class="c1"># blind - whether attacked creature is blind</span>
+<span class="c1"># behindWall - whether attacked creature is behind an obstacle/wall</span>
+<span class="c1"># paralysed - whether attacked creature is paralysed</span>
+<span class="c1"># petrified - whether attacked creature is petrified</span>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Fryderyk Róg, Kacper Plesiak, Michał Gruba, Tymoteusz Skrzyński, Mateusz Comblik, Bartosz Szczepanek, Alan Konopko, Mateusz Mikszewicz, Daniel Bil, Piotr Łyczko.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

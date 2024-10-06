@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>battleAI.reward &mdash; HoMM3 Bot 2.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> HoMM3 Bot
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">homm3-bot</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">HoMM3 Bot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">battleAI.reward</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for battleAI.reward</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Script containing classes and functions handling our reward system&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">battleAI.reinforcmentLearningTest</span> <span class="k">as</span> <span class="nn">rLT</span>
+
+
+<div class="viewcode-block" id="Tile"><a class="viewcode-back" href="../../battleAI.html#battleAI.reward.Tile">[docs]</a><span class="k">class</span> <span class="nc">Tile</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point1</span><span class="p">,</span> <span class="n">point2</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        class representing a tile on a battlefield used in calculating distance</span>
+
+<span class="sd">        :param point1: point 1 stating the location of the tile</span>
+<span class="sd">        :param point2: point 2 stating the location of the destination tile</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="n">point1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dest</span> <span class="o">=</span> <span class="n">point2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">G</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">H</span> <span class="o">=</span> <span class="n">hexDist</span><span class="p">(</span><span class="n">point1</span><span class="p">,</span> <span class="n">point2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">adjTiles</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="Tile.createAdjacentTiles"><a class="viewcode-back" href="../../battleAI.html#battleAI.reward.Tile.createAdjacentTiles">[docs]</a>    <span class="k">def</span> <span class="nf">createAdjacentTiles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">neighbours</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates adjacent tiles.</span>
+
+<span class="sd">        :param neighbours: neighbour tiles of the tile</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tiles</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">neighbours</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">==</span> <span class="nb">tuple</span><span class="p">:</span>
+                <span class="n">adjTile</span> <span class="o">=</span> <span class="n">Tile</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dest</span><span class="p">)</span>
+                <span class="n">tiles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">adjTile</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">adjTiles</span> <span class="o">=</span> <span class="n">tiles</span></div>
+
+    <span class="k">def</span> <span class="fm">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compares whether one&#39;s tile G+H value is lower than other&#39;s</span>
+
+<span class="sd">        :param other: different tile</span>
+<span class="sd">        :return: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">G</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">H</span> <span class="o">&lt;</span> <span class="n">other</span><span class="o">.</span><span class="n">G</span> <span class="o">+</span> <span class="n">other</span><span class="o">.</span><span class="n">H</span></div>
+
+
+<div class="viewcode-block" id="cubeDistance"><a class="viewcode-back" href="../../battleAI.html#battleAI.reward.cubeDistance">[docs]</a><span class="k">def</span> <span class="nf">cubeDistance</span><span class="p">(</span><span class="n">point1</span><span class="p">,</span> <span class="n">point2</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate distance between points in 3D space.</span>
+
+<span class="sd">    :param point1: list - coordinates [x,y,z]</span>
+<span class="sd">    :param point2: list - coordinates [x,y,z]</span>
+<span class="sd">    :return: int - distance between 2 points</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">point1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">point2</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">point1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">point2</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">point1</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">point2</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="offsetToCube"><a class="viewcode-back" href="../../battleAI.html#battleAI.reward.offsetToCube">[docs]</a><span class="k">def</span> <span class="nf">offsetToCube</span><span class="p">(</span><span class="n">point</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Change offset coordinates to cubic coordinates</span>
+
+<span class="sd">    :param point: tuple - 2D offset coordinates (x, y)</span>
+<span class="sd">    :return: list - coordinates [x,y,z]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">col</span><span class="p">,</span> <span class="n">row</span> <span class="o">=</span> <span class="n">point</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">col</span> <span class="o">-</span> <span class="p">(</span><span class="n">row</span> <span class="o">+</span> <span class="p">(</span><span class="n">row</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">))</span> <span class="o">/</span> <span class="mi">2</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">row</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="o">-</span><span class="n">x</span> <span class="o">-</span> <span class="n">y</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="hexDist"><a class="viewcode-back" href="../../battleAI.html#battleAI.reward.hexDist">[docs]</a><span class="k">def</span> <span class="nf">hexDist</span><span class="p">(</span><span class="n">point1</span><span class="p">,</span> <span class="n">point2</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculates distance between 2 hexes</span>
+
+<span class="sd">    :param point1: 2D offset coordinates (x, y)</span>
+<span class="sd">    :param point2: 2D offset coordinates (x, y)</span>
+<span class="sd">    :return: Cube distance between two hexes</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># change hex indices into 3D coordinates</span>
+    <span class="c1"># to simplify distance calculation</span>
+    <span class="n">point1</span> <span class="o">=</span> <span class="n">offsetToCube</span><span class="p">(</span><span class="n">point1</span><span class="p">)</span>
+    <span class="n">point2</span> <span class="o">=</span> <span class="n">offsetToCube</span><span class="p">(</span><span class="n">point2</span><span class="p">)</span>
+    <span class="c1"># return distance between hexes measured in speed required to</span>
+    <span class="c1"># get to the destination</span>
+    <span class="k">return</span> <span class="n">cubeDistance</span><span class="p">(</span><span class="n">point1</span><span class="p">,</span> <span class="n">point2</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="contains"><a class="viewcode-back" href="../../battleAI.html#battleAI.reward.contains">[docs]</a><span class="k">def</span> <span class="nf">contains</span><span class="p">(</span><span class="n">container</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Helper function to check if container contains an item</span>
+
+<span class="sd">    :param container: Container</span>
+<span class="sd">    :param item: An item</span>
+<span class="sd">    :return: True or False</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">container</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">tile</span> <span class="ow">in</span> <span class="n">container</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">tile</span><span class="o">.</span><span class="n">field</span> <span class="o">==</span> <span class="n">item</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">container</span><span class="p">)</span> <span class="o">==</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">tile</span> <span class="ow">in</span> <span class="n">container</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">tile</span> <span class="o">==</span> <span class="n">item</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="Reward"><a class="viewcode-back" href="../../battleAI.html#battleAI.reward.Reward">[docs]</a><span class="k">class</span> <span class="nc">Reward</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">BattleEnv</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        class representing a reward system.</span>
+
+<span class="sd">        :param BattleEnv: Battle environment class</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">BattleEnv</span> <span class="o">=</span> <span class="n">BattleEnv</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">queue</span> <span class="o">=</span> <span class="n">BattleEnv</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">queue</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prevBlocked</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prevHealth</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">done</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prevTeamHP</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">battle_result</span> <span class="o">=</span> <span class="mi">0</span>
+
+<div class="viewcode-block" id="Reward.updateEnv"><a class="viewcode-back" href="../../battleAI.html#battleAI.reward.Reward.updateEnv">[docs]</a>    <span class="k">def</span> <span class="nf">updateEnv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">BattleEnv</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Updates battle environment and the queue.</span>
+
+<span class="sd">        :param BattleEnv: Battle environment class</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">BattleEnv</span> <span class="o">=</span> <span class="n">BattleEnv</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">queue</span> <span class="o">=</span> <span class="n">BattleEnv</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">queue</span></div>
+
+<div class="viewcode-block" id="Reward.calcPath"><a class="viewcode-back" href="../../battleAI.html#battleAI.reward.Reward.calcPath">[docs]</a>    <span class="k">def</span> <span class="nf">calcPath</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">startPoint</span><span class="p">,</span> <span class="n">endPoint</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Incomplete A* algorithm to compute real cost of a move/ speed required to move</span>
+
+<span class="sd">        :param startPoint: Starting point</span>
+<span class="sd">        :param endPoint: End point</span>
+<span class="sd">        :return: Length of the path</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">openTiles</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">closedTiles</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">currentTile</span> <span class="o">=</span> <span class="n">Tile</span><span class="p">(</span><span class="n">startPoint</span><span class="p">,</span> <span class="n">endPoint</span><span class="p">)</span>
+        <span class="n">openTiles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">currentTile</span><span class="p">)</span>
+
+        <span class="n">G</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">while</span> <span class="n">openTiles</span><span class="o">.</span><span class="fm">__len__</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">openTiles</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">openTiles</span><span class="p">)</span>
+            <span class="n">currentTile</span> <span class="o">=</span> <span class="n">openTiles</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">openTiles</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">closedTiles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">currentTile</span><span class="p">)</span>
+
+            <span class="n">G</span> <span class="o">=</span> <span class="n">currentTile</span><span class="o">.</span><span class="n">G</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">contains</span><span class="p">(</span><span class="n">closedTiles</span><span class="p">,</span> <span class="n">endPoint</span><span class="p">):</span>
+                <span class="k">break</span>
+            <span class="n">neighbours</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">BattleEnv</span><span class="o">.</span><span class="n">_Environment__getEmptyNeighbours</span><span class="p">(</span><span class="n">currentTile</span><span class="o">.</span><span class="n">field</span><span class="p">)</span>
+            <span class="n">neighboursAll</span> <span class="o">=</span> <span class="n">rLT</span><span class="o">.</span><span class="n">getNeighbours</span><span class="p">(</span><span class="n">currentTile</span><span class="o">.</span><span class="n">field</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">contains</span><span class="p">(</span><span class="n">neighboursAll</span><span class="p">,</span> <span class="n">endPoint</span><span class="p">):</span>
+                <span class="k">break</span>
+            <span class="n">currentTile</span><span class="o">.</span><span class="n">createAdjacentTiles</span><span class="p">(</span><span class="n">neighbours</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">tile</span> <span class="ow">in</span> <span class="n">currentTile</span><span class="o">.</span><span class="n">adjTiles</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">contains</span><span class="p">(</span><span class="n">closedTiles</span><span class="p">,</span> <span class="n">tile</span><span class="o">.</span><span class="n">field</span><span class="p">):</span>
+                    <span class="k">continue</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">contains</span><span class="p">(</span><span class="n">openTiles</span><span class="p">,</span> <span class="n">tile</span><span class="o">.</span><span class="n">field</span><span class="p">):</span>
+                    <span class="n">tile</span><span class="o">.</span><span class="n">G</span> <span class="o">=</span> <span class="n">G</span>
+                    <span class="n">openTiles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tile</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">tile</span><span class="o">.</span><span class="n">G</span> <span class="o">+</span> <span class="n">tile</span><span class="o">.</span><span class="n">H</span> <span class="o">&gt;</span> <span class="n">G</span> <span class="o">+</span> <span class="n">tile</span><span class="o">.</span><span class="n">H</span><span class="p">:</span>
+                    <span class="n">tile</span><span class="o">.</span><span class="n">G</span> <span class="o">=</span> <span class="n">G</span>
+        <span class="k">return</span> <span class="n">G</span> <span class="o">-</span> <span class="mi">1</span></div>
+
+    <span class="c1"># inputs: current queue, whole queue</span>
+<div class="viewcode-block" id="Reward.unitsInQueue"><a class="viewcode-back" href="../../battleAI.html#battleAI.reward.Reward.unitsInQueue">[docs]</a>    <span class="k">def</span> <span class="nf">unitsInQueue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">currQueue</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Counting % of allies and enemies still in queue</span>
+
+<span class="sd">        :param currQueue: Queue</span>
+<span class="sd">        :return: % of allies in queue, % of enemies in queue</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">allies</span><span class="p">,</span> <span class="n">enemies</span> <span class="o">=</span> <span class="n">rLT</span><span class="o">.</span><span class="n">divideIntoAllyAndEnemy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="p">)</span>
+        <span class="n">currAllies</span><span class="p">,</span> <span class="n">currEnemies</span> <span class="o">=</span> <span class="n">rLT</span><span class="o">.</span><span class="n">divideIntoAllyAndEnemy</span><span class="p">(</span><span class="n">currQueue</span><span class="p">)</span>
+        <span class="n">alliesPercent</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">currAllies</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">allies</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">enemies</span><span class="p">))</span>
+        <span class="n">enemiesPercent</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">currEnemies</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">allies</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">enemies</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">alliesPercent</span><span class="p">,</span> <span class="n">enemiesPercent</span></div>
+
+    <span class="c1"># calculate distance to opponents</span>
+    <span class="c1"># temporally using queue since its currently a list of creatures on the battle field</span>
+<div class="viewcode-block" id="Reward.opponentDistances"><a class="viewcode-back" href="../../battleAI.html#battleAI.reward.Reward.opponentDistances">[docs]</a>    <span class="k">def</span> <span class="nf">opponentDistances</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">currUnitPos</span><span class="p">,</span> <span class="n">side</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate distance to opponents</span>
+<span class="sd">        Temporally using queue since its currently a list of creatures on the battle field</span>
+
+<span class="sd">        :param currUnitPos: Position of units</span>
+<span class="sd">        :param side: &quot;ally&quot; or &quot;enemy&quot;</span>
+<span class="sd">        :return: % of our units in range to an opponent</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">distances</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">allies</span><span class="p">,</span> <span class="n">enemies</span> <span class="o">=</span> <span class="n">rLT</span><span class="o">.</span><span class="n">divideIntoAllyAndEnemy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">side</span> <span class="o">==</span> <span class="s2">&quot;ally&quot;</span><span class="p">:</span>
+            <span class="n">group</span> <span class="o">=</span> <span class="n">allies</span>
+        <span class="k">elif</span> <span class="n">side</span> <span class="o">==</span> <span class="s2">&quot;enemy&quot;</span><span class="p">:</span>
+            <span class="n">group</span> <span class="o">=</span> <span class="n">enemies</span>
+        <span class="k">for</span> <span class="n">unit</span> <span class="ow">in</span> <span class="n">group</span><span class="p">:</span>
+            <span class="n">distances</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">calcPath</span><span class="p">(</span><span class="n">currUnitPos</span><span class="p">,</span> <span class="n">unit</span><span class="o">.</span><span class="n">field</span><span class="p">))</span>
+        <span class="n">distances</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">distances</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">distances</span></div>
+
+    <span class="c1"># calculate % of units in range</span>
+<div class="viewcode-block" id="Reward.unitsInRange"><a class="viewcode-back" href="../../battleAI.html#battleAI.reward.Reward.unitsInRange">[docs]</a>    <span class="k">def</span> <span class="nf">unitsInRange</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">currUnitPos</span><span class="p">,</span> <span class="n">speed</span><span class="p">,</span> <span class="n">unitIsAlly</span><span class="p">,</span> <span class="n">checkedSide</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate % of units our unit is reaching</span>
+
+<span class="sd">        :param currUnitPos: tuple - current position of our unit</span>
+<span class="sd">        :param speed: int - speed of our unit</span>
+<span class="sd">        :param unitIsAlly: bool - information whether our unit is an ally or enemy</span>
+<span class="sd">        :param checkedSide: str - information which side of units are we checking</span>
+<span class="sd">        :return: float - % of units our unit is reaching</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">allies</span><span class="p">,</span> <span class="n">enemies</span> <span class="o">=</span> <span class="n">rLT</span><span class="o">.</span><span class="n">divideIntoAllyAndEnemy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">unitIsAlly</span> <span class="ow">and</span> <span class="n">checkedSide</span> <span class="o">==</span> <span class="s2">&quot;ally&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="n">unitIsAlly</span> <span class="ow">and</span> <span class="n">checkedSide</span> <span class="o">==</span> <span class="s2">&quot;enemy&quot;</span><span class="p">):</span>
+            <span class="n">side</span> <span class="o">=</span> <span class="s2">&quot;ally&quot;</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="ow">not</span> <span class="n">unitIsAlly</span> <span class="ow">and</span> <span class="n">checkedSide</span> <span class="o">==</span> <span class="s2">&quot;ally&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">unitIsAlly</span> <span class="ow">and</span> <span class="n">checkedSide</span> <span class="o">==</span> <span class="s2">&quot;enemy&quot;</span><span class="p">):</span>
+            <span class="n">side</span> <span class="o">=</span> <span class="s2">&quot;enemy&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">distances</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">opponentDistances</span><span class="p">(</span><span class="n">currUnitPos</span><span class="p">,</span> <span class="n">side</span><span class="p">)</span>
+        <span class="n">indexes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">speed</span> <span class="o">&gt;</span> <span class="n">distances</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">side</span> <span class="o">==</span> <span class="s2">&quot;ally&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">allies</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">inRangePercent</span> <span class="o">=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">indexes</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">allies</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">allies</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">inRangePercent</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">inRangePercent</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">done</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">battle_result</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">side</span> <span class="o">==</span> <span class="s2">&quot;enemy&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">enemies</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">inRangePercent</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">indexes</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">enemies</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">done</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">battle_result</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="n">inRangePercent</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="k">return</span> <span class="n">inRangePercent</span></div>
+
+<div class="viewcode-block" id="Reward.unitsReaching"><a class="viewcode-back" href="../../battleAI.html#battleAI.reward.Reward.unitsReaching">[docs]</a>    <span class="k">def</span> <span class="nf">unitsReaching</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">currUnitPos</span><span class="p">,</span> <span class="n">unitIsAlly</span><span class="p">,</span> <span class="n">checkedSide</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate % of units reaching our unit</span>
+
+<span class="sd">        :param currUnitPos: Position of units on the battlfield</span>
+<span class="sd">        :param unitIsAlly: Is a unit an ally</span>
+<span class="sd">        :param checkedSide: :&quot;ally&quot; or &quot;enemy&quot;</span>
+<span class="sd">        :return: % of units reaching our unit</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">allies</span><span class="p">,</span> <span class="n">enemies</span> <span class="o">=</span> <span class="n">rLT</span><span class="o">.</span><span class="n">divideIntoAllyAndEnemy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">unitIsAlly</span> <span class="ow">and</span> <span class="n">checkedSide</span> <span class="o">==</span> <span class="s2">&quot;ally&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="n">unitIsAlly</span> <span class="ow">and</span> <span class="n">checkedSide</span> <span class="o">==</span> <span class="s2">&quot;enemy&quot;</span><span class="p">):</span>
+            <span class="n">group</span> <span class="o">=</span> <span class="n">allies</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="ow">not</span> <span class="n">unitIsAlly</span> <span class="ow">and</span> <span class="n">checkedSide</span> <span class="o">==</span> <span class="s2">&quot;ally&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">unitIsAlly</span> <span class="ow">and</span> <span class="n">checkedSide</span> <span class="o">==</span> <span class="s2">&quot;enemy&quot;</span><span class="p">):</span>
+            <span class="n">group</span> <span class="o">=</span> <span class="n">enemies</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">reaching</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">unit</span> <span class="ow">in</span> <span class="n">group</span><span class="p">:</span>
+            <span class="n">distance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calcPath</span><span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">field</span><span class="p">,</span> <span class="n">currUnitPos</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">distance</span> <span class="o">&lt;=</span> <span class="n">unit</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">speed</span><span class="p">:</span>
+                <span class="n">reaching</span> <span class="o">=</span> <span class="n">reaching</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">checkedSide</span> <span class="o">==</span> <span class="s2">&quot;enemy&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">group</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">reachingPercent</span> <span class="o">=</span> <span class="n">reaching</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">done</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">reachingPercent</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">battle_result</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">checkedSide</span> <span class="o">==</span> <span class="s2">&quot;ally&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">group</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">reachingPercent</span> <span class="o">=</span> <span class="p">(</span><span class="n">reaching</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">group</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">group</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">reachingPercent</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">reachingPercent</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">done</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">battle_result</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">return</span> <span class="n">reachingPercent</span></div>
+
+<div class="viewcode-block" id="Reward.getTeamHP"><a class="viewcode-back" href="../../battleAI.html#battleAI.reward.Reward.getTeamHP">[docs]</a>    <span class="k">def</span> <span class="nf">getTeamHP</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">currUnit</span><span class="p">,</span> <span class="n">isTeamAlly</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Summing up all of the hp of the given team.</span>
+
+<span class="sd">        :param currUnit: Current handled unit</span>
+<span class="sd">        :param isTeamAlly: Checking whether team is allied or not</span>
+<span class="sd">        :return: Summed hp of the team.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">allies</span><span class="p">,</span> <span class="n">enemies</span> <span class="o">=</span> <span class="n">rLT</span><span class="o">.</span><span class="n">divideIntoAllyAndEnemy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">currUnit</span><span class="o">.</span><span class="n">ally</span> <span class="ow">and</span> <span class="n">isTeamAlly</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="n">currUnit</span><span class="o">.</span><span class="n">ally</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">isTeamAlly</span><span class="p">):</span>
+            <span class="n">group</span> <span class="o">=</span> <span class="n">allies</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">group</span> <span class="o">=</span> <span class="n">enemies</span>
+        <span class="n">teamHP</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">unit</span> <span class="ow">in</span> <span class="n">group</span><span class="p">:</span>
+            <span class="n">teamHP</span> <span class="o">+=</span> <span class="n">unit</span><span class="o">.</span><span class="n">stackHP</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">prevTeamHP</span> <span class="o">=</span> <span class="n">teamHP</span>
+        <span class="k">return</span> <span class="n">teamHP</span></div>
+
+<div class="viewcode-block" id="Reward.damageDealt"><a class="viewcode-back" href="../../battleAI.html#battleAI.reward.Reward.damageDealt">[docs]</a>    <span class="k">def</span> <span class="nf">damageDealt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">currUnit</span><span class="p">,</span> <span class="n">isTeamAlly</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculates damage dealt</span>
+
+<span class="sd">        :param currUnit: currentUnit</span>
+<span class="sd">        :param isTeamAlly: (Boolean) True-&gt; allied, False -&gt; not allied</span>
+<span class="sd">        :return: stored HP - current HP</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">storedHP</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prevTeamHP</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">getTeamHP</span><span class="p">(</span><span class="n">currUnit</span><span class="p">,</span> <span class="n">isTeamAlly</span><span class="p">)</span>
+        <span class="n">currentHP</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prevTeamHP</span>
+
+        <span class="k">return</span> <span class="n">storedHP</span> <span class="o">-</span> <span class="n">currentHP</span></div>
+
+    <span class="c1"># calculate % of protected ranged allies</span>
+<div class="viewcode-block" id="Reward.checkRanged"><a class="viewcode-back" href="../../battleAI.html#battleAI.reward.Reward.checkRanged">[docs]</a>    <span class="k">def</span> <span class="nf">checkRanged</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unitIsAlly</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate % of protected ranged allies</span>
+
+<span class="sd">        :param unitIsAlly: Boolean whether unit is allied or not</span>
+<span class="sd">        :return: % of protected archers, % of blocked archers, % of released archers</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">allies</span><span class="p">,</span> <span class="n">enemies</span> <span class="o">=</span> <span class="n">rLT</span><span class="o">.</span><span class="n">divideIntoAllyAndEnemy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">unitIsAlly</span><span class="p">:</span>
+            <span class="n">group</span> <span class="o">=</span> <span class="n">allies</span>
+            <span class="n">opponentGroup</span> <span class="o">=</span> <span class="n">enemies</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">group</span> <span class="o">=</span> <span class="n">enemies</span>
+            <span class="n">opponentGroup</span> <span class="o">=</span> <span class="n">allies</span>
+        <span class="n">protected</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">blocked</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">unit</span> <span class="ow">in</span> <span class="n">group</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">unit</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">ammo</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">emptyNeighbours</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">BattleEnv</span><span class="o">.</span><span class="n">_Environment__getEmptyNeighbours</span><span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">field</span><span class="p">)</span>
+            <span class="n">neighbours</span> <span class="o">=</span> <span class="n">rLT</span><span class="o">.</span><span class="n">getNeighbours</span><span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">field</span><span class="p">)</span>
+            <span class="c1"># if ally is surrounded by blocked tiles</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">emptyNeighbours</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">neighboursPositions</span> <span class="o">=</span> <span class="n">neighbours</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+                <span class="c1"># check if any of the blocked tiles is occupied by enemy</span>
+                <span class="n">enemyNeighbour</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">for</span> <span class="n">enemy</span> <span class="ow">in</span> <span class="n">opponentGroup</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">contains</span><span class="p">(</span><span class="n">neighboursPositions</span><span class="p">,</span> <span class="n">enemy</span><span class="p">):</span>
+                        <span class="n">enemyNeighbour</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="c1"># if not ranged is surrounded by obstacles and/or allies</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">enemyNeighbour</span><span class="p">:</span>
+                    <span class="n">protected</span> <span class="o">=</span> <span class="n">protected</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="c1"># if enemy is on a neighbouring tile the ally is blocked</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">blocked</span> <span class="o">=</span> <span class="n">blocked</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">group</span><span class="o">.</span><span class="fm">__len__</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">protectedPercent</span> <span class="o">=</span> <span class="n">protected</span> <span class="o">/</span> <span class="n">group</span><span class="o">.</span><span class="fm">__len__</span><span class="p">()</span>
+            <span class="n">blockedPercent</span> <span class="o">=</span> <span class="n">blocked</span> <span class="o">/</span> <span class="n">group</span><span class="o">.</span><span class="fm">__len__</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">protectedPercent</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">blockedPercent</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">done</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">battle_result</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="c1"># if number of currently blocked allies is lower than before they got released</span>
+        <span class="k">if</span> <span class="n">blocked</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">prevBlocked</span><span class="p">:</span>
+            <span class="n">releasedPercent</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prevBlocked</span> <span class="o">-</span> <span class="n">blocked</span><span class="p">)</span> <span class="o">/</span> <span class="n">group</span><span class="o">.</span><span class="fm">__len__</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">prevBlocked</span> <span class="o">=</span> <span class="n">blocked</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">releasedPercent</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">return</span> <span class="n">protectedPercent</span><span class="p">,</span> <span class="n">blockedPercent</span><span class="p">,</span> <span class="n">releasedPercent</span></div>
+
+    <span class="c1"># save current&#39;s unit health before moving</span>
+<div class="viewcode-block" id="Reward.saveUnitHealth"><a class="viewcode-back" href="../../battleAI.html#battleAI.reward.Reward.saveUnitHealth">[docs]</a>    <span class="k">def</span> <span class="nf">saveUnitHealth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">currUnit</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Updating unit&#39;s health before moving</span>
+
+<span class="sd">        :param currUnit: Current handled unit</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prevHealth</span> <span class="o">=</span> <span class="n">currUnit</span><span class="o">.</span><span class="n">stackHP</span></div>
+
+    <span class="c1"># see if unit suffered from enemy&#39;s retaliation</span>
+<div class="viewcode-block" id="Reward.retaliationTaken"><a class="viewcode-back" href="../../battleAI.html#battleAI.reward.Reward.retaliationTaken">[docs]</a>    <span class="k">def</span> <span class="nf">retaliationTaken</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">health</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        See if unit suffered from enemy&#39;s retaliation</span>
+
+<span class="sd">        :param health: health of the unit</span>
+<span class="sd">        :return: 1 - Taken, 0 - not taken</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># if unit lost health during his own move</span>
+        <span class="k">if</span> <span class="n">health</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">prevHealth</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span></div>
+
+    <span class="c1"># calculate the reward</span>
+    <span class="c1"># To be called after unit&#39;s move</span>
+<div class="viewcode-block" id="Reward.calcReward"><a class="viewcode-back" href="../../battleAI.html#battleAI.reward.Reward.calcReward">[docs]</a>    <span class="k">def</span> <span class="nf">calcReward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">currUnit</span><span class="p">,</span> <span class="n">BattleEnv</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Function that calculates the reward</span>
+
+<span class="sd">        :param currUnit: Current unit</span>
+<span class="sd">        :param BattleEnv: Battle enviroment class</span>
+<span class="sd">        :return: reward, result of the battle</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">updateEnv</span><span class="p">(</span><span class="n">BattleEnv</span><span class="p">)</span>
+        <span class="n">alliesReaching</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unitsReaching</span><span class="p">(</span><span class="n">currUnit</span><span class="o">.</span><span class="n">field</span><span class="p">,</span> <span class="n">currUnit</span><span class="o">.</span><span class="n">ally</span><span class="p">,</span> <span class="s2">&quot;ally&quot;</span><span class="p">)</span>
+        <span class="n">enemiesReaching</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unitsReaching</span><span class="p">(</span><span class="n">currUnit</span><span class="o">.</span><span class="n">field</span><span class="p">,</span> <span class="n">currUnit</span><span class="o">.</span><span class="n">ally</span><span class="p">,</span> <span class="s2">&quot;enemy&quot;</span><span class="p">)</span>
+        <span class="n">alliesInRange</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unitsInRange</span><span class="p">(</span><span class="n">currUnit</span><span class="o">.</span><span class="n">field</span><span class="p">,</span> <span class="n">currUnit</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">speed</span><span class="p">,</span> <span class="n">currUnit</span><span class="o">.</span><span class="n">ally</span><span class="p">,</span> <span class="s2">&quot;ally&quot;</span><span class="p">)</span>
+        <span class="n">enemiesInRange</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unitsInRange</span><span class="p">(</span><span class="n">currUnit</span><span class="o">.</span><span class="n">field</span><span class="p">,</span> <span class="n">currUnit</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">speed</span><span class="p">,</span> <span class="n">currUnit</span><span class="o">.</span><span class="n">ally</span><span class="p">,</span> <span class="s2">&quot;enemy&quot;</span><span class="p">)</span>
+        <span class="n">retaliation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">retaliationTaken</span><span class="p">(</span><span class="n">currUnit</span><span class="o">.</span><span class="n">stackHP</span><span class="p">)</span>
+        <span class="n">damageDealt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">damageDealt</span><span class="p">(</span><span class="n">currUnit</span><span class="p">,</span> <span class="n">isTeamAlly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="c1"># alliesInQueue, enemiesInQueue = unitsInQueue(currQueue)</span>
+        <span class="n">protectedRangedAllies</span><span class="p">,</span> <span class="n">blockedRangedAllies</span><span class="p">,</span> <span class="n">releasedRangedAllies</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">checkRanged</span><span class="p">(</span><span class="n">currUnit</span><span class="o">.</span><span class="n">ally</span><span class="p">)</span>
+
+        <span class="n">currUnit</span><span class="o">.</span><span class="n">damage_dealt</span> <span class="o">=</span> <span class="n">damageDealt</span>
+
+        <span class="n">reward</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span> <span class="o">*</span> <span class="n">enemiesInRange</span> <span class="k">if</span> <span class="n">enemiesInRange</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">enemiesReaching</span><span class="p">)</span> <span class="o">+</span> \
+                 <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">blockedRangedAllies</span><span class="p">)</span> <span class="o">+</span> \
+                 <span class="p">(</span><span class="mi">0</span> <span class="k">if</span> <span class="n">damageDealt</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">30</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">battle_result</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">reward</span> <span class="o">+=</span> <span class="mi">100</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">battle_result</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">reward</span> <span class="o">+=</span> <span class="o">-</span><span class="mi">100</span>
+
+        <span class="k">return</span> <span class="n">reward</span> <span class="o">/</span> <span class="mi">10</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">battle_result</span>  <span class="c1"># if currUnit.ally else -self.battle_result</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Fryderyk Róg, Kacper Plesiak, Michał Gruba, Tymoteusz Skrzyński, Mateusz Comblik, Bartosz Szczepanek, Alan Konopko, Mateusz Mikszewicz, Daniel Bil, Piotr Łyczko.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

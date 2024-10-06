@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>hierarchyFunctions.mines_and_resources_value &mdash; HoMM3 Bot 2.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> HoMM3 Bot
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">homm3-bot</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">HoMM3 Bot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">hierarchyFunctions.mines_and_resources_value</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for hierarchyFunctions.mines_and_resources_value</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Script containing algorithms that state value for mine and mine-like objects in the game&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">data.objects_on_map</span> <span class="kn">import</span> <span class="n">Mine</span>
+<span class="kn">from</span> <span class="nn">data.player_data</span> <span class="kn">import</span> <span class="n">Player</span>
+
+
+<div class="viewcode-block" id="increase_mines_ratio"><a class="viewcode-back" href="../../hierarchyFunctions.html#hierarchyFunctions.mines_and_resources_value.increase_mines_ratio">[docs]</a><span class="k">def</span> <span class="nf">increase_mines_ratio</span><span class="p">(</span><span class="n">player_cities</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Increase value given based on mines</span>
+
+<span class="sd">    :param player_cities: List of player&#39;s cities</span>
+<span class="sd">    :return: Ratios for all towns (10 parameters)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">Castle_ratio</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">Rampart_ratio</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">Tower_ratio</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">Inferno_ratio</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">Necropolis_ratio</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">Dungeon_ratio</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">Stronghold_ratio</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">Fortress_ratio</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">Conflux_ratio</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">Cove_ratio</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">for</span> <span class="n">town</span> <span class="ow">in</span> <span class="n">player_cities</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">town</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Castle&quot;</span><span class="p">:</span>
+            <span class="n">Castle_ratio</span> <span class="o">+=</span> <span class="mf">0.5</span>
+        <span class="k">if</span> <span class="n">town</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Rampart&quot;</span><span class="p">:</span>
+            <span class="n">Rampart_ratio</span> <span class="o">+=</span> <span class="mf">0.5</span>
+        <span class="k">if</span> <span class="n">town</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Tower&quot;</span><span class="p">:</span>
+            <span class="n">Tower_ratio</span> <span class="o">+=</span> <span class="mf">0.5</span>
+        <span class="k">if</span> <span class="n">town</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Inferno&quot;</span><span class="p">:</span>
+            <span class="n">Inferno_ratio</span> <span class="o">+=</span> <span class="mf">0.5</span>
+        <span class="k">if</span> <span class="n">town</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Necropolis&quot;</span><span class="p">:</span>
+            <span class="n">Necropolis_ratio</span> <span class="o">+=</span> <span class="mf">0.5</span>
+        <span class="k">if</span> <span class="n">town</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Dungeon&quot;</span><span class="p">:</span>
+            <span class="n">Dungeon_ratio</span> <span class="o">+=</span> <span class="mf">0.5</span>
+        <span class="k">if</span> <span class="n">town</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Stronghold&quot;</span><span class="p">:</span>
+            <span class="n">Stronghold_ratio</span> <span class="o">+=</span> <span class="mf">0.5</span>
+        <span class="k">if</span> <span class="n">town</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Fortress&quot;</span><span class="p">:</span>
+            <span class="n">Fortress_ratio</span> <span class="o">+=</span> <span class="mf">0.5</span>
+        <span class="k">if</span> <span class="n">town</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Conflux&quot;</span><span class="p">:</span>
+            <span class="n">Conflux_ratio</span> <span class="o">+=</span> <span class="mf">0.5</span>
+        <span class="k">if</span> <span class="n">town</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Cove&quot;</span><span class="p">:</span>
+            <span class="n">Cove_ratio</span> <span class="o">+=</span> <span class="mf">0.5</span>
+    <span class="k">return</span> <span class="n">Castle_ratio</span><span class="p">,</span> <span class="n">Rampart_ratio</span><span class="p">,</span> <span class="n">Tower_ratio</span><span class="p">,</span> <span class="n">Inferno_ratio</span><span class="p">,</span> <span class="n">Necropolis_ratio</span><span class="p">,</span> <span class="n">Dungeon_ratio</span><span class="p">,</span> <span class="n">Stronghold_ratio</span><span class="p">,</span> <span class="n">Fortress_ratio</span><span class="p">,</span> <span class="n">Conflux_ratio</span><span class="p">,</span> <span class="n">Cove_ratio</span></div>
+
+
+<div class="viewcode-block" id="cut_value"><a class="viewcode-back" href="../../hierarchyFunctions.html#hierarchyFunctions.mines_and_resources_value.cut_value">[docs]</a><span class="k">def</span> <span class="nf">cut_value</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">player</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Cut value based on resources we already own</span>
+
+<span class="sd">    :param value: Value parameter</span>
+<span class="sd">    :param index: Index of the resource</span>
+<span class="sd">    :param player: Player object</span>
+<span class="sd">    :return: Value</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">player</span><span class="o">.</span><span class="n">wood</span> <span class="o">&gt;</span> <span class="mi">60</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">/</span> <span class="mi">8</span>
+        <span class="k">elif</span> <span class="n">player</span><span class="o">.</span><span class="n">wood</span> <span class="o">&gt;</span> <span class="mi">40</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">/</span> <span class="mi">3</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">value</span>
+    <span class="k">elif</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">player</span><span class="o">.</span><span class="n">ore</span> <span class="o">&gt;</span> <span class="mi">60</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">/</span> <span class="mi">8</span>
+        <span class="k">elif</span> <span class="n">player</span><span class="o">.</span><span class="n">ore</span> <span class="o">&gt;</span> <span class="mi">40</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">/</span> <span class="mi">3</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">value</span>
+    <span class="k">elif</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">player</span><span class="o">.</span><span class="n">mercury</span> <span class="o">&gt;</span> <span class="mi">30</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">/</span> <span class="mi">4</span>
+        <span class="k">elif</span> <span class="n">player</span><span class="o">.</span><span class="n">mercury</span> <span class="o">&gt;</span> <span class="mi">20</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">value</span>
+    <span class="k">elif</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">player</span><span class="o">.</span><span class="n">sulfur</span> <span class="o">&gt;</span> <span class="mi">30</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">/</span> <span class="mi">4</span>
+        <span class="k">elif</span> <span class="n">player</span><span class="o">.</span><span class="n">sulfur</span> <span class="o">&gt;</span> <span class="mi">20</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">value</span>
+    <span class="k">elif</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">player</span><span class="o">.</span><span class="n">crystal</span> <span class="o">&gt;</span> <span class="mi">30</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">/</span> <span class="mi">4</span>
+        <span class="k">elif</span> <span class="n">player</span><span class="o">.</span><span class="n">crystal</span> <span class="o">&gt;</span> <span class="mi">20</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">value</span>
+    <span class="k">elif</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">player</span><span class="o">.</span><span class="n">gems</span> <span class="o">&gt;</span> <span class="mi">30</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">/</span> <span class="mi">4</span>
+        <span class="k">elif</span> <span class="n">player</span><span class="o">.</span><span class="n">gems</span> <span class="o">&gt;</span> <span class="mi">20</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">value</span>
+    <span class="k">return</span> <span class="n">value</span></div>
+
+
+<div class="viewcode-block" id="mineCase"><a class="viewcode-back" href="../../hierarchyFunctions.html#hierarchyFunctions.mines_and_resources_value.mineCase">[docs]</a><span class="k">def</span> <span class="nf">mineCase</span><span class="p">(</span><span class="n">tile</span><span class="p">,</span> <span class="n">player</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Add value to mines</span>
+
+<span class="sd">    :param tile: parameter associated with checking the name of said tile in order to recognize what object is on that</span>
+<span class="sd">    tile</span>
+<span class="sd">    :param player: Player object</span>
+<span class="sd">    :return: Value</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">tile</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;Mine&quot;</span><span class="p">:</span>
+        <span class="n">Castle_ratio</span><span class="p">,</span> <span class="n">Rampart_ratio</span><span class="p">,</span> <span class="n">Tower_ratio</span><span class="p">,</span> <span class="n">Inferno_ratio</span><span class="p">,</span> <span class="n">Necropolis_ratio</span><span class="p">,</span> <span class="n">Dungeon_ratio</span><span class="p">,</span> <span class="n">Stronghold_ratio</span><span class="p">,</span> <span class="n">Fortress_ratio</span><span class="p">,</span> <span class="n">Conflux_ratio</span><span class="p">,</span> <span class="n">Cove_ratio</span> <span class="o">=</span> <span class="n">increase_mines_ratio</span><span class="p">(</span>
+            <span class="n">player</span><span class="o">.</span><span class="n">cities</span><span class="p">)</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="mi">1000</span>
+
+        <span class="k">if</span> <span class="n">tile</span><span class="o">.</span><span class="n">captured</span><span class="p">:</span>  <span class="c1"># If the mine is ours, economically its non-sens to go there</span>
+            <span class="k">return</span> <span class="o">-</span><span class="mi">5000000</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">tile</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Sawmill&quot;</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">*</span> <span class="n">Castle_ratio</span> <span class="o">*</span> <span class="n">Stronghold_ratio</span> <span class="o">*</span> <span class="n">Fortress_ratio</span> <span class="o">*</span> <span class="n">Cove_ratio</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">cut_value</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">player</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">player</span><span class="o">.</span><span class="n">week</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">*</span> <span class="mi">2</span>
+            <span class="k">elif</span> <span class="n">tile</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Ore_Pit&quot;</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">*</span> <span class="n">Rampart_ratio</span> <span class="o">*</span> <span class="n">Tower_ratio</span> <span class="o">*</span> <span class="n">Inferno_ratio</span> <span class="o">*</span> <span class="n">Necropolis_ratio</span> <span class="o">*</span> <span class="n">Dungeon_ratio</span> <span class="o">*</span> <span class="n">Stronghold_ratio</span> <span class="o">*</span> <span class="n">Conflux_ratio</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">cut_value</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">player</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">player</span><span class="o">.</span><span class="n">week</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">*</span> <span class="mi">2</span>
+            <span class="k">elif</span> <span class="n">tile</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Crystal_Cavern&quot;</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">*</span> <span class="n">Rampart_ratio</span> <span class="o">*</span> <span class="n">Stronghold_ratio</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">cut_value</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">player</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">tile</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Gem_Pond&quot;</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">*</span> <span class="n">Castle_ratio</span> <span class="o">*</span> <span class="n">Tower_ratio</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">cut_value</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="n">player</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">tile</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Alchemists_Lab&quot;</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">*</span> <span class="n">Inferno_ratio</span> <span class="o">*</span> <span class="n">Necropolis_ratio</span> <span class="o">*</span> <span class="n">Conflux_ratio</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">cut_value</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">player</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">tile</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Sulfur_Dune&quot;</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">*</span> <span class="n">Dungeon_ratio</span> <span class="o">*</span> <span class="n">Fortress_ratio</span> <span class="o">*</span> <span class="n">Cove_ratio</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">cut_value</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">player</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">tile</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Gold_Mine&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">player</span><span class="o">.</span><span class="n">gold</span> <span class="o">&lt;</span> <span class="mi">10000</span><span class="p">:</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">*</span> <span class="mi">5</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">*</span> <span class="n">Castle_ratio</span> <span class="o">*</span> <span class="n">Rampart_ratio</span> <span class="o">*</span> <span class="n">Tower_ratio</span> <span class="o">*</span> <span class="n">Inferno_ratio</span> <span class="o">*</span> <span class="n">Necropolis_ratio</span> <span class="o">*</span> <span class="n">Dungeon_ratio</span> <span class="o">*</span> <span class="n">Stronghold_ratio</span> <span class="o">*</span> <span class="n">Fortress_ratio</span> <span class="o">*</span> <span class="n">Conflux_ratio</span> <span class="o">*</span> <span class="n">Cove_ratio</span> <span class="o">*</span> <span class="mf">1.5</span>
+            <span class="k">elif</span> <span class="n">tile</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Abandoned_Mine&quot;</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">*</span> <span class="mf">1.1</span>
+            <span class="k">return</span> <span class="n">value</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span></div>
+
+
+<div class="viewcode-block" id="increase_resource_value"><a class="viewcode-back" href="../../hierarchyFunctions.html#hierarchyFunctions.mines_and_resources_value.increase_resource_value">[docs]</a><span class="k">def</span> <span class="nf">increase_resource_value</span><span class="p">(</span><span class="n">tile</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">player_cities</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Increase resource value based on owned towns</span>
+
+<span class="sd">    :param tile: Parameter associated with checking the name of said tile in order to recognize what object is on that tile</span>
+<span class="sd">    :param value: Value parameter</span>
+<span class="sd">    :param player_cities: List of player cities</span>
+<span class="sd">    :return: Value</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">town</span> <span class="ow">in</span> <span class="n">player_cities</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">town</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Castle&quot;</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">*</span> <span class="mf">1.5</span>
+        <span class="k">if</span> <span class="n">town</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Rampart&quot;</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">*</span> <span class="mf">1.5</span>
+        <span class="k">if</span> <span class="n">town</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Tower&quot;</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">*</span> <span class="mf">1.5</span>
+        <span class="k">if</span> <span class="n">town</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Inferno&quot;</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">*</span> <span class="mf">1.5</span>
+        <span class="k">if</span> <span class="n">town</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Necropolis&quot;</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">*</span> <span class="mf">1.5</span>
+        <span class="k">if</span> <span class="n">town</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Dungeon&quot;</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">*</span> <span class="mf">1.5</span>
+        <span class="k">if</span> <span class="n">town</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Stronghold&quot;</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">*</span> <span class="mf">1.5</span>
+        <span class="k">if</span> <span class="n">town</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Fortress&quot;</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">*</span> <span class="mf">1.5</span>
+        <span class="k">if</span> <span class="n">town</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Conflux&quot;</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">*</span> <span class="mf">1.5</span>
+        <span class="k">if</span> <span class="n">town</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Cove&quot;</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">*</span> <span class="mf">1.5</span>
+    <span class="k">return</span> <span class="n">value</span></div>
+
+
+<div class="viewcode-block" id="cut_resource_value"><a class="viewcode-back" href="../../hierarchyFunctions.html#hierarchyFunctions.mines_and_resources_value.cut_resource_value">[docs]</a><span class="k">def</span> <span class="nf">cut_resource_value</span><span class="p">(</span><span class="n">tile</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">player</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Cut resource value based on owned resources</span>
+
+<span class="sd">    :param tile: Parameter associated with checking the name of said tile in order to recognize what object is on that tile</span>
+<span class="sd">    :param value: Value parameter</span>
+<span class="sd">    :param player: Class Player</span>
+<span class="sd">    :return: Value</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">tile</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Wood&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">player</span><span class="o">.</span><span class="n">wood</span> <span class="o">&gt;</span> <span class="mi">60</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">//</span> <span class="mi">4</span>
+        <span class="k">elif</span> <span class="n">player</span><span class="o">.</span><span class="n">wood</span> <span class="o">&gt;</span> <span class="mi">40</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">//</span> <span class="mi">2</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">pass</span>
+    <span class="k">if</span> <span class="n">tile</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Ore&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">player</span><span class="o">.</span><span class="n">ore</span> <span class="o">&gt;</span> <span class="mi">60</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">//</span> <span class="mi">4</span>
+        <span class="k">elif</span> <span class="n">player</span><span class="o">.</span><span class="n">ore</span> <span class="o">&gt;</span> <span class="mi">40</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">//</span> <span class="mi">2</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">pass</span>
+    <span class="k">if</span> <span class="n">tile</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Mercury&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">player</span><span class="o">.</span><span class="n">mercury</span> <span class="o">&gt;</span> <span class="mi">40</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">//</span> <span class="mi">4</span>
+        <span class="k">elif</span> <span class="n">player</span><span class="o">.</span><span class="n">mercury</span> <span class="o">&gt;</span> <span class="mi">30</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">//</span> <span class="mi">2</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">pass</span>
+    <span class="k">if</span> <span class="n">tile</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Sulfur&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">player</span><span class="o">.</span><span class="n">sulfur</span> <span class="o">&gt;</span> <span class="mi">40</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">//</span> <span class="mi">4</span>
+        <span class="k">elif</span> <span class="n">player</span><span class="o">.</span><span class="n">sulfur</span> <span class="o">&gt;</span> <span class="mi">30</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">//</span> <span class="mi">2</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">pass</span>
+    <span class="k">if</span> <span class="n">tile</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Crystal&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">player</span><span class="o">.</span><span class="n">crystal</span> <span class="o">&gt;</span> <span class="mi">40</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">//</span> <span class="mi">4</span>
+        <span class="k">elif</span> <span class="n">player</span><span class="o">.</span><span class="n">crystal</span> <span class="o">&gt;</span> <span class="mi">30</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">//</span> <span class="mi">2</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">pass</span>
+    <span class="k">if</span> <span class="n">tile</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Gems&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">player</span><span class="o">.</span><span class="n">gems</span> <span class="o">&gt;</span> <span class="mi">40</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">//</span> <span class="mi">4</span>
+        <span class="k">elif</span> <span class="n">player</span><span class="o">.</span><span class="n">gems</span> <span class="o">&gt;</span> <span class="mi">30</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">//</span> <span class="mi">2</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+    <span class="k">return</span> <span class="n">value</span></div>
+
+
+<div class="viewcode-block" id="resourceStackCase"><a class="viewcode-back" href="../../hierarchyFunctions.html#hierarchyFunctions.mines_and_resources_value.resourceStackCase">[docs]</a><span class="k">def</span> <span class="nf">resourceStackCase</span><span class="p">(</span><span class="n">tile</span><span class="p">,</span> <span class="n">player</span><span class="p">,</span> <span class="n">hero</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Give value to resources freely lying on the adventure map</span>
+
+<span class="sd">    :param tile: Parameter associated with checking the name of said tile in order to recognize what object is on that tile</span>
+<span class="sd">    :param player: Player object</span>
+<span class="sd">    :param hero: Hero object</span>
+<span class="sd">    :return: Value</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">hero</span><span class="o">.</span><span class="n">herotype</span> <span class="o">==</span> <span class="s2">&quot;main&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">tile</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;Resource&quot;</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">increase_resource_value</span><span class="p">(</span><span class="n">tile</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">player</span><span class="o">.</span><span class="n">cities</span><span class="p">)</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">cut_resource_value</span><span class="p">(</span><span class="n">tile</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">player</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="k">return</span> <span class="n">value</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">tile</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;Resource&quot;</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="mi">1000</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">increase_resource_value</span><span class="p">(</span><span class="n">tile</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">player</span><span class="o">.</span><span class="n">cities</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">player</span><span class="o">.</span><span class="n">week</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">*</span> <span class="mi">2</span>
+            <span class="k">if</span> <span class="n">tile</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Gold&quot;</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">*</span> <span class="mi">4</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="k">return</span> <span class="n">value</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">player</span> <span class="o">=</span> <span class="n">Player</span><span class="p">(</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">110</span><span class="p">,</span> <span class="mi">110</span><span class="p">,</span> <span class="mi">110</span><span class="p">,</span> <span class="mi">110</span><span class="p">)</span>
+    <span class="n">Gold_Mine</span> <span class="o">=</span> <span class="n">Mine</span><span class="p">(</span><span class="mi">3500</span><span class="p">,</span> <span class="s2">&quot;Gold_Mine&quot;</span><span class="p">)</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">mineCase</span><span class="p">(</span><span class="n">Gold_Mine</span><span class="p">,</span> <span class="n">player</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Fryderyk Róg, Kacper Plesiak, Michał Gruba, Tymoteusz Skrzyński, Mateusz Comblik, Bartosz Szczepanek, Alan Konopko, Mateusz Mikszewicz, Daniel Bil, Piotr Łyczko.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GUI_handling.AdventureGUI &mdash; HoMM3 Bot 2.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> HoMM3 Bot
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">homm3-bot</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">HoMM3 Bot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">GUI_handling.AdventureGUI</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for GUI_handling.AdventureGUI</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Script containing functions essential for handling  adventure GUI.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">keyboard</span> <span class="k">as</span> <span class="nn">kb</span>
+<span class="kn">import</span> <span class="nn">mouse</span>
+<span class="kn">import</span> <span class="nn">image_processing.ok_detection</span>
+
+
+<span class="c1"># Each tile has (33, 33) pixels on adventure map</span>
+
+<span class="c1"># Each tile has (45, 54) pixels on battle map</span>
+
+<span class="c1"># Battlefield point (0, 0) has coordinates (660, 330) pixels</span>
+
+<span class="c1"># Adventure map ends at (1720, 1032) pixels</span>
+
+<span class="c1"># Border around the screen has 6 px</span>
+
+<span class="c1"># There are (54, 32) tiles visible on adventure map</span>
+
+
+<div class="viewcode-block" id="move_mouse_and_click_adventure"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.move_mouse_and_click_adventure">[docs]</a><span class="k">def</span> <span class="nf">move_mouse_and_click_adventure</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    move mouse to the given coordinates and press on it</span>
+
+<span class="sd">    :param x: &quot;x&quot; coordinate of the location to be clicked</span>
+<span class="sd">    :param y: &quot;y&quot; coordinate of the location to be clicked</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">mouse</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+    <span class="n">mouse</span><span class="o">.</span><span class="n">click</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="leave_screen"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.leave_screen">[docs]</a><span class="k">def</span> <span class="nf">leave_screen</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    leave screen</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;esc&#39;</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="accept_offer"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.accept_offer">[docs]</a><span class="k">def</span> <span class="nf">accept_offer</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    accept offer</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;enter&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="generic_proposal"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.generic_proposal">[docs]</a><span class="k">def</span> <span class="nf">generic_proposal</span><span class="p">(</span><span class="n">accept</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Accept or reject proposal on screen</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">accept</span><span class="p">:</span>
+        <span class="n">accept_offer</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">leave_screen</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="center_on_hero"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.center_on_hero">[docs]</a><span class="k">def</span> <span class="nf">center_on_hero</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    center camera on hero</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;enter&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="press_hero"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.press_hero">[docs]</a><span class="k">def</span> <span class="nf">press_hero</span><span class="p">(</span><span class="n">number</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    press hero</span>
+
+<span class="sd">    :param number: hero number on the hero list</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">move_mouse_and_click_adventure</span><span class="p">(</span><span class="mi">1760</span><span class="p">,</span> <span class="mi">210</span> <span class="o">+</span> <span class="mi">32</span> <span class="o">*</span> <span class="n">number</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="move_mouse_over_hero"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.move_mouse_over_hero">[docs]</a><span class="k">def</span> <span class="nf">move_mouse_over_hero</span><span class="p">(</span><span class="n">number</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    move mouse over hero</span>
+
+<span class="sd">    :param number: hero number on the hero list</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">mouse</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="mi">1890</span><span class="p">,</span> <span class="mi">230</span> <span class="o">+</span> <span class="mi">32</span> <span class="o">*</span> <span class="n">number</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+    <span class="n">mouse</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="mi">1760</span><span class="p">,</span> <span class="mi">210</span> <span class="o">+</span> <span class="mi">32</span> <span class="o">*</span> <span class="n">number</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="move_mouse_over_town"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.move_mouse_over_town">[docs]</a><span class="k">def</span> <span class="nf">move_mouse_over_town</span><span class="p">(</span><span class="n">number</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    move mouse over town</span>
+
+<span class="sd">    :param number: town number on the town list</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+
+    <span class="n">mouse</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="mi">1760</span><span class="p">,</span> <span class="mi">210</span> <span class="o">+</span> <span class="mi">32</span> <span class="o">*</span> <span class="n">number</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.05</span><span class="p">)</span>
+    <span class="n">mouse</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="mi">1890</span><span class="p">,</span> <span class="mi">230</span> <span class="o">+</span> <span class="mi">32</span> <span class="o">*</span> <span class="n">number</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.05</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="press_town"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.press_town">[docs]</a><span class="k">def</span> <span class="nf">press_town</span><span class="p">(</span><span class="n">number</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    press town</span>
+
+<span class="sd">    :param number: town number on the town list</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">move_mouse_and_click_adventure</span><span class="p">(</span><span class="mi">1890</span><span class="p">,</span> <span class="mi">230</span> <span class="o">+</span> <span class="mi">32</span> <span class="o">*</span> <span class="n">number</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="press_enter"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.press_enter">[docs]</a><span class="k">def</span> <span class="nf">press_enter</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    presses enter</span>
+
+<span class="sd">    :param number:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;enter&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="enter_town"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.enter_town">[docs]</a><span class="k">def</span> <span class="nf">enter_town</span><span class="p">(</span><span class="n">number</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    enter town</span>
+
+<span class="sd">    :param number:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">press_town</span><span class="p">(</span><span class="n">number</span><span class="p">)</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;enter&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="scroll_town_up"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.scroll_town_up">[docs]</a><span class="k">def</span> <span class="nf">scroll_town_up</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    scroll the town listing upwards</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">move_mouse_and_click_adventure</span><span class="p">(</span><span class="mi">1890</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="scroll_town_down"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.scroll_town_down">[docs]</a><span class="k">def</span> <span class="nf">scroll_town_down</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    scroll the town listing downwards</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">move_mouse_and_click_adventure</span><span class="p">(</span><span class="mi">1890</span><span class="p">,</span> <span class="mi">440</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="press_kingdom_overview"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.press_kingdom_overview">[docs]</a><span class="k">def</span> <span class="nf">press_kingdom_overview</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    press kingdom overview</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;k&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="press_underworld_view"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.press_underworld_view">[docs]</a><span class="k">def</span> <span class="nf">press_underworld_view</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    press underw</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;u&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="view_world"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.view_world">[docs]</a><span class="k">def</span> <span class="nf">view_world</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    view world</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;v&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="press_replay_opponent_turn"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.press_replay_opponent_turn">[docs]</a><span class="k">def</span> <span class="nf">press_replay_opponent_turn</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    press replay opponent turn</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">move_mouse_and_click_adventure</span><span class="p">(</span><span class="mi">1845</span><span class="p">,</span> <span class="mi">240</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="view_puzzle"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.view_puzzle">[docs]</a><span class="k">def</span> <span class="nf">view_puzzle</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    view puzzle</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;p&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="dig"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.dig">[docs]</a><span class="k">def</span> <span class="nf">dig</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    dig</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;d&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="questlog"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.questlog">[docs]</a><span class="k">def</span> <span class="nf">questlog</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    open questlog</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;q&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="put_hero_to_sleep"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.put_hero_to_sleep">[docs]</a><span class="k">def</span> <span class="nf">put_hero_to_sleep</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    put hero to sleep</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;z&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="wake_hero_up"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.wake_hero_up">[docs]</a><span class="k">def</span> <span class="nf">wake_hero_up</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    wake hero up</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;w&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="move_hero"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.move_hero">[docs]</a><span class="k">def</span> <span class="nf">move_hero</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Finishes the movement</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;m&#39;</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="max_unit_buy"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.max_unit_buy">[docs]</a><span class="k">def</span> <span class="nf">max_unit_buy</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    selects amx amount of units in habitat</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">press</span><span class="p">(</span><span class="s1">&#39;m&#39;</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">release</span><span class="p">(</span><span class="s1">&#39;m&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="click_cast_spell"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.click_cast_spell">[docs]</a><span class="k">def</span> <span class="nf">click_cast_spell</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    click cast spell</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="view_scenario_info"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.view_scenario_info">[docs]</a><span class="k">def</span> <span class="nf">view_scenario_info</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    view scenario info</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;i&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="system_options"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.system_options">[docs]</a><span class="k">def</span> <span class="nf">system_options</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    system options</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;o&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="next_hero"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.next_hero">[docs]</a><span class="k">def</span> <span class="nf">next_hero</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    next hero</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;h&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="end_turn"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.end_turn">[docs]</a><span class="k">def</span> <span class="nf">end_turn</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    end turn</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;e&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="click_on_tile_adventure"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.click_on_tile_adventure">[docs]</a><span class="k">def</span> <span class="nf">click_on_tile_adventure</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Hero is expected to be in the middle of the screen (x=0, y=0)</span>
+
+<span class="sd">    :param x: &quot;x&quot; coordinate of the location to be clicked</span>
+<span class="sd">    :param y: &quot;y&quot; coordinate of the location to be clicked</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">center</span> <span class="o">=</span> <span class="p">(</span><span class="mi">848</span><span class="p">,</span> <span class="mi">534</span><span class="p">)</span>
+    <span class="n">expected_move</span> <span class="o">=</span> <span class="p">(</span><span class="n">center</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">x</span> <span class="o">*</span> <span class="mi">32</span><span class="p">,</span> <span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">y</span> <span class="o">*</span> <span class="mi">32</span><span class="p">)</span>
+    <span class="n">move_mouse_and_click_adventure</span><span class="p">(</span><span class="n">expected_move</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">expected_move</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="move_mouse_to_tile_adventure"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.move_mouse_to_tile_adventure">[docs]</a><span class="k">def</span> <span class="nf">move_mouse_to_tile_adventure</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Move_mouse_to_tile on adventure</span>
+<span class="sd">    Hero is expected to be in the middle of the screen (x=0, y=0)</span>
+
+<span class="sd">    :param x: &quot;x&quot; coordinate of the location to be clicked</span>
+<span class="sd">    :param y: &quot;y&quot; coordinate of the location to be clicked</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">center</span> <span class="o">=</span> <span class="p">(</span><span class="mi">848</span><span class="p">,</span> <span class="mi">534</span><span class="p">)</span>
+    <span class="n">expected_move</span> <span class="o">=</span> <span class="p">(</span><span class="n">center</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">x</span> <span class="o">*</span> <span class="mi">32</span><span class="p">,</span> <span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">y</span> <span class="o">*</span> <span class="mi">32</span><span class="p">)</span>
+    <span class="n">mouse</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">expected_move</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">expected_move</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="move_mouse_by_pixel_relative"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.move_mouse_by_pixel_relative">[docs]</a><span class="k">def</span> <span class="nf">move_mouse_by_pixel_relative</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function for moving mouse by some pixel relative to the current mouse position</span>
+
+<span class="sd">    :param x: x pixel shift</span>
+<span class="sd">    :param y: y pixel shift</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">mx</span><span class="p">,</span> <span class="n">my</span> <span class="o">=</span> <span class="n">mouse</span><span class="o">.</span><span class="n">get_position</span><span class="p">()</span>
+    <span class="n">mouse</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">mx</span> <span class="o">+</span> <span class="n">x</span><span class="p">,</span> <span class="n">my</span> <span class="o">+</span> <span class="n">y</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="move_to_tile_adventure"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.move_to_tile_adventure">[docs]</a><span class="k">def</span> <span class="nf">move_to_tile_adventure</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    move_to_tile_adventure</span>
+
+<span class="sd">    :param x: &quot;x&quot; coordinate of the location to be clicked</span>
+<span class="sd">    :param y: &quot;y&quot; coordinate of the location to be clicked</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">click_on_tile_adventure</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">move_hero</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="enter_current_tile"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.enter_current_tile">[docs]</a><span class="k">def</span> <span class="nf">enter_current_tile</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    enter_current_tile</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;space&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="save_in_game"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.save_in_game">[docs]</a><span class="k">def</span> <span class="nf">save_in_game</span><span class="p">(</span><span class="n">savefile_name</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    save game</span>
+
+<span class="sd">    :param savefile_name: name of the saved file</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># max lenght of savefile_name</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">savefile_name</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">50</span><span class="p">:</span>
+        <span class="n">savefile_name</span> <span class="o">=</span> <span class="n">savefile_name</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">50</span><span class="p">]</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;s&#39;</span><span class="p">)</span>
+    <span class="c1"># deletion of the current name</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">60</span><span class="p">):</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span>
+        <span class="n">kb</span><span class="o">.</span><span class="n">press</span><span class="p">(</span><span class="s1">&#39;backspace&#39;</span><span class="p">)</span>
+    <span class="c1"># naming the file</span>
+    <span class="k">for</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">savefile_name</span><span class="p">:</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span>
+        <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">char</span><span class="p">)</span>
+    <span class="c1"># press save</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;enter&#39;</span><span class="p">)</span>
+    <span class="c1"># check if filename is exists and overwtite it, and click ok</span>
+    <span class="n">detected</span> <span class="o">=</span> <span class="n">image_processing</span><span class="o">.</span><span class="n">ok_detection</span><span class="o">.</span><span class="n">check_ok</span><span class="p">()</span>
+    <span class="k">while</span> <span class="n">detected</span><span class="p">:</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;enter&#39;</span><span class="p">)</span>
+        <span class="n">detected</span> <span class="o">=</span> <span class="n">image_processing</span><span class="o">.</span><span class="n">ok_detection</span><span class="o">.</span><span class="n">check_ok</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="access_marketplace"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.access_marketplace">[docs]</a><span class="k">def</span> <span class="nf">access_marketplace</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    access_marketplace</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;b&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="move_hero_up"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.move_hero_up">[docs]</a><span class="k">def</span> <span class="nf">move_hero_up</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    move hero up</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;up&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="move_hero_down"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.move_hero_down">[docs]</a><span class="k">def</span> <span class="nf">move_hero_down</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    move hero down</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;down&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="move_hero_left"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.move_hero_left">[docs]</a><span class="k">def</span> <span class="nf">move_hero_left</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    move hero left</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;left&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="move_hero_right"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.move_hero_right">[docs]</a><span class="k">def</span> <span class="nf">move_hero_right</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    move hero right</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;right&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="move_hero_top_right"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.move_hero_top_right">[docs]</a><span class="k">def</span> <span class="nf">move_hero_top_right</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    move hero top right</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;pageup&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="move_hero_top_left"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.move_hero_top_left">[docs]</a><span class="k">def</span> <span class="nf">move_hero_top_left</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    move hero top left</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;home&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="move_hero_bottom_right"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.move_hero_bottom_right">[docs]</a><span class="k">def</span> <span class="nf">move_hero_bottom_right</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    move hero bottom right</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;pagedown&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="move_hero_bottom_left"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.move_hero_bottom_left">[docs]</a><span class="k">def</span> <span class="nf">move_hero_bottom_left</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    move hero bottom left</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;end&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="move_camera_left"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.move_camera_left">[docs]</a><span class="k">def</span> <span class="nf">move_camera_left</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    move camera left</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;ctrl+left&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="move_camera_right"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.move_camera_right">[docs]</a><span class="k">def</span> <span class="nf">move_camera_right</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    move camera right</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;ctrl+right&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="move_camera_up"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.move_camera_up">[docs]</a><span class="k">def</span> <span class="nf">move_camera_up</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    move camera up</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;ctrl+up&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="move_camera_down"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.move_camera_down">[docs]</a><span class="k">def</span> <span class="nf">move_camera_down</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    move camera down</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;ctrl+down&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="level_up_choose_skill"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.level_up_choose_skill">[docs]</a><span class="k">def</span> <span class="nf">level_up_choose_skill</span><span class="p">(</span><span class="n">number</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Choose skill</span>
+<span class="sd">    Left skill is number 1, right one is number 2</span>
+
+<span class="sd">    :param number: (int) left -&gt; 1, right -&gt; 2</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">number</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;1&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;2&#39;</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;enter&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="accept_retreat"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.accept_retreat">[docs]</a><span class="k">def</span> <span class="nf">accept_retreat</span><span class="p">(</span><span class="n">accept</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Accept retreat</span>
+
+<span class="sd">    :param accept: (Boolean) Yes -&gt; True, No -&gt; False</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">accept</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click_adventure</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">600</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click_adventure</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="mi">600</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="accept_battle_result"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.accept_battle_result">[docs]</a><span class="k">def</span> <span class="nf">accept_battle_result</span><span class="p">(</span><span class="n">accept</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    accept battle result</span>
+
+<span class="sd">    :param accept: (Boolean) Yes -&gt; True, No -&gt; False</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">accept</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click_adventure</span><span class="p">(</span><span class="mi">1140</span><span class="p">,</span> <span class="mi">780</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click_adventure</span><span class="p">(</span><span class="mi">780</span><span class="p">,</span> <span class="mi">780</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="choose_chest"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.choose_chest">[docs]</a><span class="k">def</span> <span class="nf">choose_chest</span><span class="p">(</span><span class="n">choice</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    choose chest</span>
+
+<span class="sd">    :param choice: (str) &quot;gold&quot;, &quot;exp&quot; or &quot;experience&quot; is the correct value</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">choice</span> <span class="o">=</span> <span class="n">choice</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">choice</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;gold&#39;</span><span class="p">,</span> <span class="s1">&#39;exp&#39;</span><span class="p">,</span> <span class="s1">&#39;experience&#39;</span><span class="p">}:</span>
+        <span class="k">if</span> <span class="n">choice</span> <span class="o">==</span> <span class="s1">&#39;gold&#39;</span><span class="p">:</span>
+            <span class="n">move_mouse_and_click_adventure</span><span class="p">(</span><span class="mi">890</span><span class="p">,</span> <span class="mi">590</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">move_mouse_and_click_adventure</span><span class="p">(</span><span class="mi">1020</span><span class="p">,</span> <span class="mi">590</span><span class="p">)</span>
+        <span class="n">move_mouse_and_click_adventure</span><span class="p">(</span><span class="mi">960</span><span class="p">,</span> <span class="mi">690</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No correct value given, accepted values are: gold, exp or experience&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="recruit_unit"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.recruit_unit">[docs]</a><span class="k">def</span> <span class="nf">recruit_unit</span><span class="p">(</span><span class="n">amount</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Recruits a specified amount of units from a habitat if there is free space.</span>
+<span class="sd">    To recruit all units the amount should be: -1</span>
+<span class="sd">    This function expects you to have all necessary resources</span>
+
+<span class="sd">    :param amount: amount of units to be recruited</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">amount</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click_adventure</span><span class="p">(</span><span class="mi">870</span><span class="p">,</span> <span class="mi">585</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">while</span> <span class="n">amount</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">move_mouse_and_click_adventure</span><span class="p">(</span><span class="mi">1005</span><span class="p">,</span> <span class="mi">543</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+            <span class="n">amount</span> <span class="o">-=</span> <span class="n">amount</span>
+    <span class="n">move_mouse_and_click_adventure</span><span class="p">(</span><span class="mi">945</span><span class="p">,</span> <span class="mi">585</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="artifact_coordinates"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.artifact_coordinates">[docs]</a><span class="k">def</span> <span class="nf">artifact_coordinates</span><span class="p">(</span><span class="n">slot_id</span><span class="p">,</span> <span class="n">artifacts</span><span class="p">,</span> <span class="n">additional_id</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Inside function shouldn&#39;t be touched</span>
+
+<span class="sd">    :param slot_id:</span>
+<span class="sd">    :param artifacts:</span>
+<span class="sd">    :param additional_id:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">slot_id</span> <span class="o">==</span> <span class="n">artifacts</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">or</span> <span class="n">slot_id</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">1090</span><span class="p">,</span> <span class="mi">290</span>
+    <span class="k">elif</span> <span class="n">slot_id</span> <span class="o">==</span> <span class="n">artifacts</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="ow">or</span> <span class="n">slot_id</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">1145</span><span class="p">,</span> <span class="mi">500</span>
+    <span class="k">elif</span> <span class="n">slot_id</span> <span class="o">==</span> <span class="n">artifacts</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="ow">or</span> <span class="n">slot_id</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">1090</span><span class="p">,</span> <span class="mi">340</span>
+    <span class="k">elif</span> <span class="n">slot_id</span> <span class="o">==</span> <span class="n">artifacts</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="ow">or</span> <span class="n">slot_id</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">960</span><span class="p">,</span> <span class="mi">330</span>
+    <span class="k">elif</span> <span class="n">slot_id</span> <span class="o">==</span> <span class="n">artifacts</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="ow">or</span> <span class="n">slot_id</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">1140</span><span class="p">,</span> <span class="mi">445</span>
+    <span class="k">elif</span> <span class="n">slot_id</span> <span class="o">==</span> <span class="n">artifacts</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="ow">or</span> <span class="n">slot_id</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">1090</span><span class="p">,</span> <span class="mi">390</span>
+    <span class="k">elif</span> <span class="n">slot_id</span> <span class="o">==</span> <span class="n">artifacts</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span> <span class="ow">or</span> <span class="n">slot_id</span> <span class="o">==</span> <span class="mi">7</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">additional_id</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">1010</span><span class="p">,</span> <span class="mi">330</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">1200</span><span class="p">,</span> <span class="mi">440</span>
+    <span class="k">elif</span> <span class="n">slot_id</span> <span class="o">==</span> <span class="n">artifacts</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span> <span class="ow">or</span> <span class="n">slot_id</span> <span class="o">==</span> <span class="mi">8</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">1095</span><span class="p">,</span> <span class="mi">555</span>
+    <span class="k">elif</span> <span class="n">slot_id</span> <span class="o">==</span> <span class="n">artifacts</span><span class="p">[</span><span class="mi">9</span><span class="p">]</span> <span class="ow">or</span> <span class="n">slot_id</span> <span class="o">==</span> <span class="mi">9</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">additional_id</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">960</span><span class="p">,</span> <span class="mi">555</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">965</span> <span class="o">+</span> <span class="mi">15</span><span class="o">*</span><span class="n">additional_id</span><span class="p">,</span> <span class="mi">400</span> <span class="o">+</span> <span class="mi">50</span><span class="o">*</span><span class="n">additional_id</span>
+    <span class="k">elif</span> <span class="n">slot_id</span> <span class="o">==</span> <span class="n">artifacts</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span> <span class="ow">or</span> <span class="n">slot_id</span> <span class="o">==</span> <span class="mi">10</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">1145</span><span class="p">,</span> <span class="mi">290</span>
+    <span class="k">elif</span> <span class="n">slot_id</span> <span class="o">==</span> <span class="n">artifacts</span><span class="p">[</span><span class="mi">11</span><span class="p">]</span> <span class="ow">or</span> <span class="n">slot_id</span> <span class="o">==</span> <span class="mi">11</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">1190</span><span class="p">,</span> <span class="mi">290</span>
+    <span class="k">elif</span> <span class="n">slot_id</span> <span class="o">==</span> <span class="n">artifacts</span><span class="p">[</span><span class="mi">12</span><span class="p">]</span> <span class="ow">or</span> <span class="n">slot_id</span> <span class="o">==</span> <span class="mi">12</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">1190</span><span class="p">,</span> <span class="mi">335</span>
+    <span class="k">elif</span> <span class="n">slot_id</span> <span class="o">==</span> <span class="n">artifacts</span><span class="p">[</span><span class="mi">13</span><span class="p">]</span> <span class="ow">or</span> <span class="n">slot_id</span> <span class="o">==</span> <span class="mi">13</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">1190</span><span class="p">,</span> <span class="mi">380</span>
+    <span class="k">elif</span> <span class="n">slot_id</span> <span class="o">==</span> <span class="n">artifacts</span><span class="p">[</span><span class="mi">14</span><span class="p">]</span> <span class="ow">or</span> <span class="n">slot_id</span> <span class="o">==</span> <span class="mi">14</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">1190</span><span class="p">,</span> <span class="mi">570</span>
+    <span class="k">elif</span> <span class="n">slot_id</span> <span class="o">==</span> <span class="n">artifacts</span><span class="p">[</span><span class="mi">15</span><span class="p">]</span> <span class="ow">or</span> <span class="n">slot_id</span> <span class="o">==</span> <span class="mi">15</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">910</span> <span class="o">+</span> <span class="mi">45</span><span class="o">*</span><span class="p">(</span><span class="n">additional_id</span> <span class="o">%</span> <span class="mi">8</span><span class="p">),</span> <span class="mi">328</span> <span class="o">+</span> <span class="mi">47</span><span class="o">*</span><span class="nb">int</span><span class="p">(</span><span class="n">additional_id</span> <span class="o">/</span> <span class="mi">8</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="click_artifact"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.click_artifact">[docs]</a><span class="k">def</span> <span class="nf">click_artifact</span><span class="p">(</span><span class="n">slot_id</span><span class="p">,</span> <span class="n">artifacts</span><span class="p">,</span> <span class="n">additional_id</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    click on a given artifact inside function</span>
+
+<span class="sd">    :param slot_id:</span>
+<span class="sd">    :param artifacts:</span>
+<span class="sd">    :param additional_id:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">coords</span> <span class="o">=</span> <span class="n">artifact_coordinates</span><span class="p">(</span><span class="n">slot_id</span><span class="p">,</span> <span class="n">artifacts</span><span class="p">,</span> <span class="n">additional_id</span><span class="p">)</span>
+    <span class="n">move_mouse_and_click_adventure</span><span class="p">(</span><span class="n">coords</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">coords</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="change_artifact"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.change_artifact">[docs]</a><span class="k">def</span> <span class="nf">change_artifact</span><span class="p">(</span><span class="n">slot_id_from</span><span class="p">,</span> <span class="n">slot_id_to</span><span class="p">,</span> <span class="n">additional_id</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Artifacts are labeled according to https://heroes.thelazy.net/index.php/Artifact</span>
+<span class="sd">    you can either pass in the slot number or the slot name</span>
+<span class="sd">    additional_id is the number given to miscellaneous or ring artifacts and ones in the backpack</span>
+
+<span class="sd">    :param slot_id_from: can be either slot number according to the dict or the slot name as str</span>
+<span class="sd">    :param slot_id_to: can be either slot number according to the dict or the slot name as str</span>
+<span class="sd">    :param additional_id: needed when inputting ring, misc or backpack, id of the additional slot</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">artifacts</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="s1">&#39;helmet&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="s1">&#39;cape&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span> <span class="s1">&#39;necklace&#39;</span><span class="p">,</span> <span class="mi">4</span><span class="p">:</span> <span class="s1">&#39;right hand&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">:</span> <span class="s1">&#39;left hand&#39;</span><span class="p">,</span> <span class="mi">6</span><span class="p">:</span> <span class="s1">&#39;torso&#39;</span><span class="p">,</span>
+                 <span class="mi">7</span><span class="p">:</span> <span class="s1">&#39;ring&#39;</span><span class="p">,</span> <span class="mi">8</span><span class="p">:</span> <span class="s1">&#39;feet&#39;</span><span class="p">,</span> <span class="mi">9</span><span class="p">:</span> <span class="s1">&#39;miscellaneous&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">:</span> <span class="s1">&#39;ballista&#39;</span><span class="p">,</span> <span class="mi">11</span><span class="p">:</span> <span class="s1">&#39;ammo cart&#39;</span><span class="p">,</span>
+                 <span class="mi">12</span><span class="p">:</span> <span class="s1">&#39;first aid tent&#39;</span><span class="p">,</span> <span class="mi">13</span><span class="p">:</span> <span class="s1">&#39;catapult&#39;</span><span class="p">,</span> <span class="mi">14</span><span class="p">:</span> <span class="s1">&#39;spell book&#39;</span><span class="p">,</span> <span class="mi">15</span><span class="p">:</span> <span class="s1">&#39;backpack&#39;</span><span class="p">}</span>
+
+    <span class="k">if</span> <span class="n">slot_id_from</span> <span class="o">==</span> <span class="mi">15</span> <span class="ow">or</span> <span class="n">slot_id_from</span> <span class="o">==</span> <span class="n">artifacts</span><span class="p">[</span><span class="mi">15</span><span class="p">]:</span>
+        <span class="n">move_mouse_and_click_adventure</span><span class="p">(</span><span class="mi">1080</span><span class="p">,</span> <span class="mi">695</span><span class="p">)</span>
+    <span class="n">click_artifact</span><span class="p">(</span><span class="n">slot_id_from</span><span class="p">,</span> <span class="n">artifacts</span><span class="p">,</span> <span class="n">additional_id</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">slot_id_to</span> <span class="o">==</span> <span class="mi">15</span> <span class="ow">or</span> <span class="n">slot_id_to</span> <span class="o">==</span> <span class="n">artifacts</span><span class="p">[</span><span class="mi">15</span><span class="p">]:</span>
+        <span class="n">move_mouse_and_click_adventure</span><span class="p">(</span><span class="mi">1080</span><span class="p">,</span> <span class="mi">695</span><span class="p">)</span>
+    <span class="n">click_artifact</span><span class="p">(</span><span class="n">slot_id_to</span><span class="p">,</span> <span class="n">artifacts</span><span class="p">,</span> <span class="n">additional_id</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="click_unit_tile"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.click_unit_tile">[docs]</a><span class="k">def</span> <span class="nf">click_unit_tile</span><span class="p">(</span><span class="n">nr</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Inside hero&#39;s inventory</span>
+
+<span class="sd">    :param nr: number of a unit</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">move_mouse_and_click_adventure</span><span class="p">(</span><span class="mi">667</span> <span class="o">+</span> <span class="mi">65</span><span class="o">*</span><span class="n">nr</span><span class="p">,</span> <span class="mi">763</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="change_units"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.change_units">[docs]</a><span class="k">def</span> <span class="nf">change_units</span><span class="p">(</span><span class="n">nr1</span><span class="p">,</span> <span class="n">nr2</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Inside hero&#39;s inventory</span>
+
+<span class="sd">    :param nr1: unit no 1</span>
+<span class="sd">    :param nr2: unit no 2</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">click_unit_tile</span><span class="p">(</span><span class="n">nr1</span><span class="p">)</span>
+    <span class="n">click_unit_tile</span><span class="p">(</span><span class="n">nr2</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="set_combat_formation"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.set_combat_formation">[docs]</a><span class="k">def</span> <span class="nf">set_combat_formation</span><span class="p">(</span><span class="n">formation</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    set combat formation</span>
+
+<span class="sd">    :param formation: loose or tight</span>
+<span class="sd">    :return: does nothing</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">formation</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;loose&#39;</span><span class="p">,</span> <span class="s1">&#39;tight&#39;</span><span class="p">}:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Wrong formation name&#39;</span><span class="p">)</span>
+        <span class="k">return</span>
+    <span class="k">if</span> <span class="n">formation</span> <span class="o">==</span> <span class="s1">&#39;loose&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click_adventure</span><span class="p">(</span><span class="mi">1140</span><span class="p">,</span> <span class="mi">745</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click_adventure</span><span class="p">(</span><span class="mi">1140</span><span class="p">,</span> <span class="mi">782</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="dismiss_hero"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.dismiss_hero">[docs]</a><span class="k">def</span> <span class="nf">dismiss_hero</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Dismiss hero First enter his inventory</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">move_mouse_and_click_adventure</span><span class="p">(</span><span class="mi">1190</span><span class="p">,</span> <span class="mi">700</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="upgrade_unit_hill_fort"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.upgrade_unit_hill_fort">[docs]</a><span class="k">def</span> <span class="nf">upgrade_unit_hill_fort</span><span class="p">(</span><span class="n">tile_number</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Upgrade unit in a hill fort</span>
+<span class="sd">    Specify a number or write a string &#39;all&#39;</span>
+
+<span class="sd">    :param tile_number: tile number</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">tile_number</span> <span class="o">==</span> <span class="s1">&#39;all&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click_adventure</span><span class="p">(</span><span class="mi">690</span><span class="p">,</span> <span class="mi">610</span><span class="p">)</span>
+    <span class="n">move_mouse_and_click_adventure</span><span class="p">(</span><span class="mi">770</span> <span class="o">+</span> <span class="mi">75</span><span class="o">*</span><span class="n">tile_number</span><span class="p">,</span> <span class="mi">550</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="town_gate_adventure"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.town_gate_adventure">[docs]</a><span class="k">def</span> <span class="nf">town_gate_adventure</span><span class="p">(</span><span class="n">town_id</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    use town gate on the adventure map</span>
+
+<span class="sd">    :param town_id: id of town we want to move to</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">move_mouse_and_click_adventure</span><span class="p">(</span><span class="mi">880</span><span class="p">,</span> <span class="mi">436</span> <span class="o">+</span> <span class="mi">32</span> <span class="o">*</span> <span class="n">town_id</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;enter&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="change_unit_make_room_when_join"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.change_unit_make_room_when_join">[docs]</a><span class="k">def</span> <span class="nf">change_unit_make_room_when_join</span><span class="p">(</span><span class="n">inner_tile</span><span class="p">,</span> <span class="n">outer_tile</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    change units when a unit joins you and you have full unit</span>
+
+<span class="sd">    :param inner_tile: number of inner tile</span>
+<span class="sd">    :param outer_tile: number of outer tile</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">move_mouse_and_click_adventure</span><span class="p">(</span><span class="mi">805</span> <span class="o">+</span> <span class="mi">60</span><span class="o">*</span><span class="n">outer_tile</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
+    <span class="n">move_mouse_and_click_adventure</span><span class="p">(</span><span class="mi">805</span> <span class="o">+</span> <span class="mi">60</span> <span class="o">*</span> <span class="n">inner_tile</span><span class="p">,</span> <span class="mi">600</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="choose_skill_upgrade"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.choose_skill_upgrade">[docs]</a><span class="k">def</span> <span class="nf">choose_skill_upgrade</span><span class="p">(</span><span class="n">side</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Old function no touchy</span>
+
+<span class="sd">    :param side: left or right side</span>
+<span class="sd">    :return: does nothing</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">side</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="s1">&#39;right&#39;</span><span class="p">}:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Side can be: left or right&#39;</span><span class="p">)</span>
+        <span class="k">return</span>
+    <span class="k">if</span> <span class="n">side</span> <span class="o">==</span> <span class="s1">&#39;left&#39;</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click_adventure</span><span class="p">(</span><span class="mi">900</span><span class="p">,</span> <span class="mi">600</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">move_mouse_and_click_adventure</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">600</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;enter&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="seafaring_academy"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.seafaring_academy">[docs]</a><span class="k">def</span> <span class="nf">seafaring_academy</span><span class="p">(</span><span class="n">ability_id</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Choose seafaring academy skill</span>
+
+<span class="sd">    :param ability_id: Ability id</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">move_mouse_and_click_adventure</span><span class="p">(</span><span class="mi">850</span> <span class="o">+</span> <span class="mi">100</span><span class="o">*</span><span class="n">ability_id</span><span class="p">,</span> <span class="mi">600</span><span class="p">)</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;enter&#39;</span><span class="p">)</span>
+    <span class="n">kb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;enter&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="cast_spell_adventure"><a class="viewcode-back" href="../../GUI_handling.html#GUI_handling.AdventureGUI.cast_spell_adventure">[docs]</a><span class="k">def</span> <span class="nf">cast_spell_adventure</span><span class="p">(</span><span class="nb">id</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    cast spell on the adventure map</span>
+
+<span class="sd">    :param id: Spell id</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">click_cast_spell</span><span class="p">()</span>
+    <span class="n">move_mouse_and_click_adventure</span><span class="p">(</span><span class="mi">705</span> <span class="o">+</span> <span class="mi">90</span><span class="o">*</span><span class="p">(</span><span class="nb">id</span> <span class="o">%</span> <span class="mi">3</span><span class="p">),</span> <span class="mi">330</span> <span class="o">+</span> <span class="mi">90</span><span class="o">*</span><span class="nb">int</span><span class="p">(</span><span class="nb">id</span> <span class="o">/</span> <span class="mi">3</span><span class="p">))</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Fryderyk Róg, Kacper Plesiak, Michał Gruba, Tymoteusz Skrzyński, Mateusz Comblik, Bartosz Szczepanek, Alan Konopko, Mateusz Mikszewicz, Daniel Bil, Piotr Łyczko.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

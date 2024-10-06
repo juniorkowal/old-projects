@@ -1,0 +1,285 @@
+data package
+============
+
+Submodules
+----------
+
+data.Artifacts module
+---------------------
+
+.. automodule:: data.Artifacts
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+data.BattleAI\_environment\_needs module
+----------------------------------------
+
+.. automodule:: data.BattleAI_environment_needs
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+data.Castle module
+------------------
+
+.. automodule:: data.Castle
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+data.Conflux module
+-------------------
+
+.. automodule:: data.Conflux
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+data.Cove module
+----------------
+
+.. automodule:: data.Cove
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+data.Dungeon module
+-------------------
+
+.. automodule:: data.Dungeon
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+data.Fortress module
+--------------------
+
+.. automodule:: data.Fortress
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+data.Inferno module
+-------------------
+
+.. automodule:: data.Inferno
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+data.Necropolis module
+----------------------
+
+.. automodule:: data.Necropolis
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+data.Rampart module
+-------------------
+
+.. automodule:: data.Rampart
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+data.Stronghold module
+----------------------
+
+.. automodule:: data.Stronghold
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+data.Tower module
+-----------------
+
+.. automodule:: data.Tower
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+data.all\_cities module
+-----------------------
+
+.. automodule:: data.all_cities
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+data.building module
+--------------------
+
+.. automodule:: data.building
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+data.casting\_spells module
+---------------------------
+
+.. automodule:: data.casting_spells
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+data.circle module
+------------------
+
+.. automodule:: data.circle
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+data.city module
+----------------
+
+.. automodule:: data.city
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+data.city\_buildings module
+---------------------------
+
+.. automodule:: data.city_buildings
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+data.classes\_const module
+--------------------------
+
+.. automodule:: data.classes_const
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+data.creature module
+--------------------
+
+.. automodule:: data.creature
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+data.creature\_banks module
+---------------------------
+
+.. automodule:: data.creature_banks
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+data.creatures\_on\_map module
+------------------------------
+
+.. automodule:: data.creatures_on_map
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+data.deleting\_files module
+---------------------------
+
+.. automodule:: data.deleting_files
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+data.enemy\_hero\_value module
+------------------------------
+
+.. automodule:: data.enemy_hero_value
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+data.habitats\_cities module
+----------------------------
+
+.. automodule:: data.habitats_cities
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+data.habitats\_on\_map module
+-----------------------------
+
+.. automodule:: data.habitats_on_map
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+data.hero module
+----------------
+
+.. automodule:: data.hero
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+data.hero\_specialities module
+------------------------------
+
+.. automodule:: data.hero_specialities
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+data.magic module
+-----------------
+
+.. automodule:: data.magic
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+data.objects\_on\_map module
+----------------------------
+
+.. automodule:: data.objects_on_map
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+data.player\_data module
+------------------------
+
+.. automodule:: data.player_data
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+data.resources module
+---------------------
+
+.. automodule:: data.resources
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+data.resources\_dec\_tree module
+--------------------------------
+
+.. automodule:: data.resources_dec_tree
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+data.spell\_database module
+---------------------------
+
+.. automodule:: data.spell_database
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: data
+   :members:
+   :undoc-members:
+   :show-inheritance:

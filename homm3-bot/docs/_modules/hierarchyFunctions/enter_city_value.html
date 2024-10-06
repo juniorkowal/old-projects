@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>hierarchyFunctions.enter_city_value &mdash; HoMM3 Bot 2.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> HoMM3 Bot
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">homm3-bot</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">HoMM3 Bot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">hierarchyFunctions.enter_city_value</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for hierarchyFunctions.enter_city_value</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Module containing an algorithm that states the value of entering the city&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">hierarchyFunctions.power_evaluation</span> <span class="kn">import</span> <span class="n">power_evaluation</span>
+<span class="kn">from</span> <span class="nn">data.city</span> <span class="kn">import</span> <span class="n">City</span>
+
+<div class="viewcode-block" id="full_unit_cost"><a class="viewcode-back" href="../../hierarchyFunctions.html#hierarchyFunctions.enter_city_value.full_unit_cost">[docs]</a><span class="k">def</span> <span class="nf">full_unit_cost</span><span class="p">(</span><span class="n">town</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Gives value to the city if there are units to buy</span>
+
+<span class="sd">    :param town: Town object</span>
+<span class="sd">    :return cost: Cost of buying all units</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cost</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">town</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">1</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">cost</span> <span class="o">+=</span> <span class="n">town</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">1</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">unit_cost</span><span class="o">.</span><span class="n">gold</span> <span class="o">*</span> <span class="n">town</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">1</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">unit_ready</span>
+    <span class="k">if</span> <span class="n">town</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">1</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">cost</span> <span class="o">+=</span> <span class="n">town</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">1</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">unit_cost_up</span><span class="o">.</span><span class="n">gold</span> <span class="o">*</span> <span class="n">town</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">1</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">unit_ready</span>
+
+    <span class="k">if</span> <span class="n">town</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">2</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">cost</span> <span class="o">+=</span> <span class="n">town</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">2</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">unit_cost</span><span class="o">.</span><span class="n">gold</span> <span class="o">*</span> <span class="n">town</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">2</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">unit_ready</span>
+    <span class="k">if</span> <span class="n">town</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">2</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">cost</span> <span class="o">+=</span> <span class="n">town</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">2</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">unit_cost_up</span><span class="o">.</span><span class="n">gold</span> <span class="o">*</span> <span class="n">town</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">2</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">unit_ready</span>
+
+    <span class="k">if</span> <span class="n">town</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">3</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">cost</span> <span class="o">+=</span> <span class="n">town</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">3</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">unit_cost</span><span class="o">.</span><span class="n">gold</span> <span class="o">*</span> <span class="n">town</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">3</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">unit_ready</span>
+    <span class="k">if</span> <span class="n">town</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">3</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">cost</span> <span class="o">+=</span> <span class="n">town</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">3</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">unit_cost_up</span><span class="o">.</span><span class="n">gold</span> <span class="o">*</span> <span class="n">town</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">3</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">unit_ready</span>
+
+    <span class="k">if</span> <span class="n">town</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">4</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">cost</span> <span class="o">+=</span> <span class="n">town</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">4</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">unit_cost</span><span class="o">.</span><span class="n">gold</span> <span class="o">*</span> <span class="n">town</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">4</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">unit_ready</span>
+    <span class="k">if</span> <span class="n">town</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">4</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">cost</span> <span class="o">+=</span> <span class="n">town</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">4</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">unit_cost_up</span><span class="o">.</span><span class="n">gold</span> <span class="o">*</span> <span class="n">town</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">4</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">unit_ready</span>
+
+    <span class="k">if</span> <span class="n">town</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">5</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">cost</span> <span class="o">+=</span> <span class="n">town</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">5</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">unit_cost</span><span class="o">.</span><span class="n">gold</span> <span class="o">*</span> <span class="n">town</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">5</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">unit_ready</span>
+    <span class="k">if</span> <span class="n">town</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">5</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">cost</span> <span class="o">+=</span> <span class="n">town</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">5</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">unit_cost_up</span><span class="o">.</span><span class="n">gold</span> <span class="o">*</span> <span class="n">town</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">5</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">unit_ready</span>
+
+    <span class="k">if</span> <span class="n">town</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">6</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">cost</span> <span class="o">+=</span> <span class="n">town</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">6</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">unit_cost</span><span class="o">.</span><span class="n">gold</span> <span class="o">*</span> <span class="n">town</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">6</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">unit_ready</span>
+    <span class="k">if</span> <span class="n">town</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">6</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">cost</span> <span class="o">+=</span> <span class="n">town</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">6</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">unit_cost_up</span><span class="o">.</span><span class="n">gold</span> <span class="o">*</span> <span class="n">town</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">6</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">unit_ready</span>
+
+    <span class="k">if</span> <span class="n">town</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">7</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">cost</span> <span class="o">+=</span> <span class="n">town</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">7</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">unit_cost</span><span class="o">.</span><span class="n">gold</span> <span class="o">*</span> <span class="n">town</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">7</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">unit_ready</span>
+    <span class="k">if</span> <span class="n">town</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">7</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lvl</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">cost</span> <span class="o">+=</span> <span class="n">town</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">7</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">unit_cost_up</span><span class="o">.</span><span class="n">gold</span> <span class="o">*</span> <span class="n">town</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">7</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">unit_ready</span>
+    <span class="k">return</span> <span class="n">cost</span></div>
+
+<span class="c1"># TODO value jesli chcemy uzywac speli</span>
+
+<span class="c1">#</span>
+<span class="c1"># def new_magic(town):</span>
+<span class="c1">#     &quot;&quot;&quot;</span>
+<span class="c1">#</span>
+<span class="c1">#     :param town:</span>
+<span class="c1">#     :return True or False:</span>
+<span class="c1">#     &quot;&quot;&quot;</span>
+<span class="c1">#     if town.last_built.name == &quot;Mage_Guild&quot;:</span>
+<span class="c1">#         return True</span>
+<span class="c1">#     else:</span>
+<span class="c1">#         return False</span>
+
+
+<div class="viewcode-block" id="units_up"><a class="viewcode-back" href="../../hierarchyFunctions.html#hierarchyFunctions.enter_city_value.units_up">[docs]</a><span class="k">def</span> <span class="nf">units_up</span><span class="p">(</span><span class="n">day</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Checks if there is a new week</span>
+
+<span class="sd">    :param day: Parameter stating the day.</span>
+<span class="sd">    :return: Boolean. True -&gt; are up. False -&gt; Not up.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">day</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="enter_city_evaluation"><a class="viewcode-back" href="../../hierarchyFunctions.html#hierarchyFunctions.enter_city_value.enter_city_evaluation">[docs]</a><span class="k">def</span> <span class="nf">enter_city_evaluation</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">player</span><span class="p">,</span> <span class="n">hero</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Adds value to the city</span>
+
+<span class="sd">    :param arg: City to evaluate</span>
+<span class="sd">    :param player: Player instance</span>
+<span class="sd">    :param hero: Current hero</span>
+<span class="sd">    :return: Value</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">number</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">0</span>
+
+    <span class="k">if</span> <span class="n">hero</span><span class="o">.</span><span class="n">herotype</span> <span class="o">==</span> <span class="s1">&#39;main&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span>
+
+    <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">arg</span><span class="p">),</span> <span class="n">City</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">arg</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">player</span><span class="o">.</span><span class="n">cities</span><span class="p">:</span>  <span class="c1"># Add any value to a city that isn&#39;t ours</span>
+            <span class="k">return</span> <span class="mi">1000</span>
+
+
+
+    <span class="c1"># wejscie do naszego miasta</span>
+    <span class="k">if</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">player</span><span class="o">.</span><span class="n">cities</span> <span class="ow">and</span> <span class="n">hero</span><span class="o">.</span><span class="n">herotype</span> <span class="o">!=</span> <span class="s1">&#39;main&#39;</span><span class="p">:</span>
+        <span class="n">number</span> <span class="o">=</span> <span class="p">(</span><span class="n">arg</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">1</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">unit_type</span><span class="o">.</span><span class="n">value</span> <span class="o">*</span> <span class="n">arg</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">1</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">unit_ready</span> <span class="o">+</span>
+                  <span class="n">arg</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">2</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">unit_type</span><span class="o">.</span><span class="n">value</span> <span class="o">*</span> <span class="n">arg</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">2</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">unit_ready</span> <span class="o">+</span>
+                  <span class="n">arg</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">3</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">unit_type</span><span class="o">.</span><span class="n">value</span> <span class="o">*</span> <span class="n">arg</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">3</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">unit_ready</span> <span class="o">+</span>
+                  <span class="n">arg</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">4</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">unit_type</span><span class="o">.</span><span class="n">value</span> <span class="o">*</span> <span class="n">arg</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">4</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">unit_ready</span> <span class="o">+</span>
+                  <span class="n">arg</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">5</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">unit_type</span><span class="o">.</span><span class="n">value</span> <span class="o">*</span> <span class="n">arg</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">5</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">unit_ready</span> <span class="o">+</span>
+                  <span class="n">arg</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">6</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">unit_type</span><span class="o">.</span><span class="n">value</span> <span class="o">*</span> <span class="n">arg</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">6</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">unit_ready</span> <span class="o">+</span>
+                  <span class="n">arg</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">7</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">unit_type</span><span class="o">.</span><span class="n">value</span> <span class="o">*</span> <span class="n">arg</span><span class="o">.</span><span class="n">creature_dwellings</span><span class="p">[</span><span class="mi">7</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">unit_ready</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">player</span><span class="o">.</span><span class="n">gold</span><span class="o">/</span><span class="n">full_unit_cost</span><span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">cities</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">number</span> <span class="o">=</span> <span class="n">number</span> <span class="o">*</span> <span class="mi">1</span>
+            <span class="k">elif</span> <span class="n">player</span><span class="o">.</span><span class="n">gold</span><span class="o">/</span><span class="n">full_unit_cost</span><span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">cities</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&gt;=</span> <span class="mf">0.9</span><span class="p">:</span>
+                <span class="n">number</span> <span class="o">=</span> <span class="n">number</span> <span class="o">*</span> <span class="mf">0.9</span>
+            <span class="k">elif</span> <span class="n">player</span><span class="o">.</span><span class="n">gold</span><span class="o">/</span><span class="n">full_unit_cost</span><span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">cities</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&gt;=</span> <span class="mf">0.8</span><span class="p">:</span>
+                <span class="n">number</span> <span class="o">=</span> <span class="n">number</span> <span class="o">*</span> <span class="mf">0.8</span>
+            <span class="k">elif</span> <span class="n">player</span><span class="o">.</span><span class="n">gold</span><span class="o">/</span><span class="n">full_unit_cost</span><span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">cities</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&gt;=</span> <span class="mf">0.7</span><span class="p">:</span>
+                <span class="n">number</span> <span class="o">=</span> <span class="n">number</span> <span class="o">*</span> <span class="mf">0.7</span>
+            <span class="k">elif</span> <span class="n">player</span><span class="o">.</span><span class="n">gold</span><span class="o">/</span><span class="n">full_unit_cost</span><span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">cities</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&gt;=</span> <span class="mf">0.6</span><span class="p">:</span>
+                <span class="n">number</span> <span class="o">=</span> <span class="n">number</span> <span class="o">*</span> <span class="mf">0.6</span>
+            <span class="k">elif</span> <span class="n">player</span><span class="o">.</span><span class="n">gold</span><span class="o">/</span><span class="n">full_unit_cost</span><span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">cities</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&gt;=</span> <span class="mf">0.5</span><span class="p">:</span>
+                <span class="n">number</span> <span class="o">=</span> <span class="n">number</span> <span class="o">*</span> <span class="mf">0.5</span>
+            <span class="k">elif</span> <span class="n">player</span><span class="o">.</span><span class="n">gold</span><span class="o">/</span><span class="n">full_unit_cost</span><span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">cities</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&gt;=</span> <span class="mf">0.4</span><span class="p">:</span>
+                <span class="n">number</span> <span class="o">=</span> <span class="n">number</span> <span class="o">*</span> <span class="mf">0.4</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">number</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">except</span> <span class="ne">ZeroDivisionError</span><span class="p">:</span>
+            <span class="n">number</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">number</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># if new_magic(player.cities[0]):</span>
+        <span class="c1">#     number = number + 400</span>
+        <span class="c1"># else:</span>
+        <span class="c1">#     pass</span>
+
+        <span class="c1">#wejscie do Neutral / Enemy</span>
+        <span class="c1"># else:</span>
+        <span class="c1">#     #TODO dodac miastu Slots</span>
+        <span class="c1">#     zmienna = power_evaluation(player.heroes, arg.slots)</span>
+        <span class="c1">#</span>
+        <span class="c1">#     if zmienna == 1:</span>
+        <span class="c1">#         number = number + 400</span>
+        <span class="c1">#     else:</span>
+        <span class="c1">#         number = number - 5000000</span>
+    <span class="n">number</span> <span class="o">=</span> <span class="n">number</span> <span class="o">*</span> <span class="mi">3</span>
+
+    <span class="k">if</span> <span class="n">player</span><span class="o">.</span><span class="n">gold</span> <span class="o">&gt;</span> <span class="mi">15000</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">number</span> <span class="o">*</span> <span class="mi">2</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">number</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Fryderyk Róg, Kacper Plesiak, Michał Gruba, Tymoteusz Skrzyński, Mateusz Comblik, Bartosz Szczepanek, Alan Konopko, Mateusz Mikszewicz, Daniel Bil, Piotr Łyczko.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

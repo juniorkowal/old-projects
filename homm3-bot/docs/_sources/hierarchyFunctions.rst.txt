@@ -1,0 +1,93 @@
+hierarchyFunctions package
+==========================
+
+Submodules
+----------
+
+hierarchyFunctions.artifact\_value module
+-----------------------------------------
+
+.. automodule:: hierarchyFunctions.artifact_value
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+hierarchyFunctions.creature\_banks\_value module
+------------------------------------------------
+
+.. automodule:: hierarchyFunctions.creature_banks_value
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+hierarchyFunctions.enter\_city\_value module
+--------------------------------------------
+
+.. automodule:: hierarchyFunctions.enter_city_value
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+hierarchyFunctions.explorationBoost module
+------------------------------------------
+
+.. automodule:: hierarchyFunctions.explorationBoost
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+hierarchyFunctions.group\_value module
+--------------------------------------
+
+.. automodule:: hierarchyFunctions.group_value
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+hierarchyFunctions.habitats\_value\_evaluation module
+-----------------------------------------------------
+
+.. automodule:: hierarchyFunctions.habitats_value_evaluation
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+hierarchyFunctions.mines\_and\_resources\_value module
+------------------------------------------------------
+
+.. automodule:: hierarchyFunctions.mines_and_resources_value
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+hierarchyFunctions.miscFunc module
+----------------------------------
+
+.. automodule:: hierarchyFunctions.miscFunc
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+hierarchyFunctions.neutral\_enemies\_value module
+-------------------------------------------------
+
+.. automodule:: hierarchyFunctions.neutral_enemies_value
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+hierarchyFunctions.power\_evaluation module
+-------------------------------------------
+
+.. automodule:: hierarchyFunctions.power_evaluation
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: hierarchyFunctions
+   :members:
+   :undoc-members:
+   :show-inheritance:

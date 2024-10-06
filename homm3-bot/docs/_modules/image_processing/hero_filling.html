@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>image_processing.hero_filling &mdash; HoMM3 Bot 2.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> HoMM3 Bot
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">homm3-bot</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">HoMM3 Bot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">image_processing.hero_filling</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for image_processing.hero_filling</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">from</span> <span class="nn">data.hero</span> <span class="kn">import</span> <span class="n">Hero</span><span class="p">,</span> <span class="n">SecondarySkill</span><span class="p">,</span> <span class="n">Slot</span><span class="p">,</span> <span class="n">hero_dict</span>
+<span class="kn">from</span> <span class="nn">battleAI.BattleAI</span> <span class="kn">import</span> <span class="n">initialize_QNN</span>
+<span class="kn">from</span> <span class="nn">mss</span> <span class="kn">import</span> <span class="n">mss</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">cv2</span>
+<span class="kn">import</span> <span class="nn">image_processing.ocr</span> <span class="k">as</span> <span class="nn">ocr</span>
+<span class="kn">from</span> <span class="nn">image_processing.dictionaries</span> <span class="kn">import</span> <span class="n">battle_dict</span>
+<span class="kn">from</span> <span class="nn">image_processing.ok_detection</span> <span class="kn">import</span> <span class="n">check_ok</span>
+<span class="kn">from</span> <span class="nn">difflib</span> <span class="kn">import</span> <span class="n">get_close_matches</span>
+<span class="kn">from</span> <span class="nn">GUI_handling.AdventureGUI</span> <span class="kn">import</span> <span class="n">level_up_choose_skill</span>
+
+
+<div class="viewcode-block" id="Finder"><a class="viewcode-back" href="../../image_processing.html#image_processing.hero_filling.Finder">[docs]</a><span class="k">class</span> <span class="nc">Finder</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">qnn</span> <span class="o">=</span> <span class="n">initialize_QNN</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_skill_value_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Air_Magic&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;Archery&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;Armorer&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;Artillery&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;Ballistics&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                                  <span class="s2">&quot;Diplomacy&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;Eagle_Eye&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Earth_Magic&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;Estates&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;Fire_Magic&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+                                  <span class="s2">&quot;First_Aid&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Intelligence&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;Leadership&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;Learning&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Logistics&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+                                  <span class="s2">&quot;Luck&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;Mysticism&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;Navigation&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;Necromancy&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;Offense&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+                                  <span class="s2">&quot;Pathfinding&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;Resistance&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;Scholar&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;Scouting&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;Sorcery&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+                                  <span class="s2">&quot;Tactics&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;Water_Magic&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;Wisdom&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;Interference&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_to_replace</span> <span class="o">=</span> <span class="s2">&quot;&#39;,.`;:</span><span class="se">\&quot;</span><span class="s2">-_‘&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_might_class_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Knight&#39;</span><span class="p">,</span> <span class="s1">&#39;Ranger&#39;</span><span class="p">,</span> <span class="s1">&#39;Alchemist&#39;</span><span class="p">,</span> <span class="s1">&#39;Demoniac&#39;</span><span class="p">,</span> <span class="s1">&#39;Death_Knight&#39;</span><span class="p">,</span> <span class="s1">&#39;Overlord&#39;</span><span class="p">,</span>
+                                   <span class="s1">&#39;Barbarian&#39;</span><span class="p">,</span> <span class="s1">&#39;Beastmaster&#39;</span><span class="p">,</span> <span class="s1">&#39;Planeswalker&#39;</span><span class="p">,</span> <span class="s1">&#39;Captain&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_magic_class_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Cleric&#39;</span><span class="p">,</span> <span class="s1">&#39;Druid&#39;</span><span class="p">,</span> <span class="s1">&#39;Wizard&#39;</span><span class="p">,</span> <span class="s1">&#39;Heretic&#39;</span><span class="p">,</span> <span class="s1">&#39;Necromancer&#39;</span><span class="p">,</span> <span class="s1">&#39;Warlock&#39;</span><span class="p">,</span>
+                                   <span class="s1">&#39;Battle_Mage&#39;</span><span class="p">,</span> <span class="s1">&#39;Witch&#39;</span><span class="p">,</span> <span class="s1">&#39;Elementalist&#39;</span><span class="p">,</span> <span class="s1">&#39;Navigator&#39;</span><span class="p">]</span>
+
+
+
+<div class="viewcode-block" id="Finder.find_all"><a class="viewcode-back" href="../../image_processing.html#image_processing.hero_filling.Finder.find_all">[docs]</a>    <span class="k">def</span> <span class="nf">find_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">h</span><span class="p">:</span> <span class="n">Hero</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Combines all the functions inside the Finder class, so it&#39;s not necessary to use them independently if</span>
+<span class="sd">        every function needs to be used</span>
+
+<span class="sd">        :param h: Given hero</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">find_units</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">find_skills</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">find_main_attr</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">find_attributes</span><span class="p">(</span><span class="n">h</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Finder.find_units_portraits"><a class="viewcode-back" href="../../image_processing.html#image_processing.hero_filling.Finder.find_units_portraits">[docs]</a>    <span class="k">def</span> <span class="nf">find_units_portraits</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># model has to be already initialized</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Finds which units our army consists of without finding their numbers. Before checking you have to enter</span>
+<span class="sd">        the hero inventory</span>
+
+<span class="sd">        :return: Either returns an instance of a found unit or None if no unit was found</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">screens</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">with</span> <span class="n">mss</span><span class="p">()</span> <span class="k">as</span> <span class="n">sct</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">7</span><span class="p">):</span>
+                <span class="n">monitor</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;top&#39;</span><span class="p">:</span> <span class="mi">732</span><span class="p">,</span> <span class="s1">&#39;left&#39;</span><span class="p">:</span> <span class="mi">639</span> <span class="o">+</span> <span class="n">i</span><span class="o">*</span><span class="mi">66</span><span class="p">,</span> <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mi">57</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mi">63</span><span class="p">}</span>
+                <span class="n">screen</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sct</span><span class="o">.</span><span class="n">grab</span><span class="p">(</span><span class="n">monitor</span><span class="p">))</span>
+                <span class="n">screen</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_RGBA2GRAY</span><span class="p">)</span>
+                <span class="n">screen</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="p">(</span><span class="mi">36</span><span class="p">,</span> <span class="mi">38</span><span class="p">))</span>
+                <span class="n">screens</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">screen</span><span class="p">)</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">screens</span><span class="p">)</span>
+        <span class="n">units</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">qnn</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">screens</span><span class="p">),</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span>  <span class="c1">#TODO: inny model pewnie</span>
+        <span class="n">units2</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">7</span><span class="p">):</span>
+            <span class="n">units2</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">units</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">units</span><span class="p">[</span><span class="n">i</span><span class="p">])))[</span><span class="mi">0</span><span class="p">]))</span>
+        <span class="n">units</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">*</span><span class="nb">map</span><span class="p">(</span><span class="n">battle_dict</span><span class="o">.</span><span class="n">get</span><span class="p">,</span> <span class="n">units2</span><span class="p">)])</span>
+        <span class="n">units_proper</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">unit</span> <span class="ow">in</span> <span class="n">units</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">unit</span> <span class="o">!=</span> <span class="s1">&#39;obstacle&#39;</span><span class="p">:</span>
+                <span class="n">units_proper</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">units_proper</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">units_proper</span></div>
+
+<div class="viewcode-block" id="Finder.find_units_amount"><a class="viewcode-back" href="../../image_processing.html#image_processing.hero_filling.Finder.find_units_amount">[docs]</a>    <span class="k">def</span> <span class="nf">find_units_amount</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Finds the exact amount of certain units a hero has. It checks all the spaces from left to right, up to down</span>
+<span class="sd">        and return their value. There&#39;s no need to enter the hero inventory, as long as the units are visible on the</span>
+<span class="sd">        right side of the screen.</span>
+
+<span class="sd">        :return: Number of units in hero slots. Returns 0 if no number was found</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">screens</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">amounts</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">with</span> <span class="n">mss</span><span class="p">()</span> <span class="k">as</span> <span class="n">sct</span><span class="p">:</span>
+            <span class="n">coords</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+                <span class="n">coords</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="mi">571</span><span class="p">,</span> <span class="mi">1769</span> <span class="o">+</span> <span class="n">i</span><span class="o">*</span><span class="mi">36</span><span class="p">,</span> <span class="mi">34</span><span class="p">,</span> <span class="mi">11</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+                <span class="n">coords</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="mi">619</span><span class="p">,</span> <span class="mi">1751</span> <span class="o">+</span> <span class="n">i</span><span class="o">*</span><span class="mi">36</span><span class="p">,</span> <span class="mi">34</span><span class="p">,</span> <span class="mi">11</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">7</span><span class="p">):</span>
+                <span class="n">monitor</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;top&#39;</span><span class="p">:</span> <span class="n">coords</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;left&#39;</span><span class="p">:</span> <span class="n">coords</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="n">coords</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">2</span><span class="p">],</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="n">coords</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">3</span><span class="p">]}</span>
+                <span class="n">screen</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sct</span><span class="o">.</span><span class="n">grab</span><span class="p">(</span><span class="n">monitor</span><span class="p">))</span>
+                <span class="n">screens</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">screen</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">screen</span> <span class="ow">in</span> <span class="n">screens</span><span class="p">:</span>
+            <span class="n">screen</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGRA2BGR</span><span class="p">)</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">ocr</span><span class="o">.</span><span class="n">read_text_faster</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">)</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">text</span><span class="p">:</span>
+                <span class="n">amounts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">amounts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">text</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">amounts</span></div>
+
+<div class="viewcode-block" id="Finder.find_units"><a class="viewcode-back" href="../../image_processing.html#image_processing.hero_filling.Finder.find_units">[docs]</a>    <span class="k">def</span> <span class="nf">find_units</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">h</span><span class="p">:</span><span class="n">Hero</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Combine find_units_portraits and find_units_amount and fill in the hero</span>
+
+<span class="sd">        :param h: Our hero</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">units</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_units_portraits</span><span class="p">()</span>
+        <span class="n">amounts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_units_amount</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">7</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">units</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                <span class="n">h</span><span class="o">.</span><span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Slot</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">h</span><span class="o">.</span><span class="n">slots</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Slot</span><span class="p">(</span><span class="n">units</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">amounts</span><span class="p">[</span><span class="n">i</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="Finder.find_attributes"><a class="viewcode-back" href="../../image_processing.html#image_processing.hero_filling.Finder.find_attributes">[docs]</a>    <span class="k">def</span> <span class="nf">find_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">h</span><span class="p">:</span> <span class="n">Hero</span><span class="p">):</span>  <span class="c1"># Sometimes finds inaccurate numbers because of them being small</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Find attack, defense, knowledge and spell power of a hero. Before checking you have to enter</span>
+<span class="sd">        the hero inventory.</span>
+
+<span class="sd">        :param h: Hero to insert the values to</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">mss</span><span class="p">()</span> <span class="k">as</span> <span class="n">sct</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+                <span class="n">monitor</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;top&#39;</span><span class="p">:</span> <span class="mi">406</span><span class="p">,</span> <span class="s1">&#39;left&#39;</span><span class="p">:</span> <span class="mi">670</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">70</span><span class="p">,</span> <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mi">13</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mi">12</span><span class="p">}</span>
+                <span class="n">screen</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sct</span><span class="o">.</span><span class="n">grab</span><span class="p">(</span><span class="n">monitor</span><span class="p">))</span>
+                <span class="n">screen</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGRA2BGR</span><span class="p">)</span>
+                <span class="n">text</span> <span class="o">=</span> <span class="n">ocr</span><span class="o">.</span><span class="n">read_generic_text</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">h</span><span class="o">.</span><span class="n">attack</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+                    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                        <span class="n">h</span><span class="o">.</span><span class="n">attack</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">h</span><span class="o">.</span><span class="n">defense</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+                    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                        <span class="n">h</span><span class="o">.</span><span class="n">defense</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">h</span><span class="o">.</span><span class="n">spellpower</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+                    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                        <span class="n">h</span><span class="o">.</span><span class="n">spellpower</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">h</span><span class="o">.</span><span class="n">knowledge</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+                    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                        <span class="n">h</span><span class="o">.</span><span class="n">knowledge</span> <span class="o">=</span> <span class="mi">0</span></div>
+
+<div class="viewcode-block" id="Finder.find_skills"><a class="viewcode-back" href="../../image_processing.html#image_processing.hero_filling.Finder.find_skills">[docs]</a>    <span class="k">def</span> <span class="nf">find_skills</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">h</span><span class="p">:</span> <span class="n">Hero</span><span class="p">):</span>  <span class="c1"># TODO: Specialties or main skills are not defined</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Finds the abilities of our hero. You need to be in the hero inventory. Inserts found skills into the appropriate</span>
+<span class="sd">        skill slots, if no skill is found inserts a default SecondarySkill instance. Uses difflib.get_close_matches</span>
+<span class="sd">        to make sure the found skill is always correct even if tesseract finds teh text slightly wrong</span>
+
+<span class="sd">        :param h: Hero to insert the values to</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">test</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">with</span> <span class="n">mss</span><span class="p">()</span> <span class="k">as</span> <span class="n">sct</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">):</span>
+                <span class="n">monitor</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;top&#39;</span><span class="p">:</span> <span class="mi">524</span> <span class="o">+</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">i</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="mi">48</span><span class="p">),</span> <span class="s1">&#39;left&#39;</span><span class="p">:</span> <span class="mi">688</span> <span class="o">+</span> <span class="p">(</span><span class="n">i</span> <span class="o">%</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="mi">143</span><span class="p">,</span> <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mi">91</span><span class="p">,</span>
+                           <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mi">42</span><span class="p">}</span>
+                <span class="n">screen</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sct</span><span class="o">.</span><span class="n">grab</span><span class="p">(</span><span class="n">monitor</span><span class="p">))</span>
+                <span class="n">test</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">screen</span><span class="p">)</span>
+                <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hero_ocr</span><span class="p">(</span><span class="n">screen</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">text</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">level</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">level</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">level</span> <span class="o">==</span> <span class="s1">&#39;Basic&#39;</span><span class="p">:</span>
+                    <span class="n">level</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="k">elif</span> <span class="n">level</span> <span class="o">==</span> <span class="s1">&#39;Advanced&#39;</span><span class="p">:</span>
+                    <span class="n">level</span> <span class="o">=</span> <span class="mi">2</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">level</span> <span class="o">=</span> <span class="mi">3</span>
+                <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;_fra-&quot;</span><span class="p">:</span>
+                    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;necromancy&quot;</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">get_close_matches</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_skill_value_dict</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">h</span><span class="o">.</span><span class="n">skills</span><span class="o">.</span><span class="n">secondary_skills</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">SecondarySkill</span><span class="p">(</span><span class="n">level</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_skill_value_dict</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+                    <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="Finder.find_main_attr"><a class="viewcode-back" href="../../image_processing.html#image_processing.hero_filling.Finder.find_main_attr">[docs]</a>    <span class="k">def</span> <span class="nf">find_main_attr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">h</span><span class="p">:</span> <span class="n">Hero</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Finds the name, hero_type and level of the chosen hero. You have to be inside the hero inventory.</span>
+
+<span class="sd">        :param h: Hero to fill the values to</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">mss</span><span class="p">()</span> <span class="k">as</span> <span class="n">sct</span><span class="p">:</span>
+            <span class="n">monitor</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;top&#39;</span><span class="p">:</span> <span class="mi">272</span><span class="p">,</span> <span class="s1">&#39;left&#39;</span><span class="p">:</span> <span class="mi">713</span><span class="p">,</span> <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mi">202</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mi">24</span><span class="p">}</span>
+            <span class="n">screen</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sct</span><span class="o">.</span><span class="n">grab</span><span class="p">(</span><span class="n">monitor</span><span class="p">))</span>
+            <span class="n">screen</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGRA2BGR</span><span class="p">)</span>
+
+            <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hero_ocr_name</span><span class="p">(</span><span class="n">screen</span><span class="p">)</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">get_close_matches</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">hero_dict</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">h</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">text</span>
+            <span class="n">hero_attr</span> <span class="o">=</span> <span class="n">hero_dict</span><span class="p">[</span><span class="n">h</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+            <span class="n">h</span><span class="o">.</span><span class="n">speciality</span> <span class="o">=</span> <span class="n">hero_attr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">h</span><span class="o">.</span><span class="n">mspoints</span> <span class="o">=</span> <span class="n">hero_attr</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
+            <span class="n">monitor</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;top&#39;</span><span class="p">:</span> <span class="mi">300</span><span class="p">,</span> <span class="s1">&#39;left&#39;</span><span class="p">:</span> <span class="mi">713</span><span class="p">,</span> <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mi">202</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mi">24</span><span class="p">}</span>
+            <span class="n">screen</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sct</span><span class="o">.</span><span class="n">grab</span><span class="p">(</span><span class="n">monitor</span><span class="p">))</span>
+            <span class="n">screen</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGRA2BGR</span><span class="p">)</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hero_ocr</span><span class="p">(</span><span class="n">screen</span><span class="p">)</span>
+            <span class="n">split_text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+            <span class="n">h</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">split_text</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">split_text</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+                <span class="n">split_text</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">split_text</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">split_text</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+                <span class="n">split_text</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">split_text</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_might_class_names</span><span class="p">:</span>
+                <span class="n">h</span><span class="o">.</span><span class="n">heroclass</span> <span class="o">=</span> <span class="s1">&#39;might&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">h</span><span class="o">.</span><span class="n">heroclass</span> <span class="o">=</span> <span class="s1">&#39;magic&#39;</span></div>
+
+    <span class="k">def</span> <span class="nf">_hero_ocr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">screen</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Simple text reading with basic text edition afterwards</span>
+
+<span class="sd">        :param screen: np.array that corresponds to a part of a screenshot</span>
+<span class="sd">        :return: Found text without the leading and tailing whitespaces and with every \n exchanged to a whitespace</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">screen</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGRA2BGR</span><span class="p">)</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">ocr</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">screen</span><span class="p">)</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">)</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">char</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_replace</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">char</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">text</span>
+
+    <span class="k">def</span> <span class="nf">_hero_ocr_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">screen</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Function that helps read the name of the hero</span>
+
+<span class="sd">        :param screen:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="mi">3</span>
+        <span class="n">screen</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGRA2BGR</span><span class="p">)</span>
+        <span class="n">width</span> <span class="o">=</span> <span class="n">screen</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="n">screen</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">screen</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="p">(</span><span class="n">width</span> <span class="o">*</span> <span class="n">scale</span><span class="p">,</span> <span class="n">height</span> <span class="o">*</span> <span class="n">scale</span><span class="p">))</span>
+        <span class="n">b</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">screen</span><span class="p">)</span>
+        <span class="n">search</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">b</span> <span class="o">&gt;</span> <span class="mi">85</span><span class="p">)</span> <span class="o">&amp;</span>
+                          <span class="p">(</span><span class="n">g</span> <span class="o">&gt;</span> <span class="mi">160</span><span class="p">)</span> <span class="o">&amp;</span>
+                          <span class="p">(</span><span class="n">r</span> <span class="o">&gt;</span> <span class="mi">170</span><span class="p">))</span>
+
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="n">height</span> <span class="o">*</span> <span class="n">scale</span><span class="p">,</span> <span class="n">width</span> <span class="o">*</span> <span class="n">scale</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+        <span class="n">mask</span><span class="p">[</span><span class="n">search</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">]</span>
+        <span class="n">screen</span> <span class="o">=</span> <span class="mi">255</span> <span class="o">-</span> <span class="n">mask</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">ocr</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">)</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">char</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_replace</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">char</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">text</span></div>
+
+
+<span class="c1"># def skills_window(h):</span>
+<span class="c1">#</span>
+<span class="c1">#     skill_value_dict={&quot;Air_Magic&quot;: 5, &quot;Archery&quot;: 4, &quot;Armorer&quot;: 5, &quot;Artillery&quot;: 1, &quot;Ballistics&quot;: 1,</span>
+<span class="c1">#                                   &quot;Diplomacy&quot;: 4, &quot;Eagle_Eye&quot;: 0, &quot;Earth_Magic&quot;: 5, &quot;Estates&quot;: 5, &quot;Fire_Magic&quot;: 4,</span>
+<span class="c1">#                                   &quot;First_Aid&quot;: 0, &quot;Intelligence&quot;: 3, &quot;Leadership&quot;: 3, &quot;Learning&quot;: 0, &quot;Logistics&quot;: 5,</span>
+<span class="c1">#                                   &quot;Luck&quot;: 2, &quot;Mysticism&quot;: 2, &quot;Navigation&quot;: 3, &quot;Necromancy&quot;: 5, &quot;Offense&quot;: 5,</span>
+<span class="c1">#                                   &quot;Pathfinding&quot;: 3, &quot;Resistance&quot;: 3, &quot;Scholar&quot;: 3, &quot;Scouting&quot;: 4, &quot;Sorcery&quot;: 2,</span>
+<span class="c1">#                                   &quot;Tactics&quot;: 3, &quot;Water_Magic&quot;: 4, &quot;Wisdom&quot;: 4, &quot;Interference&quot;: 3}</span>
+<span class="c1">#</span>
+<span class="c1">#     if check_ok()!=3:</span>
+<span class="c1">#         print(&#39;to nie jest okienko lvl upa/wybierania skillsow&#39;)</span>
+<span class="c1">#         return</span>
+<span class="c1">#     test = []</span>
+<span class="c1">#     skills=[]</span>
+<span class="c1">#     with mss() as sct:</span>
+<span class="c1">#         for i in range(2):</span>
+<span class="c1">#             monitor = {&#39;top&#39;: 678, &#39;left&#39;: 869+i*94, &#39;width&#39;: 83,</span>
+<span class="c1">#                         &#39;height&#39;: 46}</span>
+<span class="c1">#             screen = np.array(sct.grab(monitor))</span>
+<span class="c1">#             test.append(screen)</span>
+<span class="c1">#</span>
+<span class="c1">#             screen = cv2.cvtColor(screen, cv2.COLOR_BGRA2BGR)</span>
+<span class="c1">#             text = ocr.read_text(screen)</span>
+<span class="c1">#             text = text.replace(&#39;\n&#39;, &#39; &#39;)</span>
+<span class="c1">#             text = text.strip()</span>
+<span class="c1">#             for char in [&quot;&#39;,.`;:\&quot;-_‘&quot;]:</span>
+<span class="c1">#                 text = text.replace(char, &#39;&#39;)</span>
+<span class="c1">#</span>
+<span class="c1">#             if not text:</span>
+<span class="c1">#                 print(&#39;nwm to chyba nie jest okienko do wyboru skillsow ziom&#39;)</span>
+<span class="c1">#                 break</span>
+<span class="c1">#             level = text.split()[0]</span>
+<span class="c1">#             name = text.replace(level + &#39; &#39;, &quot;&quot;)</span>
+<span class="c1">#             name = name.replace(&#39; &#39;, &#39;_&#39;)</span>
+<span class="c1">#</span>
+<span class="c1">#             if level == &#39;Basic&#39;:</span>
+<span class="c1">#                 level = 1</span>
+<span class="c1">#             elif level == &#39;Advanced&#39;:</span>
+<span class="c1">#                 level = 2</span>
+<span class="c1">#             else:</span>
+<span class="c1">#                 level = 3</span>
+<span class="c1">#</span>
+<span class="c1">#             name = get_close_matches(name, skill_value_dict, 1)[0]</span>
+<span class="c1">#</span>
+<span class="c1">#             if name[0] == &#39;S&#39; and name[-1] == &#39;g&#39;:  # The most common problems when finding the correct skill</span>
+<span class="c1">#                 name = &#39;Scouting&#39;</span>
+<span class="c1">#             if name == &quot;Artilery&quot;:</span>
+<span class="c1">#                 name = &quot;Artillery&quot;</span>
+<span class="c1">#             skills.append((name,level))</span>
+<span class="c1">#</span>
+<span class="c1">#     picked_skill=&#39;&#39;</span>
+<span class="c1">#</span>
+<span class="c1">#     if h.herotype.lower()==&#39;main&#39;:</span>
+<span class="c1">#         if skills[0][0] in main_hero_skills and skills[1][0] in main_hero_skills:</span>
+<span class="c1">#             if main_hero_skills.index(skills[0][0])&gt;main_hero_skills.index(skills[1][0]):</span>
+<span class="c1">#                 picked_skill=skills[1][0]</span>
+<span class="c1">#             else:</span>
+<span class="c1">#                 picked_skill=skills[1][0]</span>
+<span class="c1">#         elif skills[0][0] in main_hero_skills and skills[1][0] not in main_hero_skills:</span>
+<span class="c1">#             picked_skill=skills[0][0]</span>
+<span class="c1">#         elif skills[0][0] not in main_hero_skills and skills[1][0] in main_hero_skills:</span>
+<span class="c1">#             picked_skill=skills[1][0]</span>
+<span class="c1">#         else:</span>
+<span class="c1">#             picked_skill=skills[0][0]</span>
+<span class="c1">#     else:</span>
+<span class="c1">#         picked_skill=skills[0][0]</span>
+<span class="c1">#</span>
+<span class="c1">#     skill=[]</span>
+<span class="c1">#     skill.append(skills[0][0])</span>
+<span class="c1">#     skill.append(skills[1][0])</span>
+<span class="c1">#</span>
+<span class="c1">#     #print(skill.index(picked_skill))</span>
+<span class="c1">#     #print(picked_skill)</span>
+<span class="c1">#</span>
+<span class="c1">#     # KLIKNIECIE NA ODPOWIEDNIEGO SKILLA</span>
+<span class="c1">#     level_up_choose_skill(skill.index(picked_skill)+1)</span>
+<span class="c1">#</span>
+<span class="c1">#     #print(skills[skill.index(picked_skill)][1])</span>
+<span class="c1">#     do_we_have_this_skill=False</span>
+<span class="c1">#     # DODAC UPDATE SKILLA W HERO</span>
+<span class="c1">#     for hero_skill in h.skills.secondary_skills:</span>
+<span class="c1">#         # jesli mamy tego skilla w skillach to updatujemy mu lvl</span>
+<span class="c1">#         if hero_skill.name==picked_skill:</span>
+<span class="c1">#             hero_skill.lvl=skills[skill.index(picked_skill)][1]</span>
+<span class="c1">#             do_we_have_this_skill=True</span>
+<span class="c1">#</span>
+<span class="c1">#     if not do_we_have_this_skill:</span>
+<span class="c1">#         for hero_skill in h.skills.secondary_skills:</span>
+<span class="c1">#             if hero_skill.name==&#39;&#39;:</span>
+<span class="c1">#                 hero_skill.name=picked_skill</span>
+<span class="c1">#                 hero_skill.lvl=skills[skill.index(picked_skill)][1]</span>
+<span class="c1">#                 #hero_skill.value=0</span>
+<span class="c1">#                 break</span>
+
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Fryderyk Róg, Kacper Plesiak, Michał Gruba, Tymoteusz Skrzyński, Mateusz Comblik, Bartosz Szczepanek, Alan Konopko, Mateusz Mikszewicz, Daniel Bil, Piotr Łyczko.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

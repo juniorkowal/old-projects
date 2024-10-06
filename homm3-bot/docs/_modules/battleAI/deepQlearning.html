@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>battleAI.deepQlearning &mdash; HoMM3 Bot 2.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> HoMM3 Bot
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">homm3-bot</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">HoMM3 Bot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">battleAI.deepQlearning</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for battleAI.deepQlearning</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">import</span> <span class="nn">battleAI.reward</span> <span class="k">as</span> <span class="nn">rw</span>
+<span class="kn">import</span> <span class="nn">battleAI.reinforcmentLearningTest</span> <span class="k">as</span> <span class="nn">rLT</span>
+<span class="kn">import</span> <span class="nn">data.classes_const</span> <span class="k">as</span> <span class="nn">cc</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">keras</span> <span class="kn">import</span> <span class="n">backend</span> <span class="k">as</span> <span class="n">k_back</span>
+<span class="kn">from</span> <span class="nn">keras</span> <span class="kn">import</span> <span class="n">Sequential</span>
+<span class="kn">from</span> <span class="nn">keras.layers</span> <span class="kn">import</span> <span class="n">Dense</span><span class="p">,</span> <span class="n">Flatten</span><span class="p">,</span> <span class="n">Input</span><span class="p">,</span> <span class="n">Conv2D</span><span class="p">,</span> <span class="n">MaxPooling2D</span><span class="p">,</span> <span class="n">Dropout</span><span class="p">,</span> <span class="n">Softmax</span>
+<span class="kn">from</span> <span class="nn">tensorflow.keras.optimizers</span> <span class="kn">import</span> <span class="n">Adam</span>
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+<span class="kn">from</span> <span class="nn">data.BattleAI_environment_needs</span> <span class="kn">import</span> <span class="n">Obstacle</span><span class="p">,</span> <span class="n">CreatureBox</span>
+<span class="kn">from</span> <span class="nn">image_processing.dictionaries</span> <span class="kn">import</span> <span class="n">battle_dict</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">cv2</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="s2">&quot;../&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="normalize"><a class="viewcode-back" href="../../battleAI.html#battleAI.deepQlearning.normalize">[docs]</a><span class="k">def</span> <span class="nf">normalize</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">x</span> <span class="o">!=</span> <span class="o">-</span><span class="mf">1e3</span><span class="p">]))</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">x</span> <span class="o">!=</span> <span class="o">-</span><span class="mf">1e3</span><span class="p">])</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">x</span> <span class="o">!=</span> <span class="o">-</span><span class="mf">1e3</span><span class="p">]))</span></div>
+
+
+<div class="viewcode-block" id="exclude_moat"><a class="viewcode-back" href="../../battleAI.html#battleAI.deepQlearning.exclude_moat">[docs]</a><span class="k">def</span> <span class="nf">exclude_moat</span><span class="p">(</span><span class="n">probabilities</span><span class="p">,</span> <span class="n">moat</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sets low probabilities to actions including moat</span>
+
+<span class="sd">    :param probabilities numpy array of action probabilities</span>
+<span class="sd">    :param moat list of hexFields containing moat</span>
+<span class="sd">    :return:    probabilities with filtered actions</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">probabilities</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">%</span> <span class="mi">15</span><span class="p">,</span> <span class="n">i</span> <span class="o">//</span> <span class="mi">15</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">moat</span> <span class="k">else</span> <span class="o">-</span><span class="mi">1000</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">probabilities</span><span class="p">))])</span></div>
+
+
+<div class="viewcode-block" id="policy"><a class="viewcode-back" href="../../battleAI.html#battleAI.deepQlearning.policy">[docs]</a><span class="k">def</span> <span class="nf">policy</span><span class="p">(</span><span class="n">gameState</span><span class="p">,</span> <span class="n">deepQAgent</span><span class="p">,</span> <span class="n">possibleMoves</span><span class="p">,</span> <span class="n">moat</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function choosing action of creature</span>
+
+<span class="sd">    :param gameState:   4D array - current state of our environment</span>
+<span class="sd">    :param deepQAgent:  current agent</span>
+<span class="sd">    :param possibleMoves:   2D array specifying on which tiles unit can or can&#39;t move</span>
+<span class="sd">    :return:    chosen tile coordinates, chosen action index, indexes of possible actions,actions probabilities</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">statesNum</span> <span class="o">=</span> <span class="n">deepQAgent</span><span class="o">.</span><span class="n">actionsNum</span>
+    <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">deepQAgent</span><span class="o">.</span><span class="n">training</span><span class="p">:</span>
+        <span class="n">epsilon</span> <span class="o">=</span> <span class="n">deepQAgent</span><span class="o">.</span><span class="n">epsilon</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">epsilon</span> <span class="o">=</span> <span class="mi">0</span>                    <span class="c1"># epsilon set to 0 when not training</span>
+    <span class="c1"># flatten possible moves</span>
+
+    <span class="n">not_possible</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">possibleMoves</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="c1"># with probability = epsilon choose random action</span>
+    <span class="k">if</span> <span class="n">rng</span> <span class="o">&lt;</span> <span class="n">epsilon</span><span class="p">:</span>
+        <span class="n">actValues</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">statesNum</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">moat</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">actValues</span> <span class="o">=</span> <span class="n">exclude_moat</span><span class="p">(</span><span class="n">actValues</span><span class="p">,</span> <span class="n">moat</span><span class="p">)</span>
+        <span class="n">actValues</span><span class="p">[</span><span class="n">not_possible</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1e3</span>
+
+    <span class="c1"># with probability = 1 - epsilon choose action based on agents model</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">gameState</span> <span class="o">=</span> <span class="n">gameState</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,)</span> <span class="o">+</span> <span class="n">gameState</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="n">actValues</span> <span class="o">=</span> <span class="n">deepQAgent</span><span class="o">.</span><span class="n">mod</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">gameState</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">moat</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">actValues</span> <span class="o">=</span> <span class="n">exclude_moat</span><span class="p">(</span><span class="n">actValues</span><span class="p">,</span> <span class="n">moat</span><span class="p">)</span>
+        <span class="n">actValues</span><span class="p">[</span><span class="n">not_possible</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1e3</span>
+
+    <span class="c1"># convert action to coordinates of a hex tile</span>
+    <span class="n">actIDX</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">actValues</span><span class="p">)</span>
+    <span class="n">actValues</span> <span class="o">=</span> <span class="n">actValues</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">11</span><span class="p">)</span>
+    <span class="n">moveAction</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unravel_index</span><span class="p">(</span><span class="n">actIDX</span><span class="p">,</span> <span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">11</span><span class="p">),</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ACTION &quot;</span><span class="p">,</span> <span class="n">moveAction</span><span class="p">,</span> <span class="s2">&quot;RANDOM: &quot;</span><span class="p">,</span> <span class="n">rng</span> <span class="o">&lt;</span> <span class="n">epsilon</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">moveAction</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">actIDX</span><span class="p">),</span> <span class="n">not_possible</span><span class="p">,</span> <span class="n">actValues</span><span class="p">,</span> <span class="n">rng</span> <span class="o">&lt;</span> <span class="n">epsilon</span></div>
+
+
+<div class="viewcode-block" id="createTeams"><a class="viewcode-back" href="../../battleAI.html#battleAI.deepQlearning.createTeams">[docs]</a><span class="k">def</span> <span class="nf">createTeams</span><span class="p">(</span><span class="n">creaturesList</span><span class="p">,</span> <span class="n">random_team</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates random teams</span>
+
+<span class="sd">    :param creaturesList: list of instances of class Creature</span>
+<span class="sd">    :return: list of instances of class CreatureBox</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">random_team</span><span class="p">:</span>
+        <span class="n">creatures</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># randomly choose number of stacks for each player</span>
+        <span class="n">playerN</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">9</span><span class="p">)</span>
+        <span class="n">opponentN</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">9</span><span class="p">)</span>
+        <span class="c1"># randomly choose initial positions of stacks</span>
+        <span class="n">posOpponent</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">11</span><span class="p">),</span> <span class="n">opponentN</span><span class="p">)</span>
+        <span class="n">posPlayer</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">11</span><span class="p">),</span> <span class="n">playerN</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">playerN</span><span class="p">):</span>
+            <span class="c1"># randomly choose creature type</span>
+            <span class="n">typeIdx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">creaturesList</span><span class="p">))</span>
+            <span class="n">unitType</span> <span class="o">=</span> <span class="n">creaturesList</span><span class="p">[</span><span class="n">typeIdx</span><span class="p">]</span>
+            <span class="c1"># randomly choose quantity of creatures in a stack</span>
+            <span class="n">quantity</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+            <span class="n">creatures</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rLT</span><span class="o">.</span><span class="n">CreatureBox</span><span class="p">(</span><span class="n">unitType</span><span class="p">,</span> <span class="p">(</span><span class="n">unitType</span><span class="o">.</span><span class="n">size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">posPlayer</span><span class="p">[</span><span class="n">idx</span><span class="p">]),</span> <span class="n">quantity</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">opponentN</span><span class="p">):</span>
+            <span class="c1"># randomly choose creature type</span>
+            <span class="n">typeIdx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">creaturesList</span><span class="p">))</span>
+            <span class="n">unitType</span> <span class="o">=</span> <span class="n">creaturesList</span><span class="p">[</span><span class="n">typeIdx</span><span class="p">]</span>
+            <span class="c1"># randomly choose quantity of creatures in a stack</span>
+            <span class="n">quantity</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+            <span class="n">creatures</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rLT</span><span class="o">.</span><span class="n">CreatureBox</span><span class="p">(</span><span class="n">unitType</span><span class="p">,</span> <span class="p">(</span><span class="mi">15</span> <span class="o">-</span> <span class="n">unitType</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">posOpponent</span><span class="p">[</span><span class="n">idx</span><span class="p">]),</span> <span class="n">quantity</span><span class="p">,</span> <span class="n">allied</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">creatures</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">creatures</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rLT</span><span class="o">.</span><span class="n">CreatureBox</span><span class="p">(</span><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">battle_dict</span><span class="p">[</span><span class="mi">5</span><span class="p">]),</span> <span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="mi">7</span><span class="p">,</span> <span class="n">allied</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+        <span class="n">creatures</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rLT</span><span class="o">.</span><span class="n">CreatureBox</span><span class="p">(</span><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">battle_dict</span><span class="p">[</span><span class="mi">5</span><span class="p">]),</span> <span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="mi">7</span><span class="p">,</span> <span class="n">allied</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+        <span class="n">creatures</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rLT</span><span class="o">.</span><span class="n">CreatureBox</span><span class="p">(</span><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">battle_dict</span><span class="p">[</span><span class="mi">5</span><span class="p">]),</span> <span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="mi">6</span><span class="p">,</span> <span class="n">allied</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+
+        <span class="n">creatures</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rLT</span><span class="o">.</span><span class="n">CreatureBox</span><span class="p">(</span><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">battle_dict</span><span class="p">[</span><span class="mi">65</span><span class="p">]),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="mi">43</span><span class="p">,</span> <span class="n">allied</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+        <span class="n">creatures</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rLT</span><span class="o">.</span><span class="n">CreatureBox</span><span class="p">(</span><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">battle_dict</span><span class="p">[</span><span class="mi">140</span><span class="p">]),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="mi">13</span><span class="p">,</span> <span class="n">allied</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+        <span class="n">creatures</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rLT</span><span class="o">.</span><span class="n">CreatureBox</span><span class="p">(</span><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">battle_dict</span><span class="p">[</span><span class="mi">141</span><span class="p">]),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="mi">4</span><span class="p">,</span> <span class="n">allied</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">creatures</span></div>
+
+
+<div class="viewcode-block" id="createObstacle"><a class="viewcode-back" href="../../battleAI.html#battleAI.deepQlearning.createObstacle">[docs]</a><span class="k">def</span> <span class="nf">createObstacle</span><span class="p">(</span><span class="n">random_obstacles</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates random obstacles</span>
+
+<span class="sd">    :return: list of instances of class Obstacle</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">random_obstacles</span><span class="p">:</span>
+        <span class="n">obstacles</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">obstacleN</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+        <span class="n">point</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">([[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">13</span><span class="p">)</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">11</span><span class="p">)],</span> <span class="n">obstacleN</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">obstacleN</span><span class="p">):</span>
+            <span class="n">o</span> <span class="o">=</span> <span class="n">Obstacle</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">point</span><span class="p">[</span><span class="n">idx</span><span class="p">]))</span>
+            <span class="n">obstacles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">obstacles</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># obstacles.append(Obstacle((3, 3)))</span>
+        <span class="c1"># obstacles.append(Obstacle((4, 3)))</span>
+        <span class="c1"># obstacles.append(Obstacle((5, 3)))</span>
+        <span class="c1"># obstacles.append(Obstacle((6, 3)))</span>
+        <span class="c1"># obstacles.append(Obstacle((6, 4)))</span>
+        <span class="c1"># obstacles.append(Obstacle((7, 4)))</span>
+        <span class="c1"># obstacles.append(Obstacle((8, 4)))</span>
+        <span class="c1"># obstacles.append(Obstacle((9, 5)))</span>
+        <span class="c1"># obstacles.append(Obstacle((9, 6)))</span>
+        <span class="c1"># obstacles.append(Obstacle((10, 6)))</span>
+        <span class="c1"># obstacles.append(Obstacle((11, 7)))</span>
+        <span class="c1"># obstacles.append(Obstacle((2, 8)))</span>
+        <span class="c1"># obstacles.append(Obstacle((3, 8)))</span>
+        <span class="c1"># obstacles.append(Obstacle((8, 9)))</span>
+
+        <span class="n">obstacles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Obstacle</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">)))</span>
+        <span class="n">obstacles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Obstacle</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)))</span>
+        <span class="n">obstacles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Obstacle</span><span class="p">((</span><span class="mi">8</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span>
+        <span class="n">obstacles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Obstacle</span><span class="p">((</span><span class="mi">9</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span>
+        <span class="n">obstacles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Obstacle</span><span class="p">((</span><span class="mi">10</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span>
+        <span class="n">obstacles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Obstacle</span><span class="p">((</span><span class="mi">10</span><span class="p">,</span> <span class="mi">3</span><span class="p">)))</span>
+        <span class="n">obstacles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Obstacle</span><span class="p">((</span><span class="mi">10</span><span class="p">,</span> <span class="mi">4</span><span class="p">)))</span>
+        <span class="n">obstacles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Obstacle</span><span class="p">((</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">)))</span>
+        <span class="n">obstacles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Obstacle</span><span class="p">((</span><span class="mi">9</span><span class="p">,</span> <span class="mi">6</span><span class="p">)))</span>
+        <span class="n">obstacles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Obstacle</span><span class="p">((</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">)))</span>
+
+
+
+    <span class="k">return</span> <span class="n">obstacles</span></div>
+
+
+<div class="viewcode-block" id="resetEnv"><a class="viewcode-back" href="../../battleAI.html#battleAI.deepQlearning.resetEnv">[docs]</a><span class="k">def</span> <span class="nf">resetEnv</span><span class="p">(</span><span class="n">creatures</span><span class="p">,</span> <span class="n">obstacles</span><span class="p">,</span> <span class="n">training</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reset environment</span>
+
+<span class="sd">    :param creatures: list of instances of class CreatureBox</span>
+<span class="sd">    :param obstacles: list of instances of class Obstacle</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">environment</span> <span class="o">=</span> <span class="n">rLT</span><span class="o">.</span><span class="n">Environment</span><span class="p">(</span><span class="n">creatures</span><span class="p">,</span> <span class="n">obstacles</span><span class="p">,</span> <span class="n">training</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">environment</span></div>
+
+
+<div class="viewcode-block" id="DQNAgent"><a class="viewcode-back" href="../../battleAI.html#battleAI.deepQlearning.DQNAgent">[docs]</a><span class="k">class</span> <span class="nc">DQNAgent</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">buffer_size</span><span class="o">=</span><span class="mi">60000</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">start_epsilon</span><span class="o">=</span><span class="mf">.99</span><span class="p">,</span> <span class="n">min_epsilon</span><span class="o">=</span><span class="mf">.2</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Deep Q learning agent class</span>
+
+<span class="sd">        :param name: str - name of the agent</span>
+<span class="sd">        :param buffer_size: int - size of the buffer in which we remember states, rewards and such</span>
+<span class="sd">        :param batch_size:  int - size of a batch on which we train the agent each time</span>
+<span class="sd">        :param start_epsilon:   float - starting possibility of agent choosing random action</span>
+<span class="sd">        :param min_epsilon: float - minimum value to which possibility of agent choosing random action can decrease</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">training</span> <span class="o">=</span> <span class="n">training</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">buffer_size</span> <span class="o">=</span> <span class="n">buffer_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span> <span class="o">=</span> <span class="n">batch_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bufferCounter</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">inputShape</span> <span class="o">=</span> <span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">actionsNum</span> <span class="o">=</span> <span class="p">(</span><span class="mi">165</span><span class="p">,)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">states</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(((</span><span class="bp">self</span><span class="o">.</span><span class="n">buffer_size</span><span class="p">,)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputShape</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">actions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">buffer_size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">terminal_states</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">buffer_size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">discount</span> <span class="o">=</span> <span class="mf">.5</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rewards</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">buffer_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nextStates</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(((</span><span class="bp">self</span><span class="o">.</span><span class="n">buffer_size</span><span class="p">,)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputShape</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">possibleMovesBuffer</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(((</span><span class="bp">self</span><span class="o">.</span><span class="n">buffer_size</span><span class="p">,)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">actionsNum</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">epsilon</span> <span class="o">=</span> <span class="n">start_epsilon</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">min_epsilon</span> <span class="o">=</span> <span class="n">min_epsilon</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">mod</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">createModel</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">createModel</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">set_weights</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mod</span><span class="o">.</span><span class="n">get_weights</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">_huber_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">clip_delta</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+        <span class="n">error</span> <span class="o">=</span> <span class="n">y_true</span> <span class="o">-</span> <span class="n">y_pred</span>
+        <span class="n">cond</span>  <span class="o">=</span> <span class="n">k_back</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">error</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">clip_delta</span>
+
+        <span class="n">squared_loss</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">k_back</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+        <span class="n">quadratic_loss</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">k_back</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">clip_delta</span><span class="p">)</span> <span class="o">+</span> <span class="n">clip_delta</span> <span class="o">*</span> <span class="p">(</span><span class="n">k_back</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">error</span><span class="p">)</span> <span class="o">-</span> <span class="n">clip_delta</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">k_back</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">cond</span><span class="p">,</span> <span class="n">squared_loss</span><span class="p">,</span> <span class="n">quadratic_loss</span><span class="p">))</span>
+
+<div class="viewcode-block" id="DQNAgent.save"><a class="viewcode-back" href="../../battleAI.html#battleAI.deepQlearning.DQNAgent.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observation</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Saves current move information to a buffer</span>
+
+<span class="sd">        :param observation: list - [state, action, reward, nextState, possible moves, bool: is state terminal?]</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bufferCounter</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">buffer_size</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bufferCounter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">buffer_size</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">states</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">states</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">actions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">actions</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rewards</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rewards</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nextStates</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nextStates</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">possibleMovesBuffer</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">possibleMovesBuffer</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">terminal_states</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">terminal_states</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+            <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bufferCounter</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">states</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">states</span><span class="p">,</span> <span class="n">observation</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">1</span><span class="p">,)</span><span class="o">+</span><span class="n">observation</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">actions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">actions</span><span class="p">,</span> <span class="p">[</span><span class="n">observation</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rewards</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rewards</span><span class="p">,</span> <span class="p">[[</span><span class="n">observation</span><span class="p">[</span><span class="mi">2</span><span class="p">]]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nextStates</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nextStates</span><span class="p">,</span> <span class="n">observation</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">1</span><span class="p">,)</span><span class="o">+</span><span class="n">observation</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">temp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">possibleMovesBuffer</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+            <span class="n">temp</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">observation</span><span class="p">[</span><span class="mi">4</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">possibleMovesBuffer</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">possibleMovesBuffer</span><span class="p">,</span> <span class="n">temp</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">terminal_states</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">terminal_states</span><span class="p">,</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="ow">not</span> <span class="n">observation</span><span class="p">[</span><span class="mi">5</span><span class="p">])],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bufferCounter</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">states</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">observation</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">actions</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">observation</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rewards</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">observation</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nextStates</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">observation</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+            <span class="n">temp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">possibleMovesBuffer</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">temp</span><span class="p">[</span><span class="n">observation</span><span class="p">[</span><span class="mi">4</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">possibleMovesBuffer</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">terminal_states</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="ow">not</span> <span class="n">observation</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">bufferCounter</span> <span class="o">+=</span> <span class="mi">1</span></div>
+
+<div class="viewcode-block" id="DQNAgent.createModel"><a class="viewcode-back" href="../../battleAI.html#battleAI.deepQlearning.DQNAgent.createModel">[docs]</a>    <span class="k">def</span> <span class="nf">createModel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        creates the neural network model</span>
+
+<span class="sd">        :return: neural network model</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">Sequential</span><span class="p">()</span>
+
+        <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Input</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputShape</span><span class="p">))</span>
+
+        <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Conv2D</span><span class="p">(</span><span class="n">filters</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">strides</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">))</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Conv2D</span><span class="p">(</span><span class="n">filters</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">strides</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">))</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Conv2D</span><span class="p">(</span><span class="n">filters</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">strides</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">))</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Flatten</span><span class="p">())</span>
+
+        <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">actionsNum</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">))</span>
+        <span class="c1"># model.add(Conv2D(256, (3, 3), activation=&#39;relu&#39;))</span>
+        <span class="c1"># model.add(MaxPooling2D((2, 2)))</span>
+        <span class="c1">#</span>
+        <span class="c1"># model.add(Conv2D(512, (3, 3), activation=&#39;relu&#39;))</span>
+        <span class="c1"># model.add(MaxPooling2D((2, 2)))</span>
+        <span class="c1">#</span>
+        <span class="c1"># model.add(Flatten())</span>
+
+        <span class="c1"># model.add(Dense(512))</span>
+        <span class="c1"># model.add(Dense(256))</span>
+        <span class="c1"># model.add(Dense(256))</span>
+        <span class="c1"># model.add(Dense(512))</span>
+        <span class="c1"># model.add(Dense(1024))</span>
+        <span class="c1"># model.add(Dense(2048))</span>
+        <span class="c1"># model.add(Dense(1024))</span>
+        <span class="c1"># model.add(Dense(512))</span>
+        <span class="c1"># model.add(Dense(256))</span>
+        <span class="c1"># model.add(Dense(self.actionsNum[0], activation=&#39;linear&#39;))</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span><span class="n">Adam</span><span class="p">(</span><span class="n">learning_rate</span><span class="o">=</span><span class="mf">0.001</span><span class="p">),</span> <span class="n">loss</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_huber_loss</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">])</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">model</span></div>
+
+    <span class="c1"># update the agent</span>
+<div class="viewcode-block" id="DQNAgent.update"><a class="viewcode-back" href="../../battleAI.html#battleAI.deepQlearning.DQNAgent.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stateBatch</span><span class="p">,</span> <span class="n">actionBatch</span><span class="p">,</span> <span class="n">rewardBatch</span><span class="p">,</span> <span class="n">nextStateBatch</span><span class="p">,</span> <span class="n">possibleIdxsBatch</span><span class="p">,</span> <span class="n">terminal_statesBatch</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        updates the agent</span>
+
+<span class="sd">        :param stateBatch: list - batch of states</span>
+<span class="sd">        :param actionBatch: list - batch of actions</span>
+<span class="sd">        :param rewardBatch: list - batch of rewards</span>
+<span class="sd">        :param nextStateBatch: list - batch of next states</span>
+<span class="sd">        :param possibleIdxsBatch: list - batch of possible moves</span>
+<span class="sd">        :param terminal_statesBatch: list - batch of information whether the state is terminal</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># get predicted Q values</span>
+        <span class="n">predictedQs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mod</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">stateBatch</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">targetQs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">predictedQs</span><span class="p">)</span>
+        <span class="c1"># get next Q values</span>
+        <span class="n">nextQs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">nextStateBatch</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">batchIdx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+        <span class="c1"># get target Q values:</span>
+        <span class="n">targetQs</span><span class="p">[</span><span class="n">batchIdx</span><span class="p">,</span> <span class="n">actionBatch</span><span class="p">]</span> <span class="o">=</span> <span class="n">rewardBatch</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">terminal_statesBatch</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">discount</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">nextQs</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># train the model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mod</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">stateBatch</span><span class="p">,</span> <span class="n">targetQs</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DQNAgent.learn"><a class="viewcode-back" href="../../battleAI.html#battleAI.deepQlearning.DQNAgent.learn">[docs]</a>    <span class="k">def</span> <span class="nf">learn</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        samples random batch of transitions and calls the update method of the agent</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bufferCounter</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">batchIndxes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">buffer_size</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">bufferCounter</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
+
+        <span class="n">stateBatch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">states</span><span class="p">[</span><span class="n">batchIndxes</span><span class="p">]</span>
+        <span class="n">actionBatch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">actions</span><span class="p">[</span><span class="n">batchIndxes</span><span class="p">]</span>
+        <span class="n">rewardBatch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rewards</span><span class="p">[</span><span class="n">batchIndxes</span><span class="p">]</span>
+        <span class="n">nextStateBatch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nextStates</span><span class="p">[</span><span class="n">batchIndxes</span><span class="p">]</span>
+        <span class="n">possibleIdxsBatch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">possibleMovesBuffer</span><span class="p">[</span><span class="n">batchIndxes</span><span class="p">]</span>
+        <span class="n">terminal_statesBatch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">terminal_states</span><span class="p">[</span><span class="n">batchIndxes</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">stateBatch</span><span class="p">,</span> <span class="n">actionBatch</span><span class="p">,</span> <span class="n">rewardBatch</span><span class="p">,</span> <span class="n">nextStateBatch</span><span class="p">,</span> <span class="n">possibleIdxsBatch</span><span class="p">,</span> <span class="n">terminal_statesBatch</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="saveBuffer"><a class="viewcode-back" href="../../battleAI.html#battleAI.deepQlearning.saveBuffer">[docs]</a><span class="k">def</span> <span class="nf">saveBuffer</span><span class="p">(</span><span class="n">deepQAgent</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Saves the buffer to numpy files</span>
+
+<span class="sd">    :param deepQAgent: DQNAgent class instance</span>
+<span class="sd">    :param path: path to which the files should be saved</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="n">deepQAgent</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;_states.npy&quot;</span><span class="p">,</span> <span class="n">deepQAgent</span><span class="o">.</span><span class="n">states</span><span class="p">)</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="n">deepQAgent</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;_actions.npy&quot;</span><span class="p">,</span> <span class="n">deepQAgent</span><span class="o">.</span><span class="n">actions</span><span class="p">)</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="n">deepQAgent</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;_rewards.npy&quot;</span><span class="p">,</span> <span class="n">deepQAgent</span><span class="o">.</span><span class="n">rewards</span><span class="p">)</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="n">deepQAgent</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;_nextStates.npy&quot;</span><span class="p">,</span> <span class="n">deepQAgent</span><span class="o">.</span><span class="n">nextStates</span><span class="p">)</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="n">deepQAgent</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;_buffercounter.npy&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">min</span><span class="p">(</span><span class="n">deepQAgent</span><span class="o">.</span><span class="n">bufferCounter</span><span class="p">,</span> <span class="n">deepQAgent</span><span class="o">.</span><span class="n">buffer_size</span><span class="p">)]))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;save: </span><span class="si">{</span><span class="n">deepQAgent</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="loadBuffer"><a class="viewcode-back" href="../../battleAI.html#battleAI.deepQlearning.loadBuffer">[docs]</a><span class="k">def</span> <span class="nf">loadBuffer</span><span class="p">(</span><span class="n">deepQAgent</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Loads the buffer from the numpy files if they exist</span>
+
+<span class="sd">    :param deepQAgent: DQNAgent class instance</span>
+<span class="sd">    :param path: path from which the files should be loaded</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">deepQAgent</span><span class="o">.</span><span class="n">states</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="n">deepQAgent</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;_states.npy&quot;</span><span class="p">)</span>
+        <span class="n">deepQAgent</span><span class="o">.</span><span class="n">actions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="n">deepQAgent</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;_actions.npy&quot;</span><span class="p">)</span>
+        <span class="n">deepQAgent</span><span class="o">.</span><span class="n">rewards</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="n">deepQAgent</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;_rewards.npy&quot;</span><span class="p">)</span>
+        <span class="n">deepQAgent</span><span class="o">.</span><span class="n">nextStates</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="n">deepQAgent</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;_nextStates.npy&quot;</span><span class="p">)</span>
+
+        <span class="n">deepQAgent</span><span class="o">.</span><span class="n">bufferCounter</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="n">deepQAgent</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;_buffercounter.npy&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;load: </span><span class="si">{</span><span class="n">deepQAgent</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error while loading files&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="saveWeights"><a class="viewcode-back" href="../../battleAI.html#battleAI.deepQlearning.saveWeights">[docs]</a><span class="k">def</span> <span class="nf">saveWeights</span><span class="p">(</span><span class="n">deepQAgent</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Saves the weights of the agent</span>
+
+<span class="sd">    :param deepQAgent: DQNAgent class instance</span>
+<span class="sd">    :param path: path to which the weights should be saved</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">deepQAgent</span><span class="o">.</span><span class="n">mod</span><span class="o">.</span><span class="n">save_weights</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="n">deepQAgent</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;_weights.h5&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;save weight: </span><span class="si">{</span><span class="n">deepQAgent</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="loadWeights"><a class="viewcode-back" href="../../battleAI.html#battleAI.deepQlearning.loadWeights">[docs]</a><span class="k">def</span> <span class="nf">loadWeights</span><span class="p">(</span><span class="n">deepQAgent</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Loads the weights of the agent if they exist</span>
+
+<span class="sd">    :param deepQAgent: DQNAgent class instance</span>
+<span class="sd">    :param path: path from which the weights should be loaded</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">deepQAgent</span><span class="o">.</span><span class="n">mod</span><span class="o">.</span><span class="n">load_weights</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="n">deepQAgent</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;_weights.h5&quot;</span><span class="p">)</span>
+
+        <span class="n">deepQAgent</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">set_weights</span><span class="p">(</span><span class="n">deepQAgent</span><span class="o">.</span><span class="n">mod</span><span class="o">.</span><span class="n">get_weights</span><span class="p">())</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;load weight: </span><span class="si">{</span><span class="n">deepQAgent</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error while loading files&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="learningProccess"><a class="viewcode-back" href="../../battleAI.html#battleAI.deepQlearning.learningProccess">[docs]</a><span class="k">def</span> <span class="nf">learningProccess</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Starts the learning process of our agents</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">playerAgent</span> <span class="o">=</span> <span class="n">DQNAgent</span><span class="p">(</span><span class="s2">&quot;player&quot;</span><span class="p">,</span> <span class="n">buffer_size</span><span class="o">=</span><span class="mi">5_000</span><span class="p">,</span> <span class="n">start_epsilon</span><span class="o">=</span><span class="mf">.4</span><span class="p">,</span> <span class="n">min_epsilon</span><span class="o">=</span><span class="mf">.3</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">opponentAgent</span> <span class="o">=</span> <span class="n">DQNAgent</span><span class="p">(</span><span class="s2">&quot;opponent&quot;</span><span class="p">,</span> <span class="n">buffer_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">start_epsilon</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">min_epsilon</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">folderPath</span> <span class="o">=</span> <span class="s2">&quot;./battleAI/battleModel&quot;</span>
+    <span class="n">loadBuffer</span><span class="p">(</span><span class="n">playerAgent</span><span class="p">,</span> <span class="n">folderPath</span><span class="p">)</span>
+    <span class="n">loadBuffer</span><span class="p">(</span><span class="n">opponentAgent</span><span class="p">,</span> <span class="n">folderPath</span><span class="p">)</span>
+
+    <span class="n">loadWeights</span><span class="p">(</span><span class="n">playerAgent</span><span class="p">,</span> <span class="n">folderPath</span><span class="p">)</span>
+    <span class="n">loadWeights</span><span class="p">(</span><span class="n">opponentAgent</span><span class="p">,</span> <span class="n">folderPath</span><span class="p">)</span>
+
+    <span class="n">creaturesList</span> <span class="o">=</span> <span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="n">cc</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">cc</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">cc</span><span class="p">,</span> <span class="n">item</span><span class="p">),</span> <span class="n">cc</span><span class="o">.</span><span class="n">Creature</span><span class="p">)]</span>
+    <span class="n">env</span> <span class="o">=</span> <span class="n">rLT</span><span class="o">.</span><span class="n">Environment</span><span class="p">(</span><span class="n">createTeams</span><span class="p">(</span><span class="n">creaturesList</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span> <span class="p">[],</span> <span class="n">playerAgent</span><span class="o">.</span><span class="n">training</span><span class="p">)</span>
+
+    <span class="n">tmp</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">checkpointVal</span> <span class="o">=</span> <span class="mi">200</span>
+    <span class="n">stepAlly</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">stepEnemy</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">rew</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">episode</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="n">printInfo</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="c1"># main loop</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;NEW EPISODE--------------------------------------------------------------------------------------&quot;</span><span class="p">)</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">createTeams</span><span class="p">(</span><span class="n">creaturesList</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">o</span> <span class="o">=</span> <span class="n">createObstacle</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">env</span> <span class="o">=</span> <span class="n">resetEnv</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">o</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">reward</span> <span class="o">=</span> <span class="n">rw</span><span class="o">.</span><span class="n">Reward</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
+        <span class="n">episode</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="n">currUnit</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">queue</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># get current unit from queue</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">posibleMoves</span> <span class="o">=</span> <span class="n">rLT</span><span class="o">.</span><span class="n">Environment</span><span class="o">.</span><span class="n">choosePossibleMoves</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">currUnit</span><span class="p">)</span>
+        <span class="c1"># get state and prepare it to feed it into neural network</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">prepareInputForNN</span><span class="p">(</span><span class="n">currUnit</span><span class="p">)</span>
+        <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+        <span class="n">game</span> <span class="o">=</span> <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">state</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]))</span>
+        <span class="n">possible_plot</span> <span class="o">=</span> <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">state</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]))</span>
+        <span class="n">reward</span><span class="o">.</span><span class="n">done</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">observ</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">waiting</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">battle_result</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">cumulative_rew</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="n">one_more</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="n">reward</span><span class="o">.</span><span class="n">done</span> <span class="ow">or</span> <span class="n">one_more</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">reward</span><span class="o">.</span><span class="n">done</span> <span class="ow">and</span> <span class="n">one_more</span><span class="p">:</span>
+                <span class="n">one_more</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">if</span> <span class="n">printInfo</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">rew</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span> <span class="n">env</span><span class="o">.</span><span class="n">printEnvironment</span><span class="p">()</span>
+            <span class="n">currUnit</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">queue</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># get current unit from queue</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">posibleMoves</span> <span class="o">=</span> <span class="n">rLT</span><span class="o">.</span><span class="n">Environment</span><span class="o">.</span><span class="n">choosePossibleMoves</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">currUnit</span><span class="p">)</span>
+            <span class="n">state</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">prepareInputForNN</span><span class="p">(</span><span class="n">currUnit</span><span class="p">)</span>
+            <span class="n">prevHP</span> <span class="o">=</span> <span class="n">reward</span><span class="o">.</span><span class="n">getTeamHP</span><span class="p">(</span><span class="n">currUnit</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+            <span class="n">reward</span><span class="o">.</span><span class="n">saveUnitHealth</span><span class="p">(</span><span class="n">currUnit</span><span class="p">)</span>
+            <span class="c1"># choose agent according to unit side</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">currUnit</span><span class="o">.</span><span class="n">ally</span> <span class="ow">and</span> <span class="n">one_more</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="n">currUnit</span><span class="o">.</span><span class="n">ally</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">one_more</span><span class="p">):</span>
+                <span class="n">agent</span> <span class="o">=</span> <span class="n">playerAgent</span>
+                <span class="n">stepAlly</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">step</span> <span class="o">=</span> <span class="n">stepAlly</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">agent</span> <span class="o">=</span> <span class="n">opponentAgent</span>
+                <span class="n">stepEnemy</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">step</span> <span class="o">=</span> <span class="n">stepEnemy</span>
+
+            <span class="c1"># get action based on policy</span>
+            <span class="n">action</span><span class="p">,</span> <span class="n">actIdx</span><span class="p">,</span> <span class="n">possibleIdxs</span><span class="p">,</span> <span class="n">possibilities</span><span class="p">,</span> <span class="n">random_move</span> <span class="o">=</span> <span class="n">policy</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">agent</span><span class="p">,</span> <span class="n">posibleMoves</span><span class="p">,</span> <span class="n">env</span><span class="o">.</span><span class="n">moat</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">printInfo</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Current position: &quot;</span><span class="p">,</span> <span class="n">currUnit</span><span class="o">.</span><span class="n">field</span><span class="p">,</span> <span class="s2">&quot;Destination: &quot;</span><span class="p">,</span> <span class="n">action</span><span class="p">)</span>
+            <span class="c1"># perform an action</span>
+
+            <span class="n">game</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">state</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]))</span>
+            <span class="k">if</span> <span class="n">agent</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;player&#39;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">random_move</span><span class="p">:</span>
+                <span class="n">possible_plot</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">normalize</span><span class="p">(</span><span class="n">possibilities</span><span class="p">)))</span>
+            <span class="n">fig</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">draw_idle</span><span class="p">()</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">pause</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span>
+            <span class="n">env</span><span class="o">.</span><span class="n">moveCreature</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+
+            <span class="c1"># get next state</span>
+            <span class="n">newState</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">prepareInputForNN</span><span class="p">(</span><span class="n">currUnit</span><span class="p">)</span>
+            <span class="c1"># plt.draw()</span>
+            <span class="c1"># calculate reward</span>
+            <span class="k">if</span> <span class="n">battle_result</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">rew</span><span class="p">,</span> <span class="n">battle_result</span> <span class="o">=</span> <span class="n">reward</span><span class="o">.</span><span class="n">calcReward</span><span class="p">(</span><span class="n">currUnit</span><span class="p">,</span> <span class="n">env</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">temp</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="o">.</span><span class="n">ally</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">env</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">queue</span><span class="p">]</span>
+                <span class="n">allies_num</span> <span class="o">=</span> <span class="n">temp</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">enemies_num</span> <span class="o">=</span> <span class="n">temp</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+                <span class="n">battle_result</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">allies_num</span> <span class="o">&gt;</span> <span class="n">enemies_num</span> <span class="k">else</span> <span class="o">-</span><span class="mi">1</span>
+                <span class="n">rew</span> <span class="o">=</span> <span class="n">battle_result</span> <span class="o">*</span> <span class="mi">10</span> <span class="k">if</span> <span class="n">battle_result</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
+            <span class="n">cumulative_rew</span><span class="p">[</span><span class="mi">0</span> <span class="k">if</span> <span class="n">agent</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;player&#39;</span> <span class="k">else</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="n">rew</span>
+            <span class="k">if</span> <span class="n">printInfo</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Estimated reward: &quot;</span><span class="p">,</span> <span class="n">rew</span><span class="p">)</span>
+
+            <span class="c1"># save transition into agents memory</span>
+
+            <span class="c1"># if next mob is enemy and current ally and its not over then store observation in list</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">env</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">queue</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">ally</span> <span class="ow">and</span> <span class="n">currUnit</span><span class="o">.</span><span class="n">ally</span> <span class="ow">and</span> <span class="n">one_more</span><span class="p">:</span>
+                <span class="n">observ</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">state</span><span class="p">,</span> <span class="n">actIdx</span><span class="p">,</span> <span class="n">rew</span><span class="p">,</span> <span class="n">newState</span><span class="p">,</span> <span class="n">possibleIdxs</span><span class="p">,</span> <span class="n">reward</span><span class="o">.</span><span class="n">done</span><span class="p">))</span>
+                <span class="n">waiting</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">waiting_ally</span> <span class="o">=</span> <span class="n">currUnit</span>
+
+            <span class="c1"># if current mob is ally and has observations in list or its over</span>
+            <span class="k">elif</span> <span class="p">(</span><span class="n">currUnit</span><span class="o">.</span><span class="n">ally</span> <span class="ow">and</span> <span class="n">waiting</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="n">one_more</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">currUnit</span><span class="o">.</span><span class="n">ally</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">observation</span> <span class="ow">in</span> <span class="n">observ</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">one_more</span><span class="p">:</span>
+                        <span class="n">observation</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">observation</span><span class="p">)</span>
+                        <span class="n">observation</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">rew</span>
+                        <span class="n">observation</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">observation</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">observation</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">observation</span><span class="p">)</span>
+                        <span class="n">observation</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">waiting_ally</span><span class="o">.</span><span class="n">prevHP</span> <span class="o">&gt;</span> <span class="n">waiting_ally</span><span class="o">.</span><span class="n">stackHP</span> <span class="ow">and</span> <span class="n">waiting_ally</span><span class="o">.</span><span class="n">damage_dealt</span> <span class="o">==</span> <span class="mi">0</span> \
+                            <span class="k">else</span> <span class="n">observation</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="mi">10</span>
+                        <span class="n">observation</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">observation</span><span class="p">)</span>
+                    <span class="n">playerAgent</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">observation</span><span class="p">)</span>
+                    <span class="n">playerAgent</span><span class="o">.</span><span class="n">learn</span><span class="p">()</span>
+                <span class="n">waiting_ally</span><span class="o">.</span><span class="n">prevHP</span> <span class="o">=</span> <span class="n">waiting_ally</span><span class="o">.</span><span class="n">stackHP</span>
+                <span class="n">observ</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">if</span> <span class="n">currUnit</span><span class="o">.</span><span class="n">ally</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">env</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">queue</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">ally</span><span class="p">:</span>
+                    <span class="n">observ</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">state</span><span class="p">,</span> <span class="n">actIdx</span><span class="p">,</span> <span class="n">rew</span><span class="p">,</span> <span class="n">newState</span><span class="p">,</span> <span class="n">possibleIdxs</span><span class="p">,</span> <span class="n">reward</span><span class="o">.</span><span class="n">done</span><span class="p">))</span>
+                    <span class="n">waiting_ally</span> <span class="o">=</span> <span class="n">currUnit</span>
+                <span class="k">elif</span> <span class="n">one_more</span><span class="p">:</span>
+                    <span class="n">agent</span><span class="o">.</span><span class="n">save</span><span class="p">((</span><span class="n">state</span><span class="p">,</span> <span class="n">actIdx</span><span class="p">,</span> <span class="n">rew</span><span class="p">,</span> <span class="n">newState</span><span class="p">,</span> <span class="n">possibleIdxs</span><span class="p">,</span> <span class="n">reward</span><span class="o">.</span><span class="n">done</span><span class="p">))</span>
+                    <span class="n">waiting</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="c1"># update model</span>
+                    <span class="n">agent</span><span class="o">.</span><span class="n">learn</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">one_more</span><span class="p">:</span>
+                <span class="n">agent</span><span class="o">.</span><span class="n">save</span><span class="p">((</span><span class="n">state</span><span class="p">,</span> <span class="n">actIdx</span><span class="p">,</span> <span class="n">rew</span><span class="p">,</span> <span class="n">newState</span><span class="p">,</span> <span class="n">possibleIdxs</span><span class="p">,</span> <span class="n">reward</span><span class="o">.</span><span class="n">done</span><span class="p">))</span>
+                <span class="c1"># update model</span>
+                <span class="n">agent</span><span class="o">.</span><span class="n">learn</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">break</span>
+
+            <span class="c1"># update state</span>
+            <span class="c1"># state = newState</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">step</span> <span class="o">%</span> <span class="mi">100</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">agent</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">set_weights</span><span class="p">(</span><span class="n">agent</span><span class="o">.</span><span class="n">mod</span><span class="o">.</span><span class="n">get_weights</span><span class="p">())</span>
+            <span class="k">if</span> <span class="n">step</span> <span class="o">%</span> <span class="n">checkpointVal</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">saveBuffer</span><span class="p">(</span><span class="n">agent</span><span class="p">,</span> <span class="n">folderPath</span><span class="p">)</span>
+                <span class="n">saveWeights</span><span class="p">(</span><span class="n">agent</span><span class="p">,</span> <span class="n">folderPath</span><span class="p">)</span>
+
+            <span class="n">step</span> <span class="o">+=</span> <span class="n">step</span>
+            <span class="c1"># currUnit.prevHP = currUnit.stackHP</span>
+        <span class="k">if</span> <span class="n">episode</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">playerAgent</span><span class="o">.</span><span class="n">epsilon</span> <span class="o">&gt;</span> <span class="n">playerAgent</span><span class="o">.</span><span class="n">min_epsilon</span><span class="p">:</span>
+                <span class="n">playerAgent</span><span class="o">.</span><span class="n">epsilon</span> <span class="o">*=</span> <span class="mf">.99</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">playerAgent</span><span class="o">.</span><span class="n">epsilon</span> <span class="o">=</span> <span class="n">playerAgent</span><span class="o">.</span><span class="n">min_epsilon</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;GAME REWARD = &quot;</span><span class="p">,</span> <span class="n">cumulative_rew</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;rewards.txt&quot;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Ally: </span><span class="si">{</span><span class="n">cumulative_rew</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1"> Enemy: </span><span class="si">{</span><span class="n">cumulative_rew</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1">, result </span><span class="si">{</span><span class="s2">&quot;Ally&quot;</span> <span class="k">if</span> <span class="n">battle_result</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">&quot;Enemy&quot;</span><span class="si">}</span><span class="s1"> won </span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span></div>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">learningProccess</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Fryderyk Róg, Kacper Plesiak, Michał Gruba, Tymoteusz Skrzyński, Mateusz Comblik, Bartosz Szczepanek, Alan Konopko, Mateusz Mikszewicz, Daniel Bil, Piotr Łyczko.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

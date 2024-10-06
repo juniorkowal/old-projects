@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>main module &mdash; HoMM3 Bot 2.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="map package" href="map.html" />
+    <link rel="prev" title="image_processing package" href="image_processing.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> HoMM3 Bot
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">homm3-bot</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Adventure_AI.html">Adventure_AI package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GUI_handling.html">GUI_handling package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="battleAI.html">battleAI package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data.html">data package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_reader.html">file_reader package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hierarchyFunctions.html">hierarchyFunctions package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="image_processing.html">image_processing package</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">main module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#main.build_building_in_town"><code class="docutils literal notranslate"><span class="pre">build_building_in_town()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#main.buy_hero"><code class="docutils literal notranslate"><span class="pre">buy_hero()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#main.check_if_we_need_new_hero"><code class="docutils literal notranslate"><span class="pre">check_if_we_need_new_hero()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#main.execute_save"><code class="docutils literal notranslate"><span class="pre">execute_save()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#main.leave_town"><code class="docutils literal notranslate"><span class="pre">leave_town()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#main.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#main.main_loop"><code class="docutils literal notranslate"><span class="pre">main_loop()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#main.read_army"><code class="docutils literal notranslate"><span class="pre">read_army()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#main.read_hero"><code class="docutils literal notranslate"><span class="pre">read_hero()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="map.html">map package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="path_finding_alghoritms.html">path_finding_alghoritms package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="save.html">save module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="town_upgrading.html">town_upgrading package</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">HoMM3 Bot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">homm3-bot</a></li>
+      <li class="breadcrumb-item active">main module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/main.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-main">
+<span id="main-module"></span><h1>main module<a class="headerlink" href="#module-main" title="Permalink to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="main.build_building_in_town">
+<span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">build_building_in_town</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">player</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">city</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/main.html#build_building_in_town"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.build_building_in_town" title="Permalink to this definition"></a></dt>
+<dd><p>function checks what is the type of our city</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>player</strong> – class Player</p></li>
+<li><p><strong>city</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="main.buy_hero">
+<span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">buy_hero</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">player</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reader</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">advAI</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/main.html#buy_hero"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.buy_hero" title="Permalink to this definition"></a></dt>
+<dd><p>function to buy new hero</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>player</strong> – player object</p></li>
+<li><p><strong>reader</strong> – heroreader object</p></li>
+<li><p><strong>type</strong> – type of hero main/not main</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="main.check_if_we_need_new_hero">
+<span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">check_if_we_need_new_hero</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">player</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mapa</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">heroreader</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">advai</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/main.html#check_if_we_need_new_hero"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.check_if_we_need_new_hero" title="Permalink to this definition"></a></dt>
+<dd><p>adaptive function to buy new heroes</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>player</strong> – player object</p></li>
+<li><p><strong>mapa</strong> – map from adventure ai object</p></li>
+<li><p><strong>heroreader</strong> – object containing methods to read all values of hero in game</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="main.execute_save">
+<span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">execute_save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">advai</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/main.html#execute_save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.execute_save" title="Permalink to this definition"></a></dt>
+<dd><p>function for executing save in game and saving of our ai state</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – name of new save</p></li>
+<li><p><strong>advai</strong> – adventure ai object</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="main.leave_town">
+<span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">leave_town</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/main.html#leave_town"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.leave_town" title="Permalink to this definition"></a></dt>
+<dd><p>someone wanted to have better name for function</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="main.main">
+<span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">save_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'saved_game'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/main.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.main" title="Permalink to this definition"></a></dt>
+<dd><p>main function reloading saved game or starting new one</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>save_name</strong> – name of saved game to load</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="main.main_loop">
+<span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">main_loop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">player</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">advAI</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">read_cities</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">heroreader</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">after</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/main.html#main_loop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.main_loop" title="Permalink to this definition"></a></dt>
+<dd><p>function representing one day in game</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>player</strong> – our player object</p></li>
+<li><p><strong>advAI</strong> – adventure ai object</p></li>
+<li><p><strong>read_cities</strong> – number representing amunt of cities that are read by our ai</p></li>
+<li><p><strong>heroreader</strong> – object containing methods to read all values of hero in game</p></li>
+<li><p><strong>after</strong> – image of hero list after previous turn</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>all objects that are changed during turn</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="main.read_army">
+<span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">read_army</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">heroreader</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hero</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/main.html#read_army"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.read_army" title="Permalink to this definition"></a></dt>
+<dd><p>function to read army of our hero</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>heroreader</strong> – heroreader object</p></li>
+<li><p><strong>hero</strong> – hero to read</p></li>
+<li><p><strong>i</strong> – number of hero on list</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="main.read_hero">
+<span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">read_hero</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">heroreader</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">player</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/main.html#read_hero"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.read_hero" title="Permalink to this definition"></a></dt>
+<dd><p>function for reading all available information about our hero</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>heroreader</strong> – heroreader object</p></li>
+<li><p><strong>player</strong> – player object</p></li>
+<li><p><strong>n</strong> – number of hero on list</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="image_processing.html" class="btn btn-neutral float-left" title="image_processing package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="map.html" class="btn btn-neutral float-right" title="map package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Fryderyk Róg, Kacper Plesiak, Michał Gruba, Tymoteusz Skrzyński, Mateusz Comblik, Bartosz Szczepanek, Alan Konopko, Mateusz Mikszewicz, Daniel Bil, Piotr Łyczko.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

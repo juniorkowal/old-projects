@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>image_processing.detecting_window &mdash; HoMM3 Bot 2.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> HoMM3 Bot
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">homm3-bot</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">HoMM3 Bot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">image_processing.detecting_window</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for image_processing.detecting_window</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Script containing classes and functions responsible for detecting and handling window pop ups.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">cv2</span> <span class="k">as</span> <span class="nn">cv</span>
+<span class="kn">import</span> <span class="nn">pyautogui</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">keyboard</span>
+<span class="kn">import</span> <span class="nn">pytesseract</span>
+<span class="kn">import</span> <span class="nn">battleAI.BattleAI</span>
+<span class="kn">import</span> <span class="nn">image_processing.ocr</span> <span class="k">as</span> <span class="nn">ocr</span>
+<span class="kn">from</span> <span class="nn">mss</span> <span class="kn">import</span> <span class="n">mss</span>
+
+<span class="kn">from</span> <span class="nn">image_processing.ok_detection</span> <span class="kn">import</span> <span class="n">check_ok</span>
+<span class="kn">from</span> <span class="nn">difflib</span> <span class="kn">import</span> <span class="n">get_close_matches</span>
+<span class="kn">from</span> <span class="nn">GUI_handling.AdventureGUI</span> <span class="kn">import</span> <span class="n">level_up_choose_skill</span><span class="p">,</span> <span class="n">accept_offer</span>
+<span class="kn">from</span> <span class="nn">data.hero_specialities</span> <span class="kn">import</span> <span class="n">specialities</span>
+
+<span class="n">pytesseract</span><span class="o">.</span><span class="n">pytesseract</span><span class="o">.</span><span class="n">tesseract_cmd</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;C:\Program Files\Tesseract-OCR\tesseract&#39;</span>
+<span class="c1"># battle_ai_object = battleAI.BattleAI.BattleAI(&quot;Red&quot;) # change here if playing as another color</span>
+
+
+<div class="viewcode-block" id="SecondarySkill"><a class="viewcode-back" href="../../image_processing.html#image_processing.detecting_window.SecondarySkill">[docs]</a><span class="k">class</span> <span class="nc">SecondarySkill</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lvl</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Class representing a secondary skill.</span>
+
+<span class="sd">        :param lvl: Level of the skill</span>
+<span class="sd">        :param name: Name of the skill</span>
+<span class="sd">        :param value: Value of the skill</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="n">lvl</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span><span class="nb">str</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">==</span><span class="n">other</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">==</span><span class="n">other</span><span class="o">.</span><span class="n">name</span>
+
+    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">lvl</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="compare"><a class="viewcode-back" href="../../image_processing.html#image_processing.detecting_window.compare">[docs]</a><span class="k">def</span> <span class="nf">compare</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">result_image</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Single function to detect if the best match image is exact same as we need</span>
+
+<span class="sd">    :param result: image of the best match</span>
+<span class="sd">    :param result_image: stock image (e.g. battle_result.png)</span>
+<span class="sd">    :param image: screenshot</span>
+<span class="sd">    :return: returning 1 if its exact the same</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">is_on_image</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">mn</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">mnLoc</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">minMaxLoc</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+    <span class="n">MPx</span><span class="p">,</span> <span class="n">MPy</span> <span class="o">=</span> <span class="n">mnLoc</span>
+    <span class="n">trows</span><span class="p">,</span> <span class="n">tcols</span> <span class="o">=</span> <span class="n">result_image</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">ok_compare</span> <span class="o">=</span> <span class="n">image</span><span class="p">[</span><span class="n">MPy</span><span class="p">:</span><span class="n">MPy</span> <span class="o">+</span> <span class="n">trows</span><span class="p">,</span> <span class="n">MPx</span><span class="p">:</span><span class="n">MPx</span> <span class="o">+</span> <span class="n">tcols</span><span class="p">]</span>
+
+    <span class="c1"># comparing to the normal icon image</span>
+    <span class="n">compare1</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">compare</span><span class="p">(</span><span class="n">result_image</span><span class="p">,</span> <span class="n">ok_compare</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">compare1</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+        <span class="n">is_on_image</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">is_on_image</span></div>
+
+
+<div class="viewcode-block" id="which_window"><a class="viewcode-back" href="../../image_processing.html#image_processing.detecting_window.which_window">[docs]</a><span class="k">def</span> <span class="nf">which_window</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Making screenshot, matching windows with the best match using cv2,</span>
+<span class="sd">    comparing it with actual image to decide which window popped on screen</span>
+
+<span class="sd">    :return:  1 -&gt; followers, 2 -&gt; battle, 3 -&gt; pursue, 4-&gt; diplomacy window, 5 -&gt; insulted units</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">which</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">battle_result_image</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;.\image_processing\battle_result.png&#39;</span><span class="p">)</span>
+    <span class="n">diplomacy_image</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;.\image_processing\diplomacy.png&#39;</span><span class="p">)</span>
+    <span class="n">insulting_image</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;.\image_processing\insulted.png&#39;</span><span class="p">)</span>
+    
+    <span class="n">timeout</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">+</span> <span class="mi">5</span>
+    
+    <span class="k">while</span> <span class="ow">not</span> <span class="n">which</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">timeout</span><span class="p">:</span>
+            <span class="k">break</span>    
+        <span class="n">image_scr</span> <span class="o">=</span> <span class="n">pyautogui</span><span class="o">.</span><span class="n">screenshot</span><span class="p">()</span>
+        <span class="n">image_scr</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">image_scr</span><span class="p">),</span> <span class="n">cv</span><span class="o">.</span><span class="n">COLOR_RGB2BGR</span><span class="p">)</span>
+        <span class="n">method</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">TM_SQDIFF_NORMED</span>
+        <span class="n">result_battle</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">matchTemplate</span><span class="p">(</span><span class="n">battle_result_image</span><span class="p">,</span> <span class="n">image_scr</span><span class="p">,</span> <span class="n">method</span><span class="p">)</span>
+        <span class="n">is_battle</span> <span class="o">=</span> <span class="n">compare</span><span class="p">(</span><span class="n">result_battle</span><span class="p">,</span> <span class="n">battle_result_image</span><span class="p">,</span> <span class="n">image_scr</span><span class="p">)</span>
+        <span class="n">result_diplomacy</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">matchTemplate</span><span class="p">(</span><span class="n">diplomacy_image</span><span class="p">,</span> <span class="n">image_scr</span><span class="p">,</span> <span class="n">method</span><span class="p">)</span>
+        <span class="n">is_diplomacy</span> <span class="o">=</span> <span class="n">compare</span><span class="p">(</span><span class="n">result_diplomacy</span><span class="p">,</span> <span class="n">diplomacy_image</span><span class="p">,</span> <span class="n">image_scr</span><span class="p">)</span>
+        <span class="n">result_insulting</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">matchTemplate</span><span class="p">(</span><span class="n">insulting_image</span><span class="p">,</span> <span class="n">image_scr</span><span class="p">,</span> <span class="n">method</span><span class="p">)</span>
+        <span class="n">is_insulting</span> <span class="o">=</span> <span class="n">compare</span><span class="p">(</span><span class="n">result_insulting</span><span class="p">,</span> <span class="n">insulting_image</span><span class="p">,</span> <span class="n">image_scr</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">is_battle</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">which</span> <span class="o">=</span> <span class="mi">2</span>
+            <span class="c1"># print(&#39;battle window&#39;)</span>
+        <span class="k">elif</span> <span class="n">is_diplomacy</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">which</span> <span class="o">=</span> <span class="mi">4</span>
+        <span class="k">elif</span> <span class="n">is_insulting</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">which</span> <span class="o">=</span> <span class="mi">5</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">b</span> <span class="o">=</span> <span class="n">pursue_check</span><span class="p">(</span><span class="n">image_scr</span><span class="p">)</span>
+            <span class="n">c</span> <span class="o">=</span> <span class="n">follow_check</span><span class="p">(</span><span class="n">image_scr</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">b</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">which</span> <span class="o">=</span> <span class="mi">3</span>
+                <span class="c1"># print(&#39;pursue window&#39;)</span>
+            <span class="k">elif</span> <span class="n">c</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">which</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="c1"># print(&#39;followers window&#39;)</span>
+    <span class="k">return</span> <span class="n">which</span></div>
+
+
+<div class="viewcode-block" id="read_gray_image"><a class="viewcode-back" href="../../image_processing.html#image_processing.detecting_window.read_gray_image">[docs]</a><span class="k">def</span> <span class="nf">read_gray_image</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Utility function for reading image and converting it to gray scale</span>
+
+<span class="sd">    :param path: path to an image</span>
+
+<span class="sd">    :return: gray scale image</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">cv</span><span class="o">.</span><span class="n">COLOR_BGR2GRAY</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">image</span></div>
+
+
+<div class="viewcode-block" id="check_fortification"><a class="viewcode-back" href="../../image_processing.html#image_processing.detecting_window.check_fortification">[docs]</a><span class="k">def</span> <span class="nf">check_fortification</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Checks what type of fortification does the opponent have</span>
+
+<span class="sd">    :return: Either &quot;fort&quot;, &quot;citadel&quot; or &quot;castle&quot; string</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="mi">954</span><span class="p">,</span> <span class="mi">365</span>     <span class="c1"># TODO: set coordinates to a location of enemy&#39;s town</span>
+    <span class="n">pyautogui</span><span class="o">.</span><span class="n">moveTo</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">pyautogui</span><span class="o">.</span><span class="n">mouseDown</span><span class="p">(</span><span class="n">button</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">mss</span><span class="p">()</span> <span class="k">as</span> <span class="n">sct</span><span class="p">:</span>
+        <span class="n">monitor</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;top&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;left&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mi">1920</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mi">1080</span><span class="p">}</span>
+        <span class="n">screen</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sct</span><span class="o">.</span><span class="n">grab</span><span class="p">(</span><span class="n">monitor</span><span class="p">))</span>
+        <span class="n">screen</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="n">cv</span><span class="o">.</span><span class="n">COLOR_BGRA2GRAY</span><span class="p">)</span>
+
+    <span class="n">pyautogui</span><span class="o">.</span><span class="n">mouseUp</span><span class="p">(</span><span class="n">button</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">)</span>
+    <span class="n">building_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;fort&quot;</span><span class="p">:</span> <span class="n">read_gray_image</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;..\fortifications\fort.png&quot;</span><span class="p">),</span>
+                     <span class="s2">&quot;castle&quot;</span><span class="p">:</span> <span class="n">read_gray_image</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;..\fortifications\castle.png&quot;</span><span class="p">),</span>
+                     <span class="s2">&quot;citadel&quot;</span><span class="p">:</span> <span class="n">read_gray_image</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;..\fortifications\citadel.png&quot;</span><span class="p">)}</span>
+
+    <span class="n">values</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">building</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">building_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">building_dict</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">matchTemplate</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="n">building</span><span class="p">,</span> <span class="n">cv</span><span class="o">.</span><span class="n">TM_CCOEFF</span><span class="p">)</span>
+        <span class="n">values</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">max</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span></div>
+
+
+<div class="viewcode-block" id="action_window"><a class="viewcode-back" href="../../image_processing.html#image_processing.detecting_window.action_window">[docs]</a><span class="k">def</span> <span class="nf">action_window</span><span class="p">(</span><span class="n">which</span><span class="p">,</span> <span class="n">hero</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Deciding which key to press depending on the window we detected</span>
+
+<span class="sd">    :param which: 1 -&gt; followers, 2 -&gt; battle, 3 -&gt; pursue, 4-&gt; diplomacy window, 5 -&gt; insulted units</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">Tactics</span> <span class="o">=</span> <span class="n">SecondarySkill</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Tactics&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="n">Necromancy</span> <span class="o">=</span> <span class="n">SecondarySkill</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Necromancy&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[WINDOW INFO]&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    WHICH: </span><span class="si">{</span><span class="n">which</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">walkaa</span> <span class="o">=</span><span class="kc">False</span> <span class="c1"># true jest walka False nie ma walki</span>
+    <span class="k">if</span> <span class="n">which</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">keyboard</span><span class="o">.</span><span class="n">press_and_release</span><span class="p">(</span><span class="s1">&#39;esc&#39;</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">which_window</span><span class="p">()</span>
+        <span class="n">action_window</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">hero</span><span class="p">)</span>
+
+
+
+
+    <span class="k">elif</span> <span class="n">which</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">walkaa</span><span class="p">:</span>
+            <span class="n">keyboard</span><span class="o">.</span><span class="n">press_and_release</span><span class="p">(</span><span class="s1">&#39;esc&#39;</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;bitwa&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">Tactics</span> <span class="ow">in</span> <span class="n">hero</span><span class="o">.</span><span class="n">skills</span><span class="o">.</span><span class="n">secondary_skills</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;taktyka&quot;</span><span class="p">)</span>
+                <span class="n">accept_offer</span><span class="p">()</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+                <span class="n">accept_offer</span><span class="p">()</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+            <span class="n">hero_name</span> <span class="o">=</span> <span class="n">get_close_matches</span><span class="p">(</span><span class="n">hero</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">specialities</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="c1"># making a dict of hero skills</span>
+            <span class="n">skill_dict</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">skill</span> <span class="ow">in</span> <span class="n">hero</span><span class="o">.</span><span class="n">skills</span><span class="o">.</span><span class="n">secondary_skills</span><span class="p">:</span>
+                <span class="n">skill_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">skill</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">skill</span><span class="o">.</span><span class="n">lvl</span><span class="p">})</span>
+            <span class="n">battle_ai_object</span><span class="o">.</span><span class="n">fight</span><span class="p">(</span><span class="n">hero_name</span><span class="p">,</span> <span class="n">skill_dict</span><span class="p">,</span> <span class="n">hero</span><span class="o">.</span><span class="n">spellpower</span><span class="p">)</span>
+
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">skills_window</span><span class="p">(</span><span class="n">hero</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">Necromancy</span> <span class="ow">in</span> <span class="n">hero</span><span class="o">.</span><span class="n">skills</span><span class="o">.</span><span class="n">secondary_skills</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;nekro&quot;</span><span class="p">)</span>
+                <span class="n">accept_offer</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">keyboard</span><span class="o">.</span><span class="n">press_and_release</span><span class="p">(</span><span class="s1">&#39;enter&#39;</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;bitwa skip&quot;</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">skills_window</span><span class="p">(</span><span class="n">hero</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">Necromancy</span> <span class="ow">in</span> <span class="n">hero</span><span class="o">.</span><span class="n">skills</span><span class="o">.</span><span class="n">secondary_skills</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;nekro&quot;</span><span class="p">)</span>
+                <span class="n">accept_offer</span><span class="p">()</span>
+
+    <span class="k">elif</span> <span class="n">which</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="n">keyboard</span><span class="o">.</span><span class="n">press_and_release</span><span class="p">(</span><span class="s1">&#39;esc&#39;</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">which_window</span><span class="p">()</span>
+        <span class="n">action_window</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">hero</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">which</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="n">keyboard</span><span class="o">.</span><span class="n">press_and_release</span><span class="p">(</span><span class="s1">&#39;esc&#39;</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">which_window</span><span class="p">()</span>
+        <span class="n">action_window</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">hero</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">which</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>
+        <span class="n">keyboard</span><span class="o">.</span><span class="n">press_and_release</span><span class="p">(</span><span class="s1">&#39;enter&#39;</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">which_window</span><span class="p">()</span>
+        <span class="n">action_window</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">hero</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="action_window_enemy_turn"><a class="viewcode-back" href="../../image_processing.html#image_processing.detecting_window.action_window_enemy_turn">[docs]</a><span class="k">def</span> <span class="nf">action_window_enemy_turn</span><span class="p">(</span><span class="n">which</span><span class="p">,</span> <span class="n">hero</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Deciding which key to press depending on the window we detected</span>
+
+<span class="sd">    :param which: 1 -&gt; followers, 2 -&gt; battle, 3 -&gt; pursue, 4-&gt; diplomacy window, 5 -&gt; insulted units</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">Tactics</span> <span class="o">=</span> <span class="n">SecondarySkill</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Tactics&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="n">Necromancy</span> <span class="o">=</span> <span class="n">SecondarySkill</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Necromancy&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[WINDOW INFO]&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    WHICH: </span><span class="si">{</span><span class="n">which</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">which</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">keyboard</span><span class="o">.</span><span class="n">press_and_release</span><span class="p">(</span><span class="s1">&#39;esc&#39;</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">which_window</span><span class="p">()</span>
+        <span class="n">action_window</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">hero</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">which</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">keyboard</span><span class="o">.</span><span class="n">press_and_release</span><span class="p">(</span><span class="s1">&#39;enter&#39;</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;bitwa&quot;</span><span class="p">)</span>
+        <span class="c1"># if Tactics in hero.skills.secondary_skills:</span>
+        <span class="c1">#     print(&quot;taktyka&quot;)</span>
+        <span class="c1">#     accept_offer()</span>
+        <span class="c1">#     time.sleep(3)</span>
+        <span class="c1">#     accept_offer()</span>
+        <span class="c1"># time.sleep(1)</span>
+        <span class="c1">#</span>
+        <span class="c1"># hero_name = get_close_matches(hero.name, specialities.keys())[0]</span>
+        <span class="c1"># # making a dict of hero skills</span>
+        <span class="c1"># skill_dict = {}</span>
+        <span class="c1"># for skill in hero.skills.secondary_skills:</span>
+        <span class="c1">#     skill_dict.update({skill.name: skill.lvl})</span>
+        <span class="c1"># battle_ai_object.fight(hero_name, skill_dict, hero.spellpower)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">skills_window</span><span class="p">(</span><span class="n">hero</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">Necromancy</span> <span class="ow">in</span> <span class="n">hero</span><span class="o">.</span><span class="n">skills</span><span class="o">.</span><span class="n">secondary_skills</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;nekro&quot;</span><span class="p">)</span>
+            <span class="n">accept_offer</span><span class="p">()</span>
+
+    <span class="k">elif</span> <span class="n">which</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="n">keyboard</span><span class="o">.</span><span class="n">press_and_release</span><span class="p">(</span><span class="s1">&#39;esc&#39;</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">which_window</span><span class="p">()</span>
+        <span class="n">action_window</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">hero</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">which</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="n">keyboard</span><span class="o">.</span><span class="n">press_and_release</span><span class="p">(</span><span class="s1">&#39;esc&#39;</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">which_window</span><span class="p">()</span>
+        <span class="n">action_window</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">hero</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">which</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>
+        <span class="n">keyboard</span><span class="o">.</span><span class="n">press_and_release</span><span class="p">(</span><span class="s1">&#39;enter&#39;</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">which_window</span><span class="p">()</span>
+        <span class="n">action_window</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">hero</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="pursue_check"><a class="viewcode-back" href="../../image_processing.html#image_processing.detecting_window.pursue_check">[docs]</a><span class="k">def</span> <span class="nf">pursue_check</span><span class="p">(</span><span class="n">img_source</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Using tesseract to detect if there is word &#39;pursue&#39; in the window</span>
+
+<span class="sd">    :param img_source: screenshot</span>
+<span class="sd">    :return: 1 if detects word &#39;pursue&#39;, 0 if it is not detected</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">img_source</span> <span class="o">=</span> <span class="n">pyautogui</span><span class="o">.</span><span class="n">screenshot</span><span class="p">()</span>
+    <span class="n">img_source</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">img_source</span><span class="p">),</span> <span class="n">cv</span><span class="o">.</span><span class="n">COLOR_RGB2BGR</span><span class="p">)</span>
+    <span class="n">img_source</span> <span class="o">=</span> <span class="n">img_source</span><span class="p">[</span><span class="mi">400</span><span class="p">:</span><span class="mi">600</span><span class="p">,</span> <span class="mi">800</span><span class="p">:</span><span class="mi">1200</span><span class="p">]</span>
+    <span class="c1"># custom_config = r&#39;--oem 3 --psm 4&#39;</span>
+    <span class="c1"># string_window = (pytesseract.image_to_string(img_source, config=custom_config))</span>
+    <span class="n">string_window</span> <span class="o">=</span> <span class="n">ocr</span><span class="o">.</span><span class="n">read_generic_text</span><span class="p">(</span><span class="n">img_source</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="s1">&#39;pursue&#39;</span> <span class="ow">in</span> <span class="n">string_window</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span></div>
+
+
+<div class="viewcode-block" id="follow_check"><a class="viewcode-back" href="../../image_processing.html#image_processing.detecting_window.follow_check">[docs]</a><span class="k">def</span> <span class="nf">follow_check</span><span class="p">(</span><span class="n">img_source</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Using tesseract to detect if there is word &#39;follow&#39; in the window</span>
+
+<span class="sd">    :param img_source: screenshot</span>
+<span class="sd">    :return: 1 if detects word &#39;pursue&#39;, 0 if it is not detected</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">img_source</span> <span class="o">=</span> <span class="n">pyautogui</span><span class="o">.</span><span class="n">screenshot</span><span class="p">()</span>
+    <span class="n">img_source</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">img_source</span><span class="p">),</span> <span class="n">cv</span><span class="o">.</span><span class="n">COLOR_RGB2BGR</span><span class="p">)</span>
+    <span class="n">img_source</span> <span class="o">=</span> <span class="n">img_source</span><span class="p">[</span><span class="mi">400</span><span class="p">:</span><span class="mi">600</span><span class="p">,</span> <span class="mi">800</span><span class="p">:</span><span class="mi">1200</span><span class="p">]</span>
+    <span class="n">custom_config</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;--oem 3 --psm 6&#39;</span>
+    <span class="n">string_window</span> <span class="o">=</span> <span class="p">(</span><span class="n">pytesseract</span><span class="o">.</span><span class="n">image_to_string</span><span class="p">(</span><span class="n">img_source</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">custom_config</span><span class="p">))</span>
+    <span class="k">if</span> <span class="s1">&#39;Followers&#39;</span> <span class="ow">in</span> <span class="n">string_window</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span></div>
+
+
+<div class="viewcode-block" id="execute_detecting"><a class="viewcode-back" href="../../image_processing.html#image_processing.detecting_window.execute_detecting">[docs]</a><span class="k">def</span> <span class="nf">execute_detecting</span><span class="p">(</span><span class="n">Hero</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executing whole program</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">which_window</span><span class="p">()</span>
+    <span class="n">action_window</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">Hero</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="execute_detecting_enemy_turn"><a class="viewcode-back" href="../../image_processing.html#image_processing.detecting_window.execute_detecting_enemy_turn">[docs]</a><span class="k">def</span> <span class="nf">execute_detecting_enemy_turn</span><span class="p">(</span><span class="n">Hero</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executing whole program</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">which_window</span><span class="p">()</span>
+    <span class="n">action_window_enemy_turn</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">Hero</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="skills_window"><a class="viewcode-back" href="../../image_processing.html#image_processing.detecting_window.skills_window">[docs]</a><span class="k">def</span> <span class="nf">skills_window</span><span class="p">(</span><span class="n">h</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Very crude, yet working solution for our skills picking needs for our heroes.</span>
+<span class="sd">    First, it checks for an &#39;okey&#39; sign on our screen. After detection, if there</span>
+<span class="sd">    indeed is an &#39;okey&#39; here - we check certain positions and use optical character recognition</span>
+<span class="sd">    on them to get our skills&#39; names. Then we pick the best skill according to our calculations</span>
+<span class="sd">    and click it on our screen in game. Parameter h is our hero and it gets updated with picked</span>
+<span class="sd">    skill.</span>
+
+<span class="sd">    :param h: our Hero that gets updated with new skill</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">Air_Magic</span> <span class="o">=</span> <span class="n">SecondarySkill</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Air_Magic&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+    <span class="n">Archery</span> <span class="o">=</span> <span class="n">SecondarySkill</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Archery&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="n">Armorer</span> <span class="o">=</span> <span class="n">SecondarySkill</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Armorer&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+    <span class="n">Artillery</span> <span class="o">=</span> <span class="n">SecondarySkill</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Artillery&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">Ballistics</span> <span class="o">=</span> <span class="n">SecondarySkill</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Ballistics&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">Diplomacy</span> <span class="o">=</span> <span class="n">SecondarySkill</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Diplomacy&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="n">Eagle_Eye</span> <span class="o">=</span> <span class="n">SecondarySkill</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Eagle_Eye&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">Earth_Magic</span> <span class="o">=</span> <span class="n">SecondarySkill</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Earth_Magic&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+    <span class="n">Estates</span> <span class="o">=</span> <span class="n">SecondarySkill</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Estates&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+    <span class="n">Fire_Magic</span> <span class="o">=</span> <span class="n">SecondarySkill</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Fire_Magic&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="n">First_Aid</span> <span class="o">=</span> <span class="n">SecondarySkill</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;First_Aid&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">Intelligence</span> <span class="o">=</span> <span class="n">SecondarySkill</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Intelligence&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="n">Leadership</span> <span class="o">=</span> <span class="n">SecondarySkill</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Leadership&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="n">Learning</span> <span class="o">=</span> <span class="n">SecondarySkill</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Learning&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">Logistics</span> <span class="o">=</span> <span class="n">SecondarySkill</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Logistics&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+    <span class="n">Luck</span> <span class="o">=</span> <span class="n">SecondarySkill</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Luck&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">Mysticism</span> <span class="o">=</span> <span class="n">SecondarySkill</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Mysticism&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">Navigation</span> <span class="o">=</span> <span class="n">SecondarySkill</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Navigation&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="n">Necromancy</span> <span class="o">=</span> <span class="n">SecondarySkill</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Necromancy&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+    <span class="n">Offense</span> <span class="o">=</span> <span class="n">SecondarySkill</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Offense&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+    <span class="n">Pathfinding</span> <span class="o">=</span> <span class="n">SecondarySkill</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Pathfinding&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="n">Resistance</span> <span class="o">=</span> <span class="n">SecondarySkill</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Resistance&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="n">Scholar</span> <span class="o">=</span> <span class="n">SecondarySkill</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Scholar&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="n">Scouting</span> <span class="o">=</span> <span class="n">SecondarySkill</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Scouting&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="n">Sorcery</span> <span class="o">=</span> <span class="n">SecondarySkill</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Sorcery&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">Tactics</span> <span class="o">=</span> <span class="n">SecondarySkill</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Tactics&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="n">Water_Magic</span> <span class="o">=</span> <span class="n">SecondarySkill</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Water_Magic&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="n">Wisdom</span> <span class="o">=</span> <span class="n">SecondarySkill</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Wisdom&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="n">Interference</span> <span class="o">=</span> <span class="n">SecondarySkill</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Interference&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="n">main_hero_skills</span> <span class="o">=</span> <span class="p">[</span><span class="n">Logistics</span><span class="p">,</span> <span class="n">Earth_Magic</span><span class="p">,</span> <span class="n">Air_Magic</span><span class="p">,</span> <span class="n">Armorer</span><span class="p">,</span> <span class="n">Necromancy</span><span class="p">,</span> <span class="n">Offense</span><span class="p">,</span> <span class="n">Archery</span><span class="p">,</span>
+                        <span class="n">Water_Magic</span><span class="p">,</span> <span class="n">Diplomacy</span><span class="p">,</span> <span class="n">Estates</span><span class="p">,</span> <span class="n">Fire_Magic</span><span class="p">,</span> <span class="n">Scouting</span><span class="p">,</span> <span class="n">Wisdom</span><span class="p">,</span> <span class="n">Intelligence</span><span class="p">,</span> <span class="n">Leadership</span><span class="p">,</span>
+                        <span class="n">Navigation</span><span class="p">,</span>
+                        <span class="n">Pathfinding</span><span class="p">,</span> <span class="n">Resistance</span><span class="p">,</span> <span class="n">Scholar</span><span class="p">,</span> <span class="n">Tactics</span><span class="p">,</span> <span class="n">Interference</span><span class="p">,</span> <span class="n">Luck</span><span class="p">,</span> <span class="n">Mysticism</span><span class="p">,</span> <span class="n">Sorcery</span><span class="p">,</span> <span class="n">Artillery</span><span class="p">,</span>
+                        <span class="n">Ballistics</span><span class="p">,</span> <span class="n">Eagle_Eye</span><span class="p">,</span> <span class="n">First_Aid</span><span class="p">,</span> <span class="n">Learning</span><span class="p">]</span>
+    <span class="n">skill_value_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Air_Magic&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;Archery&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;Armorer&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;Artillery&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;Ballistics&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                        <span class="s2">&quot;Diplomacy&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;Eagle_Eye&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Earth_Magic&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;Estates&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;Fire_Magic&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+                        <span class="s2">&quot;First_Aid&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Intelligence&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;Leadership&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;Learning&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Logistics&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+                        <span class="s2">&quot;Luck&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;Mysticism&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;Navigation&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;Necromancy&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;Offense&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+                        <span class="s2">&quot;Pathfinding&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;Resistance&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;Scholar&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;Scouting&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;Sorcery&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+                        <span class="s2">&quot;Tactics&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;Water_Magic&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;Wisdom&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;Interference&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">}</span>
+
+    <span class="k">if</span> <span class="n">check_ok</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;to nie jest okienko lvl upa/wybierania skillsow&#39;</span><span class="p">)</span>
+        <span class="k">return</span>
+    <span class="n">test</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">skills</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">with</span> <span class="n">mss</span><span class="p">()</span> <span class="k">as</span> <span class="n">sct</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+            <span class="n">monitor</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;top&#39;</span><span class="p">:</span> <span class="mi">678</span><span class="p">,</span> <span class="s1">&#39;left&#39;</span><span class="p">:</span> <span class="mi">869</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">94</span><span class="p">,</span> <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mi">83</span><span class="p">,</span>
+                       <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mi">46</span><span class="p">}</span>
+            <span class="n">screen</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sct</span><span class="o">.</span><span class="n">grab</span><span class="p">(</span><span class="n">monitor</span><span class="p">))</span>
+            <span class="n">test</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">screen</span><span class="p">)</span>
+
+            <span class="n">screen</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="n">cv</span><span class="o">.</span><span class="n">COLOR_BGRA2BGR</span><span class="p">)</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">ocr</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">screen</span><span class="p">)</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">)</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">char</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;&#39;,.`;:</span><span class="se">\&quot;</span><span class="s2">-_‘&quot;</span><span class="p">]:</span>
+                <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">char</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">text</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;nwm to chyba nie jest okienko do wyboru skillsow ziom&#39;</span><span class="p">)</span>
+                <span class="k">break</span>
+            <span class="n">level</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">level</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">level</span> <span class="o">==</span> <span class="s1">&#39;Basic&#39;</span><span class="p">:</span>
+                <span class="n">level</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">elif</span> <span class="n">level</span> <span class="o">==</span> <span class="s1">&#39;Advanced&#39;</span><span class="p">:</span>
+                <span class="n">level</span> <span class="o">=</span> <span class="mi">2</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">level</span> <span class="o">=</span> <span class="mi">3</span>
+
+            <span class="n">name</span> <span class="o">=</span> <span class="n">get_close_matches</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">skill_value_dict</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">name</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;S&#39;</span> <span class="ow">and</span> <span class="n">name</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;g&#39;</span><span class="p">:</span>  <span class="c1"># The most common problems when finding the correct skill</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Scouting&#39;</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Artilery&quot;</span><span class="p">:</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Artillery&quot;</span>
+            <span class="n">skills</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">name</span><span class="p">,</span> <span class="n">level</span><span class="p">))</span>
+
+    <span class="n">picked_skill</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+    <span class="k">if</span> <span class="n">h</span><span class="o">.</span><span class="n">herotype</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;main&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">skills</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">main_hero_skills</span> <span class="ow">and</span> <span class="n">skills</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">main_hero_skills</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">main_hero_skills</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">skills</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span> <span class="o">&lt;</span> <span class="n">main_hero_skills</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">skills</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]):</span>
+                <span class="n">picked_skill</span> <span class="o">=</span> <span class="n">skills</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">picked_skill</span> <span class="o">=</span> <span class="n">skills</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">skills</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">main_hero_skills</span> <span class="ow">and</span> <span class="n">skills</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">main_hero_skills</span><span class="p">:</span>
+            <span class="n">picked_skill</span> <span class="o">=</span> <span class="n">skills</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">skills</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">main_hero_skills</span> <span class="ow">and</span> <span class="n">skills</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">main_hero_skills</span><span class="p">:</span>
+            <span class="n">picked_skill</span> <span class="o">=</span> <span class="n">skills</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">picked_skill</span> <span class="o">=</span> <span class="n">skills</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">picked_skill</span> <span class="o">=</span> <span class="n">skills</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">skill</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">skill</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">skills</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">skill</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">skills</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="c1"># print(skill.index(picked_skill))</span>
+    <span class="c1"># print(picked_skill)</span>
+
+    <span class="c1"># KLIKNIECIE NA ODPOWIEDNIEGO SKILLA</span>
+    <span class="n">level_up_choose_skill</span><span class="p">(</span><span class="n">skill</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">picked_skill</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># print(skills[skill.index(picked_skill)][1])</span>
+    <span class="n">do_we_have_this_skill</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="c1"># DODAC UPDATE SKILLA W HERO</span>
+    <span class="k">for</span> <span class="n">hero_skill</span> <span class="ow">in</span> <span class="n">h</span><span class="o">.</span><span class="n">skills</span><span class="o">.</span><span class="n">secondary_skills</span><span class="p">:</span>
+        <span class="c1"># jesli mamy tego skilla w skillach to updatujemy mu lvl</span>
+        <span class="k">if</span> <span class="n">hero_skill</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">picked_skill</span><span class="p">:</span>
+            <span class="n">hero_skill</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="n">skills</span><span class="p">[</span><span class="n">skill</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">picked_skill</span><span class="p">)][</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">do_we_have_this_skill</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">do_we_have_this_skill</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">hero_skill</span> <span class="ow">in</span> <span class="n">h</span><span class="o">.</span><span class="n">skills</span><span class="o">.</span><span class="n">secondary_skills</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">hero_skill</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                <span class="n">hero_skill</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">picked_skill</span>
+                <span class="n">hero_skill</span><span class="o">.</span><span class="n">lvl</span> <span class="o">=</span> <span class="n">skills</span><span class="p">[</span><span class="n">skill</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">picked_skill</span><span class="p">)][</span><span class="mi">1</span><span class="p">]</span>
+                <span class="c1"># hero_skill.value=0</span>
+                <span class="k">break</span>
+
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">skills_window</span><span class="p">(</span><span class="n">h</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Fryderyk Róg, Kacper Plesiak, Michał Gruba, Tymoteusz Skrzyński, Mateusz Comblik, Bartosz Szczepanek, Alan Konopko, Mateusz Mikszewicz, Daniel Bil, Piotr Łyczko.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
