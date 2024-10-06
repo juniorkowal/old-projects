@@ -1,0 +1,26 @@
+<annotation>
+	<folder>dataset</folder>
+	<filename>image25.png</filename>
+	<path>C:\Users\mateu\Desktop\laby\wno2lab3_175827\dataset\image25.png</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>1200</width>
+		<height>800</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>klucz_francuski</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>671</xmin>
+			<ymin>434</ymin>
+			<xmax>950</xmax>
+			<ymax>554</ymax>
+		</bndbox>
+	</object>
+</annotation>
